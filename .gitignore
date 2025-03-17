@@ -171,3 +171,7 @@ cython_debug/
 .pypirc
 venv
 *.lock
+
+# Local Tokenization Data Saved
+/data/tokenized_wikitext
+/data/tiktoken_tokenized_wikitext
