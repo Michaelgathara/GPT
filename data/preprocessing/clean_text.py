@@ -1,4 +1,12 @@
 import re
+import unicodedata
+
+pattern_equals = re.compile(r'={2,}')  # repeated equal signs 
+pattern_at = re.compile(r'@-@')        
+pattern_space_before_punct = re.compile(r'\s+([.,!?])')  # extra space before punctuation
+pattern_space_before_s = re.compile(r"\s+'s")  # space before "'s"
+pattern_multi_space = re.compile(r'\s+')
+
 def clean_textdata(text):
     # VERSION 1
     # Remove special placeholders
