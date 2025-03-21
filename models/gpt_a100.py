@@ -66,6 +66,11 @@ class ModelConfig:
         self.accumulation_steps = 4         # Gradient accumulation steps
         self.warmup_iters = 100             # Learning rate warmup iterations
         
+        # Optimizer Settings
+        self.weight_decay = 1e-1
+        self.beta1 = 0.9
+        self.beta2 = 0.95
+        
         # Optimization flags
         self.gradient_checkpointing = False  # Use gradient checkpointing
         # Above does not work
@@ -510,7 +515,7 @@ def train(gpu_id, config, train_tensor, val_tensor, test_tensor, vocab_size):
     model = DDP(model, device_ids=[gpu_id], output_device=gpu_id, find_unused_parameters=False)
     model.device = device 
     
-    optimizer = torch.optim.AdamW(model.parameters(), lr=config.learning_rate, weight_decay=0.01)
+    optimizer = torch.optim.AdamW(model.parameters(), lr=config.learning_rate, weight_decay=config.weight_decay, betas=[config.beta1, config.beta2])
     
     # set initial learning rate for scheduler
     for param_group in optimizer.param_groups:
@@ -520,7 +525,7 @@ def train(gpu_id, config, train_tensor, val_tensor, test_tensor, vocab_size):
     scheduler = CosineWarmupScheduler(optimizer, config.warmup_iters, config.max_iters)
     
     # create gradient scaler for mixed precision
-    scaler = torch.cuda.amp.GradScaler()
+    scaler = torch.amp.GradScaler("cuda")
     
     # zero gradients
     optimizer.zero_grad()
@@ -561,7 +566,7 @@ def train(gpu_id, config, train_tensor, val_tensor, test_tensor, vocab_size):
         x, y = x.to(device), y.to(device)
         
         # mixed precision forward pass
-        with torch.cuda.amp.autocast():
+        with torch.amp.autocast("cuda"):
             logits, loss = model(x, y)
         
         if loss.ndim > 0:
