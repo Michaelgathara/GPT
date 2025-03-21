@@ -171,8 +171,6 @@ lm_dataset = tokenized_dataset.map(
 
 tokenized_dataset_text = lm_dataset.filter(lambda x: any(token != 0 for token in x["input_ids"]))
 
-
-
 train_tensor = np.array(tokenized_dataset_text["train"]["input_ids"], dtype=np.int32)
 val_tensor   = np.array(tokenized_dataset_text["validation"]["input_ids"], dtype=np.int32)
 test_tensor  = np.array(tokenized_dataset_text["test"]["input_ids"], dtype=np.int32)

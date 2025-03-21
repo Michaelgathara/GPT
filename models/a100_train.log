@@ -1,0 +1,97 @@
+nohup: ignoring input
+Your base folder is: /workspace/GPT
+Flash Attention is available!
+Training with 4 GPUs
+2025-03-21 06:00:19,235 - transformer_training - INFO - Tokenizing dataset...
+2025-03-21 06:00:20,896 - transformer_training - INFO - Chunking dataset...
+2025-03-21 06:00:21,660 - transformer_training - INFO - Converting to tensors...
+2025-03-21 06:01:28,612 - transformer_training - INFO - Train Data: torch.Size([213867, 512]), torch.int64
+2025-03-21 06:01:28,613 - transformer_training - INFO - Val Data: torch.Size([418, 512]), torch.int64
+2025-03-21 06:01:28,613 - transformer_training - INFO - Test Data: torch.Size([485, 512]), torch.int64
+2025-03-21 06:01:28,613 - transformer_training - INFO - Vocabulary size: 50257
+Train Data: torch.Size([213867, 512]), torch.int64
+Val   Data: torch.Size([418, 512]), torch.int64
+Test  Data: torch.Size([485, 512]), torch.int64
+Vocabulary size: 50257
+Your base folder is: /workspace/GPT
+Your base folder is: /workspace/GPT
+Your base folder is: /workspace/GPT
+Your base folder is: /workspace/GPT
+Flash Attention is available!
+Flash Attention is available!
+Flash Attention is available!
+Flash Attention is available!
+Model initialized with 304,804,945 parameters
+Model initialized with 304,804,945 parameters
+Model initialized with 304,804,945 parameters
+Model initialized with 304,804,945 parameters
+/workspace/GPT/models/gpt_a100.py:522: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+  scaler = torch.cuda.amp.GradScaler()
+/workspace/GPT/models/gpt_a100.py:522: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+  scaler = torch.cuda.amp.GradScaler()
+/workspace/GPT/models/gpt_a100.py:522: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+  scaler = torch.cuda.amp.GradScaler()
+/workspace/GPT/models/gpt_a100.py:522: FutureWarning: `torch.cuda.amp.GradScaler(args...)` is deprecated. Please use `torch.amp.GradScaler('cuda', args...)` instead.
+  scaler = torch.cuda.amp.GradScaler()
+Total iterations: 1000
+Batches per epoch: 836
+Your base folder is: /workspace/GPT
+Your base folder is: /workspace/GPT
+Your base folder is: /workspace/GPT
+Your base folder is: /workspace/GPT
+Your base folder is: /workspace/GPT
+Your base folder is: /workspace/GPT
+Your base folder is: /workspace/GPT
+Your base folder is: /workspace/GPT
+Your base folder is: /workspace/GPT
+Your base folder is: /workspace/GPT
+Your base folder is: /workspace/GPT
+Your base folder is: /workspace/GPT
+Your base folder is: /workspace/GPT
+Your base folder is: /workspace/GPT
+Your base folder is: /workspace/GPT
+Your base folder is: /workspace/GPT
+Flash Attention is available!
+Flash Attention is available!
+/workspace/GPT/models/gpt_a100.py:563: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast():
+Flash Attention is available!
+Flash Attention is available!
+Flash Attention is available!
+/workspace/GPT/models/gpt_a100.py:563: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast():
+Flash Attention is available!
+Flash Attention is available!
+Flash Attention is available!
+Flash Attention is available!
+Flash Attention is available!
+Flash Attention is available!
+Flash Attention is available!
+Flash Attention is available!
+Flash Attention is available!
+/workspace/GPT/models/gpt_a100.py:563: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast():
+Flash Attention is available!
+/workspace/GPT/models/gpt_a100.py:563: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast():
+/workspace/GPT/.venv/lib/python3.10/site-packages/torch/_dynamo/eval_frame.py:745: UserWarning: torch.utils.checkpoint: the use_reentrant parameter should be passed explicitly. In version 2.5 we will raise an exception if use_reentrant is not passed. use_reentrant=False is recommended, but if you need to preserve the current default behavior, you can pass use_reentrant=True. Refer to docs for more details on the differences between the two variants.
+  return fn(*args, **kwargs)
+/workspace/GPT/.venv/lib/python3.10/site-packages/torch/_dynamo/eval_frame.py:745: UserWarning: torch.utils.checkpoint: the use_reentrant parameter should be passed explicitly. In version 2.5 we will raise an exception if use_reentrant is not passed. use_reentrant=False is recommended, but if you need to preserve the current default behavior, you can pass use_reentrant=True. Refer to docs for more details on the differences between the two variants.
+  return fn(*args, **kwargs)
+/workspace/GPT/.venv/lib/python3.10/site-packages/torch/_dynamo/eval_frame.py:745: UserWarning: torch.utils.checkpoint: the use_reentrant parameter should be passed explicitly. In version 2.5 we will raise an exception if use_reentrant is not passed. use_reentrant=False is recommended, but if you need to preserve the current default behavior, you can pass use_reentrant=True. Refer to docs for more details on the differences between the two variants.
+  return fn(*args, **kwargs)
+/workspace/GPT/.venv/lib/python3.10/site-packages/torch/_dynamo/eval_frame.py:745: UserWarning: torch.utils.checkpoint: the use_reentrant parameter should be passed explicitly. In version 2.5 we will raise an exception if use_reentrant is not passed. use_reentrant=False is recommended, but if you need to preserve the current default behavior, you can pass use_reentrant=True. Refer to docs for more details on the differences between the two variants.
+  return fn(*args, **kwargs)
+Flash Attention is available!
+Iter 0: loss 11.0378, lr 0.000300, 19881.65 tokens/sec
+Your base folder is: /workspace/GPT
+Your base folder is: /workspace/GPT
+Your base folder is: /workspace/GPT
+Your base folder is: /workspace/GPT
+Flash Attention is available!
+Flash Attention is available!
+Flash Attention is available!
+terminate called without an active exception
+Flash Attention is available!
+/workspace/GPT/models/gpt_a100.py:415: FutureWarning: `torch.cuda.amp.autocast(args...)` is deprecated. Please use `torch.amp.autocast('cuda', args...)` instead.
+  with torch.cuda.amp.autocast():
