@@ -30,6 +30,7 @@ import time
 # Local imports
 from data import get_wikitext_data, get_fineweb_data, save_data, load_data, clean_textdata
 from tokenization import get_tiktoken_tokenizer
+from transformers import get_scheduler
 
 
 print(f"Using device: {device}")
@@ -496,6 +497,17 @@ if torch.cuda.device_count() > 1:
 
 optimizer = torch.optim.AdamW(model.parameters(), lr=learning_rate)
 
+# Initialize number of warmup steps
+num_warmup_steps = int(0.1 * max_iters)
+
+# Create a learning rate scheduler using transformers library
+lr_scheduler = get_scheduler(
+    name="linear",
+    optimizer=optimizer,
+    num_warmup_steps=num_warmup_steps,
+    num_training_steps=max_iters,
+)
+
 # grad scaler for mixed precision training
 scaler = torch.amp.GradScaler()
 
@@ -531,11 +543,17 @@ for iter in range(max_iters):
         scaler.update()
         # reset gradients
         optimizer.zero_grad()
+        # Warmup/decrement learning rate depending on number of iterations done
+        lr_scheduler.step()
     
     # evaluate the model every eval_interval iterations
     if iter % eval_interval == 0 or iter == max_iters - 1:
         loss_dict = estimate_loss(model, eval_iters=eval_iters, batch_size=batch_size, splits=("train", "val"))
         print(f"iter {iter}: train loss {loss_dict['train']:.4f}, val loss {loss_dict['val']:.4f}")
+        
+        # Printing learning rate at every eval_interval
+        current_lr = lr_scheduler.get_last_lr()[0]
+        print(f"Learning rate: {current_lr:.6f}")
     
     iter_end_time = time.time()
     print(f"Total iter time: {iter_end_time - iter_start_time:.2f} seconds")
