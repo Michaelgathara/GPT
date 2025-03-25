@@ -5,11 +5,11 @@ from tokenizers import Tokenizer
 from tokenizers.models import BPE
 from tokenizers.trainers import BpeTrainer
 from tokenizers.pre_tokenizers import Whitespace
-from data import get_wikitext_data, clean_textdata
-
 
 base_folder = os.path.abspath("..")
 print(f"Your base folder is: {base_folder}")
+from data import get_wikitext_data, clean_textdata
+
 
 DATA_PATH = f"{base_folder}/GPT/tokenization/wikitext-103-train.txt"
 TOKENIZER_PATH = f"{base_folder}/GPT/tokenization/custom_tokenizer.json"
