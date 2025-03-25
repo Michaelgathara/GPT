@@ -65,7 +65,7 @@ def main():
         prompt = input("\nPrompt: ")
         if prompt.lower().strip() == "exit":
             break
-        prompt_ids = tokenizer.encode(prompt)
+        prompt_ids = tokenizer.encode(prompt).ids
         input_tensor = torch.tensor([prompt_ids], dtype=torch.long, device=device)
 
         with torch.no_grad():
