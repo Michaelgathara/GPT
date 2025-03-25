@@ -1,5 +1,5 @@
 from datasets import Dataset
-from config import DATA_PATH, NUM_CORES
+from .config import DATA_PATH, NUM_CORES
 from data import get_wikitext_data, clean_textdata
 
 def load_dataset() -> Dataset:
