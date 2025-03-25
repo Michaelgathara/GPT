@@ -102,8 +102,6 @@ class TokenizedDataset(Dataset):
 
 def get_batch(dataloader):
     for x, y in dataloader:
-        x = x.to(dtype=torch.float16)
-        y = y.to(dtype=torch.float16)
         yield x, y
 
 
@@ -118,10 +116,10 @@ def estimate_loss(model, dataloaders, eval_iters):
             try:
                 # get batch from dataloader
                 x, y = next(iter(dataloader))
-                x, y = x.to(model.device, dtype=torch.float16), y.to(model.device, dtype=torch.float16)
+                x, y = x.to(model.device), y.to(model.device)
                 
                 # Compute loss
-                with torch.amp.autocast('cuda', dtype=torch.float16):
+                with torch.amp.autocast('cuda'):
                     _, loss = model(x, y)
                 
                 if loss.ndim > 0:
@@ -212,7 +210,7 @@ def train(gpu_id, config, train_tensor, val_tensor, test_tensor, vocab_size):
     )
     
     # move model to device
-    model = model.to(device, dtype=torch.float16)
+    model = model.to(device)
     
     # wrap model with DDP
     model = DDP(model, device_ids=[gpu_id], output_device=gpu_id, find_unused_parameters=False)
@@ -467,13 +465,13 @@ def main():
     tokenized_dataset_text = lm_dataset.filter(lambda x: any(token != 0 for token in x["input_ids"]))
     
     logger.info("Converting to tensors...")
-    train_tensor = np.array(tokenized_dataset_text["train"]["input_ids"], dtype=np.int16)
-    val_tensor = np.array(tokenized_dataset_text["validation"]["input_ids"], dtype=np.int16)
-    test_tensor = np.array(tokenized_dataset_text["test"]["input_ids"], dtype=np.int16)
+    train_tensor = np.array(tokenized_dataset_text["train"]["input_ids"], dtype=np.int32)
+    val_tensor = np.array(tokenized_dataset_text["validation"]["input_ids"], dtype=np.int32)
+    test_tensor = np.array(tokenized_dataset_text["test"]["input_ids"], dtype=np.int32)
     
-    train_data = torch.from_numpy(train_tensor)
-    val_data = torch.from_numpy(val_tensor)
-    test_data = torch.from_numpy(test_tensor)
+    train_data = torch.from_numpy(train_tensor).long()
+    val_data = torch.from_numpy(val_tensor).long()
+    test_data = torch.from_numpy(test_tensor).long()
     
     logger.info(f"Train Data: {train_data.shape}, {train_data.dtype}")
     logger.info(f"Val Data: {val_data.shape}, {val_data.dtype}")

@@ -1,7 +1,5 @@
 class ModelConfig:
     def __init__(self):
-        self.dtype = torch.float16
-
         # model architecture
         self.batch_size = 64                # Batch size per GPU
         self.block_size = 512               # Context size
