@@ -1,4 +1,4 @@
-import os
+import os, sys
 import multiprocessing
 
 from tokenizers import Tokenizer
@@ -8,6 +8,7 @@ from tokenizers.pre_tokenizers import Whitespace
 
 base_folder = os.path.abspath("..")
 print(f"Your base folder is: {base_folder}")
+sys.path.append(base_folder)
 from data import get_wikitext_data, clean_textdata
 
 
