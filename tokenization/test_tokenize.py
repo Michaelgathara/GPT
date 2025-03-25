@@ -1,22 +1,35 @@
 # GPT token-level model
-import multiprocessing
+import os
 
-from data import get_wikitext_data, save_data, load_data
-from tokenization import get_tiktoken_tokenizer, tiktoken_tokenize_dataset
+from tokenizers import Tokenizer
+from tokenization import get_tiktoken_tokenizer
 
-DATA_PATH = "/workspace/GPT/data/tiktoken_tokenized_wikitext"
-num_cores = multiprocessing.cpu_count()
+# Load the trained tokenizer
+base_folder = os.path.abspath("..")
+print(f"Your base folder is: {base_folder}")
+TOKENIZER_PATH = f"{base_folder}/GPT/tokenization/custom_tokenizer.json"
+tokenizer = Tokenizer.from_file(TOKENIZER_PATH)
 
-tokenizer = get_tiktoken_tokenizer()
+# Test the tokenizer
+sample_text = "[BOS] This is a test sentence for my trained tokenizer. [EOS]"
+encoded = tokenizer.encode(sample_text)
 
-dataset = get_wikitext_data()
-tokenized_dataset = tiktoken_tokenize_dataset(dataset, tokenizer, num_cores)
-print(tokenized_dataset)
+print("Tokens:", encoded.tokens)
+print("IDs:", encoded.ids)
 
-save_data(tokenized_dataset, DATA_PATH)
+# Load tiktoken tokenizer
+tiktokenizer = get_tiktoken_tokenizer("gpt-2")
 
+# Encode the text using tiktoken
+encoded_ids = tiktokenizer.encode(sample_text)
 
-tokenized_dataset = load_data(DATA_PATH)
+# Decode to check the tokenized version
+decoded_text = tiktokenizer.decode(encoded_ids)
+
+print("Encoded IDs:", encoded_ids)
+print("Decoded Text:", decoded_text)
+
+# tokenized_dataset = load_data(DATA_PATH)
 #######################################################
 # GPT-2 Tokenizer Code
 

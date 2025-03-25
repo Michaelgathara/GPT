@@ -175,3 +175,6 @@ venv
 # Local Tokenization Data Saved
 /data/tokenized_wikitext
 /data/tiktoken_tokenized_wikitext
+*.pt
+/tokenization/custom_tokenizer.json
+/tokenization/wikitext-103-train.txt
