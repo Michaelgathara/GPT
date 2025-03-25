@@ -20,7 +20,7 @@ def create_tokenizer():
 
 def train_and_save_tokenizer():
     tokenizer, trainer = create_tokenizer()
-    
+    print(f"Data Path: {DATA_PATH}")
     tokenizer.train([DATA_PATH], trainer)
     tokenizer.save(TOKENIZER_PATH)
 
