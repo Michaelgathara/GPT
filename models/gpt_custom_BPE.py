@@ -102,6 +102,8 @@ class TokenizedDataset(Dataset):
 
 def get_batch(dataloader):
     for x, y in dataloader:
+        x = x.to(dtype=torch.float16)
+        y = y.to(dtype=torch.float16)
         yield x, y
 
 
@@ -116,10 +118,10 @@ def estimate_loss(model, dataloaders, eval_iters):
             try:
                 # get batch from dataloader
                 x, y = next(iter(dataloader))
-                x, y = x.to(model.device), y.to(model.device)
+                x, y = x.to(model.device, dtype=torch.float16), y.to(model.device, dtype=torch.float16)
                 
                 # Compute loss
-                with torch.amp.autocast('cuda'):
+                with torch.amp.autocast('cuda', dtype=torch.float16):
                     _, loss = model(x, y)
                 
                 if loss.ndim > 0:
@@ -210,7 +212,7 @@ def train(gpu_id, config, train_tensor, val_tensor, test_tensor, vocab_size):
     )
     
     # move model to device
-    model = model.to(device)
+    model = model.to(device, dtype=torch.float16)
     
     # wrap model with DDP
     model = DDP(model, device_ids=[gpu_id], output_device=gpu_id, find_unused_parameters=False)
