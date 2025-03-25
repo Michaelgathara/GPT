@@ -465,13 +465,13 @@ def main():
     tokenized_dataset_text = lm_dataset.filter(lambda x: any(token != 0 for token in x["input_ids"]))
     
     logger.info("Converting to tensors...")
-    train_tensor = np.array(tokenized_dataset_text["train"]["input_ids"], dtype=np.int32)
-    val_tensor = np.array(tokenized_dataset_text["validation"]["input_ids"], dtype=np.int32)
-    test_tensor = np.array(tokenized_dataset_text["test"]["input_ids"], dtype=np.int32)
+    train_tensor = np.array(tokenized_dataset_text["train"]["input_ids"], dtype=np.int16)
+    val_tensor = np.array(tokenized_dataset_text["validation"]["input_ids"], dtype=np.int16)
+    test_tensor = np.array(tokenized_dataset_text["test"]["input_ids"], dtype=np.int16)
     
-    train_data = torch.from_numpy(train_tensor).long()
-    val_data = torch.from_numpy(val_tensor).long()
-    test_data = torch.from_numpy(test_tensor).long()
+    train_data = torch.from_numpy(train_tensor)
+    val_data = torch.from_numpy(val_tensor)
+    test_data = torch.from_numpy(test_tensor)
     
     logger.info(f"Train Data: {train_data.shape}, {train_data.dtype}")
     logger.info(f"Val Data: {val_data.shape}, {val_data.dtype}")
