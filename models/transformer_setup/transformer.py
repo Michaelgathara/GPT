@@ -32,6 +32,9 @@ class FlashAttentionHead(nn.Module):
         # input_tensor: (batch_size, seq_len, embed_dim)
         batch_size, seq_len, embed_dim = input_tensor.shape
         
+        if self.use_flash and input_tensor.dtype not in [torch.float16, torch.bfloat16]:
+            input_tensor = input_tensor.to(dtype=torch.float16)
+        
         keys = self.key_proj(input_tensor)     # shape: (batch_size, seq_len, head_dim)
         queries = self.query_proj(input_tensor)  # shape: (batch_size, seq_len, head_dim)
         values = self.value_proj(input_tensor)   # shape: (batch_size, seq_len, head_dim)
