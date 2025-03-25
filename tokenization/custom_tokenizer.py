@@ -9,13 +9,13 @@ from tokenizers.pre_tokenizers import Whitespace
 base_folder = os.path.abspath("..")
 print(f"Your base folder is: {base_folder}")
 sys.path.append(base_folder)
-from data import get_wikitext_data, clean_textdata
+from data import get_wikitext_data, clean_textdata, save_data
 
-
-DATA_PATH = f"{base_folder}/GPT/tokenization/wikitext-103-train.txt"
-TOKENIZER_PATH = f"{base_folder}/GPT/tokenization/custom_tokenizer.json"
+DATA_PATH = f"{base_folder}/tokenization/wikitext-103-train.txt"
+TOKENIZER_PATH = f"{base_folder}/tokenization/custom_tokenizer.json"
 
 dataset = get_wikitext_data()
+
 train_dataset = dataset["train"]
 
 num_cores = max(1, multiprocessing.cpu_count())
@@ -36,9 +36,10 @@ cleaned_dataset = train_dataset.map(
 )
 
 print("Cleaned lines:", len(cleaned_dataset["text"]))
+save_data(cleaned_dataset, DATA_PATH)
 
-with open(DATA_PATH, "w", encoding="utf-8") as f:
-    f.write("\n".join(cleaned_dataset["text"]) + "\n")
+# with open(DATA_PATH, "w", encoding="utf-8") as f:
+#     f.write("\n".join(cleaned_dataset["text"]) + "\n")
 
 tokenizer = Tokenizer(BPE(unk_token="[UNK]"))
 tokenizer.pre_tokenizer = Whitespace()
