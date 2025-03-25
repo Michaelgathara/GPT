@@ -36,10 +36,10 @@ cleaned_dataset = train_dataset.map(
 )
 
 print("Cleaned lines:", len(cleaned_dataset["text"]))
-save_data(cleaned_dataset, DATA_PATH)
+# save_data(cleaned_dataset, DATA_PATH)
 
-# with open(DATA_PATH, "w", encoding="utf-8") as f:
-#     f.write("\n".join(cleaned_dataset["text"]) + "\n")
+with open(DATA_PATH, "w", encoding="utf-8") as f:
+    f.write("\n".join(cleaned_dataset["text"]) + "\n")
 
 tokenizer = Tokenizer(BPE(unk_token="[UNK]"))
 tokenizer.pre_tokenizer = Whitespace()
@@ -50,7 +50,7 @@ trainer = BpeTrainer(
     special_tokens=["[PAD]", "[UNK]", "[CLS]", "[SEP]", "[MASK]", "[BOS]", "[EOS]"]
 )
 
-tokenizer.train([DATA_PATH], trainer)
+tokenizer.train(files=[DATA_PATH], trainer=trainer)
 tokenizer.save(TOKENIZER_PATH)
 
 print(f"Tokenizer trained and saved at: {TOKENIZER_PATH}")
