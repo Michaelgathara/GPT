@@ -434,6 +434,7 @@ def main():
     
     tokenized_dataset = cleaned_dataset.map(
         tokenize_batch, 
+        fn_kwargs={"tokenizer": tokenizer},
         batched=True,
         batch_size=10_000,
         num_proc=num_cores,
