@@ -266,12 +266,17 @@ class TransformerModel(nn.Module):
         return logits, loss
 
     def generate(self, idx, max_new_tokens, max_seq_len, temperature=1.0, top_k=None):
-        """Generate text with more sampling options"""
+        # Make sure idx is long for embedding lookup
+        idx = idx.to(dtype=torch.long)
+        
         for _ in range(max_new_tokens):
             # Crop context to max_seq_len
             idx_cond = idx[:, -max_seq_len:]
-            # Get logits
-            logits, _ = self(idx_cond)
+            
+            # Forward pass with appropriate dtype handling
+            with torch.amp.autocast('cuda', dtype=torch.float16):
+                logits, _ = self(idx_cond)
+                
             # Focus on last time step
             logits = logits[:, -1, :] / temperature
             
