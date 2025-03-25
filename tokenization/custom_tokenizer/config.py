@@ -4,8 +4,8 @@ import multiprocessing
 BASE_FOLDER = os.path.abspath("..")
 print(f"Your base folder is: {BASE_FOLDER}")
 
-DATA_PATH = f"{BASE_FOLDER}/GPT/tokenization/wikitext-103-train.txt"
-TOKENIZER_PATH = f"{BASE_FOLDER}/GPT/tokenization/custom_tokenizer.json"
+DATA_PATH = f"{BASE_FOLDER}/tokenization/wikitext-103-train.txt"
+TOKENIZER_PATH = f"{BASE_FOLDER}/tokenization/custom_tokenizer.json"
 
 NUM_CORES = max(1, multiprocessing.cpu_count())
 
