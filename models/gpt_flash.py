@@ -26,8 +26,11 @@ print(f"Your base folder is: {base_folder}")
 sys.path.append(base_folder)
 from data import get_wikitext_data, clean_textdata, get_fineweb_data
 from tokenization import get_tiktoken_tokenizer
+from tokenizers import Tokenizer
 
-tokenizer = get_tiktoken_tokenizer()
+# tokenizer = get_tiktoken_tokenizer()
+TOKENIZER_PATH = f"{base_folder}/tokenization/custom_tokenizer.json"
+tokenizer = Tokenizer.from_file(TOKENIZER_PATH)
 
 logging.basicConfig(
     level=logging.INFO,
