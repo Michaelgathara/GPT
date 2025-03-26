@@ -32,7 +32,7 @@ def main():
     texts = extract_texts_for_tokenizer(dataset)
     
     print(f"Saving extracted texts to {DATA_PATH}")
-    with open(DATA_PATH, "w", encoding="utf-8") as f:
+    with open(DATA_PATH, "w+", encoding="utf-8") as f:
         f.write("\n".join(texts))
     
     print("Training tokenizer...")
