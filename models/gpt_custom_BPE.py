@@ -26,7 +26,7 @@ print(f"Your base folder is: {base_folder}")
 sys.path.append(base_folder)
 
 from data import get_llama_nemotron_data, clean_textdata
-from tokenization.custom_tokenizer.trainer import load_tokenizer
+from tokenization import load_tokenizer
 
 tokenizer = load_tokenizer()
 
