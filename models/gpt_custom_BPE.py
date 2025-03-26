@@ -423,6 +423,7 @@ def main():
         }
     
     tokenized_dataset = {}
+    print(f"Processed Dataset: {processed_dataset}")
     for split in processed_dataset:
         tokenized_dataset[split] = processed_dataset[split].map(
             tokenize_batch, 
