@@ -8,7 +8,7 @@ sys.path.append(base_folder)
 
 from data import get_llama_nemotron_data
 from tokenization.custom_tokenizer.config import DATA_PATH, TOKENIZER_PATH, VOCAB_SIZE, MIN_FREQUENCY, SPECIAL_TOKENS, NUM_CORES
-from .trainer import train_and_save_tokenizer
+from tokenization.custom_tokenizer.trainer import train_and_save_tokenizer
 
 def extract_texts_for_tokenizer(dataset):
     all_texts = []
