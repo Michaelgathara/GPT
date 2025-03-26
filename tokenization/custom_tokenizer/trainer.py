@@ -41,6 +41,7 @@ def train_and_save_tokenizer():
     print(f"Tokenizer trained and saved at: {TOKENIZER_PATH}")
     
 def load_tokenizer():
+    print(f"Tokenizer Path: {TOKENIZER_PATH}")
     if not os.path.exists(TOKENIZER_PATH):
         print(f"Tokenizer file not found at {TOKENIZER_PATH}. Training a new one...")
         train_and_save_tokenizer()
