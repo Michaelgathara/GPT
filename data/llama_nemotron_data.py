@@ -1,6 +1,6 @@
 def get_llama_nemotron_data():
     from datasets import load_dataset
-    dataset = load_dataset("llama_nemotron")
+    dataset = load_dataset("nvidia/Llama-Nemotron-Post-Training-Dataset-v1")
     
     filtered_dataset = dataset.filter(lambda example: example['split'] in ['code', 'science'])
     
