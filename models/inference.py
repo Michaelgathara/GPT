@@ -52,6 +52,25 @@ def load_model(checkpoint_path, device):
     print("Model loaded and set to evaluation mode.")
     return model
 
+
+def generate_with_nemotron_format(model, prompt, device, max_tokens=300, temperature=0.8):
+    formatted_prompt = f"<|begin_of_text|><|start_header_id|>system<|end_header_id|>\n\ndetailed thinking on<|eot_id|><|start_header_id|>user<|end_header_id|>\n\n{prompt}<|eot_id|><|start_header_id|>assistant<|end_header_id|>"
+    
+    prompt_ids = tokenizer.encode(formatted_prompt).ids
+    input_tensor = torch.tensor([prompt_ids], dtype=torch.long, device=device)
+    
+    with torch.no_grad():
+        generated_tensor = model.generate(
+            input_tensor, 
+            max_new_tokens=max_tokens, 
+            max_seq_len=config.block_size, 
+            temperature=temperature
+        )
+    
+    generated_text = tokenizer.decode(generated_tensor[0].tolist())
+    
+    return generated_text
+
 def main():
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model_choice = input("Which model would you like to inference (best_model): ")
@@ -61,17 +80,3 @@ def main():
     print("\nEnter your prompt below. Type 'exit' to quit.")
     while True:
         prompt = input("\nPrompt: ")
-        if prompt.lower().strip() == "exit":
-            break
-        prompt_ids = tokenizer.encode(prompt).ids
-        input_tensor = torch.tensor([prompt_ids], dtype=torch.long, device=device)
-
-        with torch.no_grad():
-            generated_tensor = model.generate(input_tensor, max_new_tokens=300, max_seq_len=config.block_size, temperature=1.0)
-
-        generated_text = tokenizer.decode(generated_tensor[0].tolist())
-        print("\nGenerated text:")
-        print(generated_text)
-
-if __name__ == "__main__":
-    main()
