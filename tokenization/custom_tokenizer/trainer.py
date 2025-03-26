@@ -1,4 +1,4 @@
-# tokenization/custom_tokenizer/trainer.py (update)
+
 import os
 
 from tokenizers import Tokenizer
@@ -6,7 +6,10 @@ from tokenizers.models import BPE
 from tokenizers.trainers import BpeTrainer
 from tokenizers.pre_tokenizers import Whitespace
 from tokenizers.processors import TemplateProcessing
-from .config import DATA_PATH, TOKENIZER_PATH, VOCAB_SIZE, MIN_FREQUENCY, SPECIAL_TOKENS
+
+base_folder = os.path.abspath("../..")
+sys.path.append(base_folder)
+from tokenization.custom_tokenizer.config import DATA_PATH, TOKENIZER_PATH, VOCAB_SIZE, MIN_FREQUENCY, SPECIAL_TOKENS, NUM_CORES
 
 def create_tokenizer():
     tokenizer = Tokenizer(BPE(unk_token="[UNK]"))
