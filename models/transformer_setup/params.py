@@ -1,7 +1,7 @@
 class ModelConfig:
     def __init__(self):
         # model architecture
-        self.batch_size = 64                # Batch size per GPU
+        self.batch_size = 72                # Batch size per GPU
         self.block_size = 512               # Context size
         self.n_embd = 512                   # Embedding dimension
         self.n_head = 12                    # Number of attention heads
