@@ -24,13 +24,17 @@ from typing import Optional
 base_folder = os.path.abspath("..")
 print(f"Your base folder is: {base_folder}")
 sys.path.append(base_folder)
-from data import get_wikitext_data, clean_textdata, get_fineweb_data
-from tokenization import get_tiktoken_tokenizer
-from tokenizers import Tokenizer
 
-# tokenizer = get_tiktoken_tokenizer()
-TOKENIZER_PATH = f"{base_folder}/tokenization/custom_tokenizer.json"
-tokenizer = Tokenizer.from_file(TOKENIZER_PATH)
+from data import get_wikitext_data, clean_textdata, get_fineweb_data
+
+# from tokenization.custom_tokenizer.config import TOKENIZER_PATH
+# from tokenizers import Tokenizer
+
+# tokenizer = Tokenizer.from_file(TOKENIZER_PATH)
+
+from tokenization.custom_tokenizer.trainer import load_tokenizer
+
+tokenizer = load_tokenizer()
 
 logging.basicConfig(
     level=logging.INFO,
@@ -376,7 +380,7 @@ def train(gpu_id, config, train_tensor, val_tensor, test_tensor, vocab_size):
         
         generated_sequence = model.module.generate(context, max_new_tokens=200, max_seq_len=config.block_size)
         generated_ids = generated_sequence[0].tolist()
-        decoded_text = tokenizer.decode(generated_ids)  # Decode the generated token IDs into text
+        decoded_text = tokenizer.decode(generated_ids, skip_special_tokens=True)
         
         # print("Context:", context_text)
         print("Generated text:", decoded_text) 
@@ -402,7 +406,7 @@ def main():
     torch.manual_seed(config.seed)
     np.random.seed(config.seed)
     
-    vocab_size = tokenizer.n_vocab
+    vocab_size = tokenizer.get_vocab_size()
     
     dataset = get_wikitext_data()
     # dataset = get_fineweb_data(1)
@@ -420,17 +424,18 @@ def main():
         num_proc=num_cores,
         desc="Cleaning text"
     )
+
     
     logger.info("Tokenizing dataset...")
     def tokenize_batch(examples, tokenizer):
         return {
-            "input_ids": [tokenizer.encode(text) for text in examples["text"]]
+            "input_ids": [tokenizer.encode(text).ids for text in examples["text"]]
         }
     
     tokenized_dataset = cleaned_dataset.map(
         tokenize_batch, 
         fn_kwargs={"tokenizer": tokenizer},
-        batched=True, 
+        batched=True,
         batch_size=10_000,
         num_proc=num_cores,
         remove_columns=cleaned_dataset["train"].column_names,

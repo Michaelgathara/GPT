@@ -15,9 +15,12 @@ except ImportError:
 base_folder = os.path.abspath("..")
 print(f"Your base folder is: {base_folder}")
 sys.path.append(base_folder)
-from tokenization import get_tiktoken_tokenizer
-tokenizer = get_tiktoken_tokenizer()
-vocab_size = tokenizer.n_vocab
+# from tokenization import get_tiktoken_tokenizer
+# tokenizer = get_tiktoken_tokenizer()
+from tokenization.custom_tokenizer.trainer import load_tokenizer
+
+tokenizer = load_tokenizer()
+vocab_size = tokenizer.get_vocab_size()
 
 from transformer_setup import ModelConfig, FlashAttentionHead, MultiHead, Head, FeedForward, Block, TransformerModel
 config = ModelConfig()
@@ -62,7 +65,7 @@ def main():
         prompt = input("\nPrompt: ")
         if prompt.lower().strip() == "exit":
             break
-        prompt_ids = tokenizer.encode(prompt)
+        prompt_ids = tokenizer.encode(prompt).ids
         input_tensor = torch.tensor([prompt_ids], dtype=torch.long, device=device)
 
         with torch.no_grad():
