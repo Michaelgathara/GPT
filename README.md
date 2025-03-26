@@ -89,6 +89,7 @@ This will:
 - **Gradient accumulation**: 4 steps
 - **Mixed precision**: FP16 training enabled
 - **Evaluation**: Every 100 iterations on validation set
+- **GPU**: Nvidia H100
 
 ## Acknowledgements
 
