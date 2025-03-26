@@ -25,13 +25,7 @@ base_folder = os.path.abspath("..")
 print(f"Your base folder is: {base_folder}")
 sys.path.append(base_folder)
 
-from data import get_wikitext_data, clean_textdata, get_fineweb_data, get_nemo_data
-
-# from tokenization.custom_tokenizer.config import TOKENIZER_PATH
-# from tokenizers import Tokenizer
-
-# tokenizer = Tokenizer.from_file(TOKENIZER_PATH)
-
+from data import get_llama_nemotron_data, clean_textdata
 from tokenization.custom_tokenizer.trainer import load_tokenizer
 
 tokenizer = load_tokenizer()
@@ -408,24 +402,19 @@ def main():
     
     vocab_size = tokenizer.get_vocab_size()
     
-    # dataset = get_wikitext_data()
-    # dataset = get_fineweb_data(1)
-    dataset = get_nemo_data()
+    dataset = get_llama_nemotron_data()
     num_cores = multiprocessing.cpu_count()
     
-    def clean_batch(examples):
-        cleaned_texts = [clean_textdata(text) for text in examples["text"]]
-        cleaned_texts = list(filter(None, cleaned_texts))
-        return {"text": cleaned_texts}
+    def prepare_training_text(example):
+        full_text = example["input"] + " " + example["output"]
+        return {"text": full_text}
     
-    cleaned_dataset = dataset.map(
-        clean_batch,
-        batched=True,
-        batch_size=10_000,
-        num_proc=num_cores,
-        desc="Cleaning text"
-    )
-
+    processed_dataset = {}
+    for split in dataset:
+        processed_dataset[split] = dataset[split].map(
+            prepare_training_text,
+            remove_columns=dataset[split].column_names  # Remove original columns
+        )
     
     logger.info("Tokenizing dataset...")
     def tokenize_batch(examples, tokenizer):
@@ -433,15 +422,17 @@ def main():
             "input_ids": [tokenizer.encode(text).ids for text in examples["text"]]
         }
     
-    tokenized_dataset = cleaned_dataset.map(
-        tokenize_batch, 
-        fn_kwargs={"tokenizer": tokenizer},
-        batched=True,
-        batch_size=10_000,
-        num_proc=num_cores,
-        remove_columns=cleaned_dataset["train"].column_names,
-        desc="Tokenizing"
-    )
+    tokenized_dataset = {}
+    for split in processed_dataset:
+        tokenized_dataset[split] = processed_dataset[split].map(
+            tokenize_batch, 
+            fn_kwargs={"tokenizer": tokenizer},
+            batched=True,
+            batch_size=1000,
+            num_proc=num_cores,
+            remove_columns=processed_dataset[split].column_names,
+            desc=f"Tokenizing {split}"
+        )
     
     logger.info("Chunking dataset...")
     def group_texts(examples):
@@ -455,29 +446,34 @@ def main():
         return {"input_ids": [concatenated[i : i + config.block_size] 
                 for i in range(0, total_length, config.block_size)]}
     
-    lm_dataset = tokenized_dataset.map(
-        group_texts,
-        batched=True, 
-        batch_size=config.block_size, 
-        num_proc=num_cores,
-        desc="Chunking"
-    )
+    lm_dataset = {}
+    for split in tokenized_dataset:
+        lm_dataset[split] = tokenized_dataset[split].map(
+            group_texts,
+            batched=True, 
+            batch_size=1000, 
+            num_proc=num_cores,
+            desc=f"Chunking {split}"
+        )
     
-    tokenized_dataset_text = lm_dataset.filter(lambda x: any(token != 0 for token in x["input_ids"]))
+    for split in lm_dataset:
+        lm_dataset[split] = lm_dataset[split].filter(
+            lambda x: any(token != 0 for token in x["input_ids"])
+        )
     
     logger.info("Converting to tensors...")
-    train_tensor = np.array(tokenized_dataset_text["train"]["input_ids"], dtype=np.int32)
-    val_tensor = np.array(tokenized_dataset_text["validation"]["input_ids"], dtype=np.int32)
-    test_tensor = np.array(tokenized_dataset_text["test"]["input_ids"], dtype=np.int32)
+    science_dataset = lm_dataset['science']
+    science_len = len(science_dataset)
+    val_size = int(science_len * 0.5)
     
-    train_data = torch.from_numpy(train_tensor).long()
-    val_data = torch.from_numpy(val_tensor).long()
-    test_data = torch.from_numpy(test_tensor).long()
+    train_data = torch.tensor(lm_dataset['code']['input_ids'], dtype=torch.long)
+    val_data = torch.tensor(science_dataset['input_ids'][:val_size], dtype=torch.long)
+    test_data = torch.tensor(science_dataset['input_ids'][val_size:], dtype=torch.long)
     
-    logger.info(f"Train Data: {train_data.shape}, {train_data.dtype}")
-    logger.info(f"Val Data: {val_data.shape}, {val_data.dtype}")
-    logger.info(f"Test Data: {test_data.shape}, {test_data.dtype}")
-    logger.info(f"Vocabulary size: {vocab_size}")
+    # logger.info(f"Train Data: {train_data.shape}, {train_data.dtype}")
+    # logger.info(f"Val Data: {val_data.shape}, {val_data.dtype}")
+    # logger.info(f"Test Data: {test_data.shape}, {test_data.dtype}")
+    # logger.info(f"Vocabulary size: {vocab_size}")
     
     print(f"Train Data: {train_data.shape}, {train_data.dtype}")
     print(f"Val   Data: {val_data.shape}, {val_data.dtype}")
