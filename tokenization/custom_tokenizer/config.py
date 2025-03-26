@@ -1,4 +1,3 @@
-# tokenization/custom_tokenizer/config.py (update)
 import os
 import multiprocessing
 
