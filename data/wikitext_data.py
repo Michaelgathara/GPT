@@ -14,17 +14,17 @@ def load_data(path):
 
 """
     DatasetDict({
-    test: Dataset({
-        features: ['text'],
-        num_rows: 4358
+        test: Dataset({
+            features: ['text'],
+            num_rows: 4358
+        })
+        train: Dataset({
+            features: ['text'],
+            num_rows: 1801350
+        })
+        validation: Dataset({
+            features: ['text'],
+            num_rows: 3760
+        })
     })
-    train: Dataset({
-        features: ['text'],
-        num_rows: 1801350
-    })
-    validation: Dataset({
-        features: ['text'],
-        num_rows: 3760
-    })
-})
 """

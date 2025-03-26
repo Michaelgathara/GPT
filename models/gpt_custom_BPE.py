@@ -25,7 +25,7 @@ base_folder = os.path.abspath("..")
 print(f"Your base folder is: {base_folder}")
 sys.path.append(base_folder)
 
-from data import get_wikitext_data, clean_textdata, get_fineweb_data
+from data import get_wikitext_data, clean_textdata, get_fineweb_data, get_nemo_data
 
 # from tokenization.custom_tokenizer.config import TOKENIZER_PATH
 # from tokenizers import Tokenizer
@@ -408,8 +408,9 @@ def main():
     
     vocab_size = tokenizer.get_vocab_size()
     
-    dataset = get_wikitext_data()
+    # dataset = get_wikitext_data()
     # dataset = get_fineweb_data(1)
+    dataset = get_nemo_data()
     num_cores = multiprocessing.cpu_count()
     
     def clean_batch(examples):

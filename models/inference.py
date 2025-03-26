@@ -15,8 +15,6 @@ except ImportError:
 base_folder = os.path.abspath("..")
 print(f"Your base folder is: {base_folder}")
 sys.path.append(base_folder)
-# from tokenization import get_tiktoken_tokenizer
-# tokenizer = get_tiktoken_tokenizer()
 from tokenization.custom_tokenizer.trainer import load_tokenizer
 
 tokenizer = load_tokenizer()

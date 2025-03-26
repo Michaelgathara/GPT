@@ -1,14 +1,32 @@
+# tokenization/custom_tokenizer/config.py (update)
 import os
 import multiprocessing
 
 BASE_FOLDER = os.path.abspath("..")
-print(f"Your base folder is: {BASE_FOLDER}")
+sys.path.append(BASE_FOLDER)
 
-DATA_PATH = f"{BASE_FOLDER}/tokenization/wikitext-103-train.txt"
-TOKENIZER_PATH = f"{BASE_FOLDER}/tokenization/custom_tokenizer.json"
+DATA_PATH = f"{BASE_FOLDER}/tokenization/llama_nemotron_train.txt"
+TOKENIZER_PATH = f"{BASE_FOLDER}/tokenization/llama_nemotron_tokenizer.json"
 
 NUM_CORES = max(1, multiprocessing.cpu_count())
 
-VOCAB_SIZE = 25000
+VOCAB_SIZE = 32000  
 MIN_FREQUENCY = 2
-SPECIAL_TOKENS = ["[PAD]", "[UNK]", "[CLS]", "[SEP]", "[MASK]", "[BOS]", "[EOS]"]
+
+SPECIAL_TOKENS = [
+    "[PAD]", 
+    "[UNK]", 
+    "[CLS]", 
+    "[SEP]", 
+    "[MASK]", 
+    "[BOS]", 
+    "[EOS]",
+    "<|begin_of_text|>",
+    "<|start_header_id|>",
+    "<|end_header_id|>",
+    "<|eot_id|>",
+    "<think>",
+    "system",
+    "user",
+    "assistant"
+]

@@ -1,6 +1,6 @@
 from .fineweb_data import get_fineweb_data
 from .wikitext_data import get_wikitext_data, save_data, load_data
 from .preprocessing import clean_textdata
-from .nemo_data import get_nemo_data
-__all__ = ['get_fineweb_data', 'get_wikitext_data', 'save_data', 'load_data', 'clean_textdata', 'get_nemo_data']
+from .llama_nemotron_data import get_llama_nemotron_data
+__all__ = ['get_fineweb_data', 'get_wikitext_data', 'save_data', 'load_data', 'clean_textdata', 'get_llama_nemotron_data']
 # import using `from data import <function_name>`
