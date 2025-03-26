@@ -14,7 +14,7 @@ def load_dataset() -> Dataset:
     print(f"Total examples in combined dataset: {len(combined_dataset)}")
     return combined_dataset
 
-def prepare_nemotron_data(dataset: Dataset):
+def clean_and_save_dataset(dataset: Dataset):
     input_texts = dataset['input']
     output_texts = dataset['output']
     
