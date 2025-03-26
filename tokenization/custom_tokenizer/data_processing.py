@@ -6,7 +6,7 @@ from datasets import Dataset, concatenate_datasets
 from tokenization.custom_tokenizer.config import DATA_PATH, TOKENIZER_PATH, VOCAB_SIZE, MIN_FREQUENCY, SPECIAL_TOKENS, NUM_CORES
 from data import get_llama_nemotron_data, clean_textdata
 
-def load_llama_nemotron_dataset() -> Dataset:
+def load_dataset() -> Dataset:
     dataset = get_llama_nemotron_data()
     
     combined_dataset = concatenate_datasets([dataset['code'], dataset['science']])
