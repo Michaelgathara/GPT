@@ -1,5 +1,5 @@
 
-import os
+import os, sys
 
 from tokenizers import Tokenizer
 from tokenizers.models import BPE

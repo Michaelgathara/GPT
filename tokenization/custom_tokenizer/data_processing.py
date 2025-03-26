@@ -1,5 +1,7 @@
+import sys
 base_folder = os.path.abspath("../..")
 sys.path.append(base_folder)
+
 from datasets import Dataset, concatenate_datasets
 from tokenization.custom_tokenizer.config import DATA_PATH, TOKENIZER_PATH, VOCAB_SIZE, MIN_FREQUENCY, SPECIAL_TOKENS, NUM_CORES
 from data import get_llama_nemotron_data, clean_textdata

@@ -1,4 +1,4 @@
-import os
+import os, sys
 import multiprocessing
 
 BASE_FOLDER = os.path.abspath("..")
