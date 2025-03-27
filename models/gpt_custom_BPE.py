@@ -467,6 +467,8 @@ def main():
     def convert_to_tensor_batches(dataset, batch_size=100_000):
         tensors = []
         for i in range(0, len(dataset), batch_size):
+            if i in [10, 20, 30]:
+                print(f"Tensoring: {i}")
             end_idx = min(i + batch_size, len(dataset))
             batch = dataset[i:end_idx]['input_ids']
             tensors.append(torch.tensor(batch, dtype=torch.long))
