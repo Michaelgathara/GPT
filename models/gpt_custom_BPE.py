@@ -464,13 +464,17 @@ def main():
     
     logger.info("Converting to tensors...")
     print(f"Dataset: \n{lm_dataset}")
-    science_dataset = lm_dataset['science']
-    science_len = len(science_dataset)
-    val_size = int(science_len * 0.5)
-    
-    train_data = torch.tensor(lm_dataset['code']['input_ids'], dtype=torch.long)
-    val_data = torch.tensor(science_dataset['input_ids'][:val_size], dtype=torch.long)
-    test_data = torch.tensor(science_dataset['input_ids'][val_size:], dtype=torch.long)
+    def convert_to_tensor_batches(dataset, batch_size=100_000):
+        tensors = []
+        for i in range(0, len(dataset), batch_size):
+            end_idx = min(i + batch_size, len(dataset))
+            batch = dataset[i:end_idx]['input_ids']
+            tensors.append(torch.tensor(batch, dtype=torch.long))
+        return torch.cat(tensors, dim=0)
+
+    train_data = convert_to_tensor_batches(lm_dataset['code'])
+    val_data = convert_to_tensor_batches(lm_dataset['science'][:val_size])
+    test_data = convert_to_tensor_batches(lm_dataset['science'][val_size:])
     
     # logger.info(f"Train Data: {train_data.shape}, {train_data.dtype}")
     # logger.info(f"Val Data: {val_data.shape}, {val_data.dtype}")
