@@ -463,6 +463,7 @@ def main():
     #     )
     
     logger.info("Converting to tensors...")
+    print(f"Dataset: \n{lm_dataset}")
     science_dataset = lm_dataset['science']
     science_len = len(science_dataset)
     val_size = int(science_len * 0.5)
