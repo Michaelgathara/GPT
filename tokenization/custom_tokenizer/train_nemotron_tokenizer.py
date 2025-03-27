@@ -19,10 +19,10 @@ def extract_texts_for_tokenizer(dataset):
         all_texts.extend(split_data['input'])
         all_texts.extend(split_data['output'])
     
-    filtered_texts = [text for text in all_texts if text and len(text.strip()) > 0]
+    # filtered_texts = [text for text in all_texts if text and len(text.strip()) > 0]
     
-    print(f"Extracted {len(filtered_texts)} texts for tokenizer training")
-    return filtered_texts
+    print(f"Extracted {len(all_texts)} texts for tokenizer training")
+    return all_texts
 
 def main():
     print("Loading llama_nemotron dataset...")

@@ -455,7 +455,8 @@ def main():
         desc="Chunking"
     )
     
-    tokenized_dataset_text = lm_dataset.filter(lambda x: any(token != 0 for token in x["input_ids"]))
+    # tokenized_dataset_text = lm_dataset.filter(lambda x: any(token != 0 for token in x["input_ids"]))
+    tokenized_dataset_text = lm_dataset # added this because i was too lazy to rename them below even with ctrl + d
     
     logger.info("Converting to tensors...")
     train_tensor = np.array(tokenized_dataset_text["train"]["input_ids"], dtype=np.int32)
