@@ -457,10 +457,10 @@ def main():
             desc=f"Chunking {split}"
         )
     
-    for split in lm_dataset:
-        lm_dataset[split] = lm_dataset[split].filter(
-            lambda x: any(token != 0 for token in x["input_ids"])
-        )
+    # for split in lm_dataset:
+    #     lm_dataset[split] = lm_dataset[split].filter(
+    #         lambda x: any(token != 0 for token in x["input_ids"])
+    #     )
     
     logger.info("Converting to tensors...")
     science_dataset = lm_dataset['science']
