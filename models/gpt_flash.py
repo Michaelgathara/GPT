@@ -27,7 +27,7 @@ sys.path.append(base_folder)
 from data import get_wikitext_data, clean_textdata, get_fineweb_data
 from tokenizers import Tokenizer
 
-TOKENIZER_PATH = f"{base_folder}/tokenization/custom_tokenizer.json"
+TOKENIZER_PATH = f"{base_folder}/tokenization/llama_nemotron_tokenizer.json.json"
 tokenizer = Tokenizer.from_file(TOKENIZER_PATH)
 
 logging.basicConfig(
