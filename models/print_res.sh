@@ -3,5 +3,5 @@
 while true; do
     clear
     cat train.log
-    sleep 1
+    sleep 3
 done
