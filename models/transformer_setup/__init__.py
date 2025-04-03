@@ -1,4 +1,4 @@
 from .params import ModelConfig
-from .transformer import FlashAttentionHead, MultiHead, Head, FeedForward, Block, TransformerModel
+from .transformer import MultiHead, Head, FeedForward, Block, TransformerModel
 
-__all__ = ['ModelConfig', 'FlashAttentionHead', 'MultiHead', 'Head', 'FeedForward', 'Block', 'TransformerModel']
+__all__ = ['ModelConfig', 'MultiHead', 'Head', 'FeedForward', 'Block', 'TransformerModel']
