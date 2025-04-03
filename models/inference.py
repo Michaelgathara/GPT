@@ -19,7 +19,7 @@ from tokenization import get_tiktoken_tokenizer
 tokenizer = get_tiktoken_tokenizer()
 vocab_size = tokenizer.n_vocab
 
-from transformer_setup import ModelConfig, FlashAttentionHead, MultiHead, Head, FeedForward, Block, TransformerModel
+from transformer_setup import ModelConfig, TransformerModel
 config = ModelConfig()
 
 def load_model(checkpoint_path, device):
@@ -38,15 +38,11 @@ def load_model(checkpoint_path, device):
         num_layers=config_dict['n_layer'],
         max_seq_len=config_dict['block_size'],
         dropout_prob=config_dict['dropout'],
-        use_gradient_checkpoint=config_dict['gradient_checkpointing'],
-        use_flash_attn=config_dict['use_flash_attn']
+        latent_dim=config_dict['latent_dim'],
+        use_gradient_checkpoint=config_dict.get('gradient_checkpointing', False)
     )
     model.load_state_dict(checkpoint['model_state_dict'])
     model.to(device)
-    if config_dict.get('use_flash_attn', False) and device.type == 'cuda':
-        print("Flash attention enabled: casting model to half precision.")
-        model.half()
-
     model.eval()
     print("Model loaded and set to evaluation mode.")
     return model

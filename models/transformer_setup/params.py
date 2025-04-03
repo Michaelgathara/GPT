@@ -2,11 +2,13 @@ class ModelConfig:
     def __init__(self):
         # model architecture
         self.batch_size = 64                # Batch size per GPU
-        self.block_size = 512               # Context size
+        self.block_size = 512               # Context size (aka max_seq_len)
         self.n_embd = 512                   # Embedding dimension
-        self.n_head = 8                    # Number of attention heads
-        self.n_layer = 8                   # Number of transformer layers
+        self.n_head = 8                     # Number of attention heads
+        self.n_layer = 8                    # Number of transformer layers
         self.dropout = 0.1                  # Dropout rate
+        self.latent_dim = 64                # Dimension of latent space for MLA
+        self.return_latent_cache = True     # Return cache for incremental generation
         
         # training parameters
         self.max_iters = 10000               # Number of iterations
@@ -24,7 +26,7 @@ class ModelConfig:
         # Optimization flags
         self.gradient_checkpointing = False  # Use gradient checkpointing
         # Above does not work
-        self.use_flash_attn = True          # Use Flash Attention if available
+        self.use_flash_attn = False          # Use Flash Attention if available
         
         self.checkpoint_dir = 'checkpoints' # Directory to save checkpoints
         self.log_dir = 'logs'               # Directory to save logs

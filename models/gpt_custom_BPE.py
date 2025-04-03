@@ -55,7 +55,7 @@ except ImportError:
     HAS_FLASH_ATTN = False
     print("Flash Attention is not available, falling back to standard attention")
 
-from transformer_setup import ModelConfig, FlashAttentionHead, MultiHead, Head, FeedForward, Block, TransformerModel
+from transformer_setup import ModelConfig, TransformerModel
 config = ModelConfig()
 
 
@@ -199,14 +199,14 @@ def train(gpu_id, config, train_tensor, val_tensor, test_tensor, vocab_size):
     
     # create model
     model = TransformerModel(
-        vocab_size=vocab_size,
-        embed_dim=config.n_embd,
-        num_heads=config.n_head,
-        num_layers=config.n_layer,
-        max_seq_len=config.block_size,
-        dropout_prob=config.dropout,
-        use_gradient_checkpoint=config.gradient_checkpointing,
-        use_flash_attn=config.use_flash_attn
+    vocab_size=vocab_size,
+    embed_dim=config.n_embd,
+    num_heads=config.n_head,
+    num_layers=config.n_layer,
+    max_seq_len=config.block_size,
+    dropout_prob=config.dropout,
+    latent_dim=config.latent_dim,
+    use_gradient_checkpoint=config.gradient_checkpointing
     )
     
     # move model to device
@@ -274,7 +274,8 @@ def train(gpu_id, config, train_tensor, val_tensor, test_tensor, vocab_size):
         
         # mixed precision forward pass
         with torch.amp.autocast('cuda'):
-            logits, loss = model(x, y)
+            logits, loss = model(x, targets=y, latent_kv_cache=None, return_latent_cache=False)
+
         
         if loss.ndim > 0:
             loss = loss.mean()
