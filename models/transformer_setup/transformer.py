@@ -10,7 +10,6 @@ from torch.utils.tensorboard import SummaryWriter
 class LatentAttentionHead(nn.Module):
     def __init__(self, embed_dim, latent_dim, head_dim, max_seq_len, dropout_prob):
         super().__init__()
-        self.latent_proj = nn.Linear(embed_dim, latent_dim, bias=False)
         self.query_proj = nn.Linear(embed_dim, head_dim, bias=False)
         self.wuk = nn.Linear(latent_dim, head_dim, bias=False)
         self.wuv = nn.Linear(latent_dim, head_dim, bias=False)
