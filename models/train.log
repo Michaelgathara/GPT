@@ -1,13 +1,45 @@
 nohup: ignoring input
 Your base folder is: /workspace/GPT
 Your base folder is: /workspace/GPT
+Tokenizer loaded from /workspace/GPT/tokenization/custom_tokenizer.json
+Flash Attention is available!
+Flash Attention is available!
+Training with 1 GPUs
+2025-03-25 19:11:24,853 - transformer_training - INFO - Tokenizing dataset...
+Tokenizing (num_proc=256):   0%|          | 0/2530 [00:00<?, ? examples/s]Tokenizing (num_proc=256):   0%|          | 0/2530 [00:00<?, ? examples/s]Tokenizing (num_proc=256):   0%|          | 0/2530 [00:00<?, ? examples/s]Tokenizing (num_proc=256):   0%|          | 0/2530 [00:00<?, ? examples/s]Tokenizing (num_proc=256):   0%|          | 0/2530 [00:00<?, ? examples/s]Tokenizing (num_proc=256):   0%|          | 0/2530 [00:00<?, ? examples/s]
+multiprocess.pool.RemoteTraceback: 
+"""
 Traceback (most recent call last):
-  File "/workspace/GPT/models/gpt_flash.py", line 28, in <module>
-    from tokenization import get_tiktoken_tokenizer
-  File "/workspace/GPT/tokenization/__init__.py", line 1, in <module>
-    from .custom_tokenizer import (
-  File "/workspace/GPT/tokenization/custom_tokenizer/__init__.py", line 2, in <module>
-    from .data_processing import load_dataset, clean_and_save_dataset
-  File "/workspace/GPT/tokenization/custom_tokenizer/data_processing.py", line 2, in <module>
-    from config import DATA_PATH, NUM_CORES
-ModuleNotFoundError: No module named 'config'
+  File "/workspace/GPT/.venv/lib/python3.10/site-packages/multiprocess/pool.py", line 125, in worker
+    result = (True, func(*args, **kwds))
+  File "/workspace/GPT/.venv/lib/python3.10/site-packages/datasets/utils/py_utils.py", line 680, in _write_generator_to_queue
+    for i, result in enumerate(func(**kwargs)):
+  File "/workspace/GPT/.venv/lib/python3.10/site-packages/datasets/arrow_dataset.py", line 3516, in _map_single
+    for i, batch in iter_outputs(shard_iterable):
+  File "/workspace/GPT/.venv/lib/python3.10/site-packages/datasets/arrow_dataset.py", line 3466, in iter_outputs
+    yield i, apply_function(example, i, offset=offset)
+  File "/workspace/GPT/.venv/lib/python3.10/site-packages/datasets/arrow_dataset.py", line 3389, in apply_function
+    processed_inputs = function(*fn_args, *additional_args, **fn_kwargs)
+TypeError: main.<locals>.tokenize_batch() missing 1 required positional argument: 'tokenizer'
+"""
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/workspace/GPT/models/gpt_custom_BPE.py", line 494, in <module>
+    main()
+  File "/workspace/GPT/models/gpt_custom_BPE.py", line 435, in main
+    tokenized_dataset = cleaned_dataset.map(
+  File "/workspace/GPT/.venv/lib/python3.10/site-packages/datasets/dataset_dict.py", line 941, in map
+    dataset_dict[split] = dataset.map(
+  File "/workspace/GPT/.venv/lib/python3.10/site-packages/datasets/arrow_dataset.py", line 557, in wrapper
+    out: Union["Dataset", "DatasetDict"] = func(self, *args, **kwargs)
+  File "/workspace/GPT/.venv/lib/python3.10/site-packages/datasets/arrow_dataset.py", line 3166, in map
+    for rank, done, content in iflatmap_unordered(
+  File "/workspace/GPT/.venv/lib/python3.10/site-packages/datasets/utils/py_utils.py", line 720, in iflatmap_unordered
+    [async_result.get(timeout=0.05) for async_result in async_results]
+  File "/workspace/GPT/.venv/lib/python3.10/site-packages/datasets/utils/py_utils.py", line 720, in <listcomp>
+    [async_result.get(timeout=0.05) for async_result in async_results]
+  File "/workspace/GPT/.venv/lib/python3.10/site-packages/multiprocess/pool.py", line 774, in get
+    raise self._value
+TypeError: main.<locals>.tokenize_batch() missing 1 required positional argument: 'tokenizer'

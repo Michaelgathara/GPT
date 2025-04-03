@@ -2,6 +2,6 @@
 
 while true; do
     clear
-    cat a100_train.log
+    cat train.log
     sleep 1
 done

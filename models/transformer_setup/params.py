@@ -11,9 +11,9 @@ class ModelConfig:
         self.return_latent_cache = True     # Return cache for incremental generation
         
         # training parameters
-        self.max_iters = 10000               # Number of iterations
+        self.max_iters = 15000               # Number of iterations
         self.eval_interval = 100            # Evaluation interval
-        self.learning_rate = 5e-3           # Learning rate
+        self.learning_rate = 1e-3          # Learning rate
         self.eval_iters = 5                 # Evaluation iterations
         self.accumulation_steps = 4         # Gradient accumulation steps
         self.warmup_iters = 500             # Learning rate warmup iterations

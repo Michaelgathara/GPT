@@ -216,16 +216,30 @@ class TransformerModel(nn.Module):
             return logits, loss
 
     def generate(self, idx, max_new_tokens, max_seq_len, temperature=1.0, top_k=None):
+<<<<<<< HEAD
         latent_kv_cache = None  # initialize empty cache
 
+=======
+        # Make sure idx is long for embedding lookup
+        idx = idx.to(dtype=torch.long)
+        
+>>>>>>> fdb740de7918c194fdc6aae1f0382436b13495d4
         for _ in range(max_new_tokens):
             # Crop context
             idx_cond = idx[:, -max_seq_len:]
             
+<<<<<<< HEAD
             # Forward pass with cache (cache grows every step)
             logits, latent_kv_cache = self.forward(idx_cond, latent_kv_cache=latent_kv_cache, return_latent_cache=True)
             
             # Get last token logits
+=======
+            # Forward pass with appropriate dtype handling
+            with torch.amp.autocast('cuda'):
+                logits, _ = self(idx_cond)
+                
+            # Focus on last time step
+>>>>>>> fdb740de7918c194fdc6aae1f0382436b13495d4
             logits = logits[:, -1, :] / temperature
             
             if top_k is not None:
