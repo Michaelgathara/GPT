@@ -57,6 +57,16 @@ sys.path.append(base_folder)
 # custom data module imports
 from data import get_wikitext_data, clean_textdata, get_fineweb_data
 
+# GPT tokenizer imports
+'''
+commented out for now to test custom BPE first
+'''
+# from tokenization import get_tiktoken_tokenizer
+# from tokenizers import Tokenizer
+
+# TOKENIZER_PATH = f"{base_folder}/tokenization/custom_tokenizer.json"
+# tokenizer = Tokenizer.from_file(TOKENIZER_PATH)
+
 # custom tokenizer
 from tokenization.custom_tokenizer.trainer import load_tokenizer
 
@@ -70,3 +80,44 @@ logging.basicConfig(
 )
 
 logger = logging.getLogger("transformer_training")
+
+# try to import flash_attn, this doesn't always work so default to standard attention
+try:
+    from flash_attn import flash_attn_func
+    HAS_FLASH_ATTN = True
+    print("Flash Attention is available!")
+except ImportError:
+    HAS_FLASH_ATTN = False
+    print("Flash Attention is not available, falling back to standard attention")
+
+# transformer imports
+from transformer_setup import ModelConfig, FlashAttentionHead, MultiHead, Head, FeedForward, Block, TransformerModel
+
+config = ModelConfig() # hyperparameters
+
+# cosine learning rate scheduler with warmup
+class CosineWarmupScheduler:
+    def __init__(self, optimizer, warmup_iters, max_iters):
+        self.optimizer = optimizer
+        self.warmup_iters = warmup_iters
+        self.max_iters = max_iters
+        self.current_iter = 0
+    
+    def step(self):
+        # linear warmup
+        if self.current_iter < self.warmup_iters:
+            lr_scale = min(1.0, float(self.current_iter + 1) / self.warmup_iters) 
+        # cosine decay
+        else:
+            progress = float(self.current_iter - self.warmup_iters) / (self.max_iters - self.warmup_iters)
+            lr_scale = 0.5 * (1.0 * math.cos(math.pi * progress))
+        
+        # apply scale to all param groups in optimizer
+        for param_group in self.optimizer.param_groups:
+            param_group['lr'] = param_group['initial_lr'] * lr_scale
+        
+        self.current_iter += 1
+    
+    def get_lr(self):
+        return self.optimizer.param_groups[0]['lr'] # lr of first parameter group
+

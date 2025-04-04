@@ -31,6 +31,6 @@ class ModelConfig:
         self.seed = 1337                    # Random seed
 
         # MLA parameters
-        self.latent_dem = 10                # Dimensionality of each latent query vector
+        self.latent_dim = 10                # Dimensionality of each latent query vector
         # TODO: fix value later
         self.num_latent = 10                # Number of learnable latent query vectors
