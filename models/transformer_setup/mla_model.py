@@ -16,15 +16,26 @@ except ImportError:
     print("Flash Attention is not available, falling back to standard attention")
 
 '''
-single head using latent attention (is this possible)
+single head using latent attention
+
+batch size = 8
+max_seq_len = 4096 * 4
+dim = 2048
+layers = 27
+n_heads = 16
+
+mla hyperparameters used by deepseek
+q_lora_rank: int = 0
+kv_lora_rank (key-value): int = 512
+qk_nope_head_dim: int = 128
+qk_rope_head_dim: int = 64
+v_head_dim: int = 128 --> dimensions for value projections
 '''
 class LatentAttentionHead(nn.Module):
     def __init__(self, embed_dim, head_dim, max_seq_len, dropout_prob, latent_dim, n_latent_vec):
         super().__init__()
         self.key_proj = nn.Linear(embed_dim, head_dim, bias=False)
         self.value_proj = nn.Linear(embed_dim, head_dim, bias=False)
-
-        
 
 
 class MultiHeadedLatentAttention(nn.Module):
