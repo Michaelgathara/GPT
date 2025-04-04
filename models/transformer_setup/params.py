@@ -31,6 +31,6 @@ class ModelConfig:
         self.seed = 1337                    # Random seed
 
         # MLA parameters
-        self.latent_dim = 10                # Dimensionality of each latent query vector --> size of lower-dimensional rep
+        self.latent_dim = 64              # Dimensionality of each latent query vector --> size of lower-dimensional rep
         # TODO: fix value later
-        self.n_latent_vec = 10                # Number of learnable latent query vectors
+        self.n_latent_vec = 132               # Number of learnable latent query vectors

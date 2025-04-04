@@ -85,7 +85,7 @@ logger = logging.getLogger("transformer_training")
 
 
 # transformer imports
-from transformer_setup import ModelConfig, LatentAttentionHead, MultiHeadLatentAttention, FeedForward, Block, TransformerModel
+from transformer_setup import ModelConfig, TransformerModel
 
 config = ModelConfig() # hyperparameters
 
@@ -234,8 +234,10 @@ def train(gpu_id, config, train_tensor, val_tensor, test_tensor, vocab_size):
         num_layers=config.n_layer,
         max_seq_len=config.block_size,
         dropout_prob=config.dropout,
+        latent_dim=config.latent_dim,
+        n_latent_vec=config.n_latent_vec,
         use_gradient_checkpoint=config.gradient_checkpointing,
-        use_flash_attn=config.use_flash_attn
+
     )
     
     # move model to device
