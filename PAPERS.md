@@ -5,3 +5,5 @@
 3. Why Warmup the Learning Rate? Underlying Mechanisms and Improvements - https://arxiv.org/pdf/2406.09405
 
 4. Multiheaded Latent Attention: Lecture - https://www.youtube.com/watch?v=xPGvxE_hGd4&t=1899s : Slides - https://github.com/SanDiegoMachineLearning/talks/blob/main/papers/ML_Paper_Review_202411_multi-head_latent_attn.pdf
+
+5. Deepseek V3 - https://github.com/deepseek-ai/DeepSeek-V3/blob/main/inference/model.py#L164

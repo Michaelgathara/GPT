@@ -16,8 +16,38 @@ except ImportError:
     print("Flash Attention is not available, falling back to standard attention")
 
 '''
+custom linear function for mla
+'''
+# class QuantizedLinear(nn.Linear):
+#     def __init__(self, in_features, out_features, bias: bool = False, dtype=torch.bfloat16):
+#         super().__init__(in_features, out_features, bias)
+        
+#         self.dtype = dtype
+#         self.weight.data = self.weight.data.to(dtype)
+        
+#         # Check for quantization condition (mocking it for now as dtype is bfloat16)
+#         if self.weight.element_size() == 1:  # This would be true for quantized weights
+#             scale_out_features = (out_features + block_size - 1) // block_size
+#             scale_in_features = (in_features + block_size - 1) // block_size
+#             self.scale = nn.Parameter(torch.empty(scale_out_features, scale_in_features, dtype=torch.float32))
+#         else:
+#             self.register_parameter("scale", None)
+#         if bias:
+#             self.bias = nn.Parameter(torch.empty(out_features))
+#         else:
+#             self.register_parameter("bias", None)
+
+#     def forward(self, input: torch.Tensor) -> torch.Tensor:
+#         # Add dequantization logic if needed here
+#         # For now, we use standard F.linear unless quantization is active
+#         return F.linear(input, self.weight, self.bias)
+
+'''
 single head using latent attention
 
+Notes from deepseek's model:
+
+Custom .Linear class which applies weight updates to the latent vectors
 batch size = 8
 max_seq_len = 4096 * 4
 dim = 2048
@@ -34,9 +64,37 @@ v_head_dim: int = 128 --> dimensions for value projections
 class LatentAttentionHead(nn.Module):
     def __init__(self, embed_dim, head_dim, max_seq_len, dropout_prob, latent_dim, n_latent_vec):
         super().__init__()
-        self.key_proj = nn.Linear(embed_dim, head_dim, bias=False)
-        self.value_proj = nn.Linear(embed_dim, head_dim, bias=False)
 
+        # Linear transformation of input tokens
+        self.query_in = nn.Linear(embed_dim, head_dim, bias=False)
+        self.value_in = nn.Linear(embed_dim, head_dim, bias=False)
+        self.key_in = nn.Linear(embed_dim, head_dim, bias=False)
+
+        # Latent tokens (learnable parameter)
+        # Using latent_dim for the lower-dimensional representation
+        self.latents = nn.Parameter(torch.randn(n_latent_vec, latent_dim))
+        
+        # Projection from latent space to head dimension
+        self.query_lat = nn.Linear(latent_dim, head_dim, bias=False)
+        self.value_lat = nn.Linear(latent_dim, head_dim, bias=False)
+        self.key_lat = nn.Linear(latent_dim, head_dim, bias=False)
+        
+        # Register causal mask buffer
+        self.register_buffer('tril', torch.tril(torch.ones(max_seq_len, max_seq_len)))
+        self.dropout = nn.Dropout(dropout_prob)
+        
+        # Output projection
+        self.output_proj = nn.Linear(head_dim, head_dim)
+        
+        '''The original implementation didn't use latent_dim properly.
+        In MLA (Multi-headed Latent Attention), latent_dim represents the 
+        dimensionality of each latent query vector, creating a lower-dimensional
+        bottleneck that reduces computation while maintaining model capacity.
+        This is similar to DeepSeek's implementation where latent vectors act as
+        learnable parameters that capture important patterns in the data.'''
+
+        def forward(self, input_tensor):
+            # input tensor is batch_size, seq_len, embed_dim
 
 class MultiHeadedLatentAttention(nn.Module):
     pass
