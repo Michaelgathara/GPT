@@ -85,7 +85,7 @@ logger = logging.getLogger("transformer_training")
 
 
 # transformer imports
-from transformer_setup import ModelConfig, FeedForward, Block, TransformerModel
+from transformer_setup import ModelConfig, LatentAttentionHead, MultiHeadLatentAttention, FeedForward, Block, TransformerModel
 
 config = ModelConfig() # hyperparameters
 
