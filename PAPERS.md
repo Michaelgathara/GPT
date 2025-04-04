@@ -7,3 +7,7 @@
 4. Multiheaded Latent Attention: Lecture - https://www.youtube.com/watch?v=xPGvxE_hGd4&t=1899s : Slides - https://github.com/SanDiegoMachineLearning/talks/blob/main/papers/ML_Paper_Review_202411_multi-head_latent_attn.pdf
 
 5. Deepseek V3 - https://github.com/deepseek-ai/DeepSeek-V3/blob/main/inference/model.py#L164
+
+6. Deepseek prompts:
+    * "can you explain what q_lora_rank is for your application of MLA on transformers"
+    * "is it the query vector or the kv vectors that use latent_dim for multi-headed latent attention"
