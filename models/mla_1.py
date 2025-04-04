@@ -83,17 +83,9 @@ logging.basicConfig(
 
 logger = logging.getLogger("transformer_training")
 
-# try to import flash_attn, this doesn't always work so default to standard attention
-try:
-    from flash_attn import flash_attn_func
-    HAS_FLASH_ATTN = True
-    print("Flash Attention is available!")
-except ImportError:
-    HAS_FLASH_ATTN = False
-    print("Flash Attention is not available, falling back to standard attention")
 
 # transformer imports
-from transformer_setup import ModelConfig, FlashAttentionHead, MultiHead, Head, FeedForward, Block, TransformerModel
+from transformer_setup import ModelConfig, FeedForward, Block, TransformerModel
 
 config = ModelConfig() # hyperparameters
 

@@ -42,157 +42,88 @@ custom linear function for mla
 #         # For now, we use standard F.linear unless quantization is active
 #         return F.linear(input, self.weight, self.bias)
 
-'''
-single head using latent attention
-
-Notes from deepseek's model:
-
-Custom .Linear class which applies weight updates to the latent vectors
-batch size = 8
-max_seq_len = 4096 * 4
-dim = 2048
-layers = 27
-n_heads = 16
-
-mla hyperparameters used by deepseek
-q_lora_rank: int = 0
-kv_lora_rank (key-value): int = 512
-qk_nope_head_dim: int = 128
-qk_rope_head_dim: int = 64
-v_head_dim: int = 128 --> dimensions for value projections
-'''
 class LatentAttentionHead(nn.Module):
     def __init__(self, embed_dim, head_dim, max_seq_len, dropout_prob, latent_dim, n_latent_vec):
         super().__init__()
 
-        # Linear transformation of input tokens
-        self.query_in = nn.Linear(embed_dim, head_dim, bias=False)
-        self.value_in = nn.Linear(embed_dim, head_dim, bias=False)
-        self.key_in = nn.Linear(embed_dim, head_dim, bias=False)
+        # Linear 1st arg is original dimensions and projects to 2nd arg lower dimension
 
         # Latent tokens (learnable parameter)
-        # Using latent_dim for the lower-dimensional representation
         self.latents = nn.Parameter(torch.randn(n_latent_vec, latent_dim))
+
+        # Linear transformation of input tokens to K/V space
+        self.key_in = nn.Linear(embed_dim, head_dim, bias=False)
+        self.value_in = nn.Linear(embed_dim, head_dim, bias=False)
+
+        # Linear transformation of latent tokens to query space
+        self.query_in = nn.Linear(latent_dim, head_dim, bias=False)
         
-        # Projection from latent space to head dimension
-        self.query_lat = nn.Linear(latent_dim, head_dim, bias=False)
-        self.value_lat = nn.Linear(latent_dim, head_dim, bias=False)
-        self.key_lat = nn.Linear(latent_dim, head_dim, bias=False)
-        
-        # Register causal mask buffer
+
+        # TODO: Used in flash transformer, maybe not necessary
         self.register_buffer('tril', torch.tril(torch.ones(max_seq_len, max_seq_len)))
+        
         self.dropout = nn.Dropout(dropout_prob)
+
+        self.query_cache = None
         
-        # Output projection
-        self.output_proj = nn.Linear(head_dim, head_dim)
-        
-        '''The original implementation didn't use latent_dim properly.
-        In MLA (Multi-headed Latent Attention), latent_dim represents the 
-        dimensionality of each latent query vector, creating a lower-dimensional
-        bottleneck that reduces computation while maintaining model capacity.
-        This is similar to DeepSeek's implementation where latent vectors act as
-        learnable parameters that capture important patterns in the data.'''
+        '''Our original implementation didn't use latent_dim properly. In MLA (Multi-headed Latent Attention), latent_dim represents the dimensionality of each latent query vector, creating a lower-dimensional bottleneck that reduces computation while maintaining model capacity. This is similar to DeepSeek's implementation where latent vectors act as learnable parameters that capture important patterns in the data.'''
 
-        def forward(self, input_tensor):
-            # input tensor is batch_size, seq_len, embed_dim
+        def forward(self, input_tensor, latent=None, use_cache=False):
+            '''
+            @param input_tensor - batch_size, seq_len, embed_dim --> keys and values
+            '''
+            _, seq_len, _ = input_tensor.shape
 
-class MultiHeadedLatentAttention(nn.Module):
-    pass
-
-
-
-class FlashAttentionHead(nn.Module):
-    """single head of self-attention using Flash Attention when available"""
-    # apparently flash attention is one of those things that can just not be avail
-    
-    def __init__(self, embed_dim, head_dim, max_seq_len, dropout_prob):
-        super().__init__()
-        self.key_proj = nn.Linear(embed_dim, head_dim, bias=False)
-        self.query_proj = nn.Linear(embed_dim, head_dim, bias=False)
-        self.value_proj = nn.Linear(embed_dim, head_dim, bias=False)
-        self.register_buffer('tril', torch.tril(torch.ones(max_seq_len, max_seq_len)))
-        self.dropout = nn.Dropout(dropout_prob)
-        self.use_flash = HAS_FLASH_ATTN
-
-    def forward(self, input_tensor):
-        # input_tensor: (batch_size, seq_len, embed_dim)
-        batch_size, seq_len, embed_dim = input_tensor.shape
-        
-        keys = self.key_proj(input_tensor)     # shape: (batch_size, seq_len, head_dim)
-        queries = self.query_proj(input_tensor)  # shape: (batch_size, seq_len, head_dim)
-        values = self.value_proj(input_tensor)   # shape: (batch_size, seq_len, head_dim)
-        
-        if self.use_flash and seq_len <= 1024:  # Flash attention has seq length limitations
-            # reshape for flash attention which expects (batch, seqlen, nheads, headdim)
-            # for single head, we use nheads=1
-            q = queries.unsqueeze(2)  # [batch_size, seq_len, 1, head_dim]
-            k = keys.unsqueeze(2)     # [batch_size, seq_len, 1, head_dim]
-            v = values.unsqueeze(2)   # [batch_size, seq_len, 1, head_dim]
+            # Expand latent to match batch size if latent is not passed as an argument
+            if latent is None:
+                latent = self.latents.unsqueeze(0).expand(input_tensor.size(0), -1, -1)
             
-            # flash attention with causal mask
-            output = flash_attn_func(q, k, v, causal=True)
+            if use_cache and self.query_cache is not None:
+                queries = self.query_cache
+            else:
+                queries = self.query_in(latent)
+                if use_cache:
+                    self.query_cache = queries
+
+            keys = self.key_in(input_tensor)
+            values = self.values_in(input_tensor)
+
+            attention_scores = queries @ keys.transpose(-2, -1) * (keys.shape[-1] ** -0.5)
+            attention_scores = attention_scores.masked_fill(
+                self.tril[:seq_len, :seq_len] == 0, float('-inf')
+            )
             
-            # reshape back to original dimensions
-            output = output.squeeze(2)  # [batch_size, seq_len, head_dim]
-        else:
-            # standard attention implementation with explicit causal mask
-            attention_scores = (queries @ keys.transpose(-2, -1)) * (keys.shape[-1] ** -0.5)
-            # apply causal masking
-            attention_scores = attention_scores.masked_fill(self.tril[:seq_len, :seq_len] == 0, float('-inf'))
             attention_weights = F.softmax(attention_scores, dim=-1)
             attention_weights = self.dropout(attention_weights)
-            output = attention_weights @ values
+            output_tensor = attention_weights @ values
+            return output_tensor
         
-        return output
+        def clear_cache(self):
+            self.query_cache = None
 
-class MultiHead(nn.Module):
-    def __init__(self, num_heads, embed_dim, head_dim, max_seq_len, dropout_prob, use_flash_attn=False):
+class MultiHeadLatentAttention(nn.Module):
+    def __init__(self, num_heads, embed_dim, head_dim, max_seq_len, dropout_prob, latent_dim, n_latent_vec):
         super().__init__()
-        
-        head_class = FlashAttentionHead if (HAS_FLASH_ATTN and use_flash_attn) else Head
-        
-        self.heads = nn.ModuleList([
-            head_class(embed_dim, head_dim, max_seq_len, dropout_prob)
-            for _ in range(num_heads)
+
+        self.heads = nn.ModuleList([LatentAttentionHead(embed_dim, head_dim, max_seq_len, dropout_prob, latent_dim, n_latent_vec) for _ in range(num_heads)
         ])
-        
-        self.projection = nn.Linear(num_heads * head_dim, embed_dim)
-        self.dropout = nn.Dropout(dropout_prob)
-    
-    def forward(self, input_tensor):
-        head_outputs = [head(input_tensor) for head in self.heads]
-        concatenated_heads = torch.cat(head_outputs, dim=-1)
-        projected_output = self.projection(concatenated_heads)
-        output_tensor = self.dropout(projected_output)
-        return output_tensor
 
-
-class Head(nn.Module):    
-    def __init__(self, embed_dim, head_dim, max_seq_len, dropout_prob):
-        super().__init__()
-        self.key_proj = nn.Linear(embed_dim, head_dim, bias=False)
-        self.query_proj = nn.Linear(embed_dim, head_dim, bias=False)
-        self.value_proj = nn.Linear(embed_dim, head_dim, bias=False)
-        self.register_buffer('tril', torch.tril(torch.ones(max_seq_len, max_seq_len)))
+        # For MultiHeadLatentAttention, we need to project from the concatenated head outputs
+        # Each LatentAttentionHead outputs tensors of shape (batch_size, n_latent_vec, head_dim)
+        # After concatenation, we have (batch_size, n_latent_vec, num_heads * head_dim)
+        self.out_projection = nn.Linear(num_heads * head_dim, embed_dim)
         self.dropout = nn.Dropout(dropout_prob)
 
-    def forward(self, input_tensor):
-        batch_size, seq_len, embed_dim = input_tensor.shape
+        def forward(self, input_tensor, latent=None, use_cache=False):
+            head_outputs = [head(input_tensor, latent, use_cache) for head in self.heads]
+
+            concat_heads = torch.cat(head_outputs, dim=-1)
+            return self.out_projection(concat_heads)
         
-        keys = self.key_proj(input_tensor)
-        queries = self.query_proj(input_tensor)
-        values = self.value_proj(input_tensor)
-        
-        attention_scores = queries @ keys.transpose(-2, -1) * (keys.shape[-1] ** -0.5)
-        attention_scores = attention_scores.masked_fill(
-            self.tril[:seq_len, :seq_len] == 0, float('-inf')
-        )
-        
-        attention_weights = F.softmax(attention_scores, dim=-1)
-        attention_weights = self.dropout(attention_weights)
-        output_tensor = attention_weights @ values
-        
-        return output_tensor
+        def clear_cache(self):
+            for head in self.heads:
+                head.clear_cache()
+
 
 
 # improved FeedForward with SwiGLU activation (better than ReLU)
@@ -207,6 +138,7 @@ class FeedForward(nn.Module):
         self.w3 = nn.Linear(4 * embed_dim, embed_dim)
         self.dropout = nn.Dropout(dropout_prob)
     
+    # TODO: may need to edit this
     def forward(self, input_tensor):
         # SwiGLU activation: SwiGLU(x) = Swish(xW1) ⊗ (xW2)
         swish = self.w1(input_tensor) * torch.sigmoid(self.w1(input_tensor))
@@ -219,26 +151,29 @@ class FeedForward(nn.Module):
 class Block(nn.Module):
     """transformer block with optional gradient checkpointing"""
     
-    def __init__(self, embed_dim, num_heads, max_seq_len, dropout_prob, use_flash_attn=False):
+    def __init__(self, embed_dim, num_heads, max_seq_len, dropout_prob, latent_dim, n_latent_vec):
         super().__init__()
+        assert embed_dim % num_heads == 0, "embed_dim must be divisible by num_heads"
         head_dim = embed_dim // num_heads
         
-        self.self_attention = MultiHead(
-            num_heads, embed_dim, head_dim, max_seq_len, dropout_prob, use_flash_attn
+        self.self_attention = MultiHeadLatentAttention(
+            num_heads, embed_dim, head_dim, max_seq_len, dropout_prob, latent_dim, n_latent_vec
         )
         
         self.feed_forward = FeedForward(embed_dim, dropout_prob)
         self.layer_norm1 = nn.LayerNorm(embed_dim)
         self.layer_norm2 = nn.LayerNorm(embed_dim)
+        self.dropout = nn.Dropout(dropout_prob)
         
         # flag for gradient checkpointing
         self.use_checkpointing = False
+
     
-    def forward(self, input_tensor):
-        # use custom forward functions since i tried putting together gradient checkpointing
+    def forward(self, input_tensor, latent=None, use_cache=False):
         def create_custom_forward(module):
             def custom_forward(*inputs):
-                return module(inputs[0])
+                # input = input_tensor, latent, and use_cache
+                return module(inputs[0], inputs[1] if len(inputs) > 1 else None, inputs[2] if len(inputs) > 2 else False)
             return custom_forward
         
         # layer norm and attention with residual connection
