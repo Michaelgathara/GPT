@@ -15,6 +15,23 @@ except ImportError:
     HAS_FLASH_ATTN = False
     print("Flash Attention is not available, falling back to standard attention")
 
+'''
+single head using latent attention (is this possible)
+'''
+class LatentAttentionHead(nn.Module):
+    def __init__(self, embed_dim, head_dim, max_seq_len, dropout_prob, latent_dim, n_latent_vec):
+        super().__init__()
+        self.key_proj = nn.Linear(embed_dim, head_dim, bias=False)
+        self.value_proj = nn.Linear(embed_dim, head_dim, bias=False)
+
+        
+
+
+class MultiHeadedLatentAttention(nn.Module):
+    pass
+
+
+
 class FlashAttentionHead(nn.Module):
     """single head of self-attention using Flash Attention when available"""
     # apparently flash attention is one of those things that can just not be avail
@@ -58,7 +75,6 @@ class FlashAttentionHead(nn.Module):
             output = attention_weights @ values
         
         return output
-
 
 class MultiHead(nn.Module):
     def __init__(self, num_heads, embed_dim, head_dim, max_seq_len, dropout_prob, use_flash_attn=False):
