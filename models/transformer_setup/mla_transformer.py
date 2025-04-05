@@ -139,21 +139,33 @@ class Block(nn.Module):
 
     # layer normalization before feed forward
     def pre_norm(self, input_tensor, latent=None, use_cache=False):
+        batch_size, seq_len, embed_dim = input_tensor.shape
         norm_input_tensor = self.layer_norm1(input_tensor)
         attn_out = self.self_attention(norm_input_tensor, latent, use_cache)
         
         # Transform from (batch, n_latent_vec, embed_dim) to (batch, seq_len, embed_dim)
-        # Transpose for linear projection, then transpose back
-        attn_out = attn_out.transpose(1, 2)  # (batch, embed_dim, n_latent_vec)
-        attn_out = self.latent_to_seq_proj(attn_out)  # (batch, embed_dim, seq_len)
-        attn_out = attn_out.transpose(1, 2)  # (batch, seq_len, embed_dim)
+        # We need to ensure the projection matches the sequence length
         
+        # First, transpose to get (batch, embed_dim, n_latent_vec)
+        attn_out = attn_out.transpose(1, 2)
+        
+        # Create or modify projection layer if needed
+        if not hasattr(self, 'latent_to_seq_proj') or self.latent_to_seq_proj.weight.size(0) != seq_len:
+            self.latent_to_seq_proj = nn.Linear(attn_out.size(2), seq_len).to(attn_out.device)
+        
+        # Apply projection to get (batch, embed_dim, seq_len)
+        attn_out = self.latent_to_seq_proj(attn_out)
+        
+        # Transpose back to get (batch, seq_len, embed_dim)
+        attn_out = attn_out.transpose(1, 2)
+        
+        # Now both tensors should have the same shape
         input_tensor = input_tensor + self.dropout(attn_out)
-
+        
         norm_input_tensor = self.layer_norm2(input_tensor)
         ff_out = self.feed_forward(norm_input_tensor)
         input_tensor = input_tensor + self.dropout(ff_out)
-
+        
         return input_tensor
 
     def forward(self, input_tensor, latent=None, use_cache=False):
