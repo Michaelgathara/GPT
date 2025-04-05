@@ -474,7 +474,7 @@ def main():
                     desc="Converting to tensors",
                     unit="batch"):
             end_idx = min(i + batch_size, len(dataset))
-            batch = dataset[i:end_idx]['input_ids']
+            batch = dataset.select(range(i, end_idx))['input_ids']
             tensors.append(torch.tensor(batch, dtype=torch.long))
         return torch.cat(tensors, dim=0)
     
