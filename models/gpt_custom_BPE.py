@@ -477,6 +477,8 @@ def main():
             batch = dataset[i:end_idx]['input_ids']
             tensors.append(torch.tensor(batch, dtype=torch.long))
         return torch.cat(tensors, dim=0)
+    
+    val_size = len(lm_dataset['science']) // 2
 
     train_data = convert_to_tensor_batches(lm_dataset['code'])
     val_data = convert_to_tensor_batches(lm_dataset['science'][:val_size])
