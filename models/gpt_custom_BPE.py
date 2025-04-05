@@ -205,7 +205,9 @@ def train(gpu_id, config, train_tensor, val_tensor, test_tensor, vocab_size):
         num_layers=config.n_layer,
         max_seq_len=config.block_size,
         dropout_prob=config.dropout,
-        use_gradient_checkpoint=config.gradient_checkpointing
+        use_gradient_checkpoint=config.gradient_checkpointing,
+        latent_dim=config.latent_dim,
+        n_latent_vec=config.n_latent_vec
     )
     
     # move model to device
