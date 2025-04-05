@@ -55,7 +55,7 @@ except ImportError:
     HAS_FLASH_ATTN = False
     print("Flash Attention is not available, falling back to standard attention")
 
-from transformer_setup import ModelConfig, FlashAttentionHead, MultiHead, Head, FeedForward, Block, TransformerModel
+from transformer_setup import ModelConfig, FeedForward, Block, TransformerModel
 config = ModelConfig()
 
 
