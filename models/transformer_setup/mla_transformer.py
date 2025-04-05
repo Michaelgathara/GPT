@@ -23,9 +23,8 @@ class LatentAttentionHead(nn.Module):
         # Linear transformation of latent tokens to query space
         self.query_in = nn.Linear(latent_dim, head_dim, bias=False)
         
-
-        # TODO: Used in flash transformer, maybe not necessary
-        self.register_buffer('tril', torch.tril(torch.ones(max_seq_len, max_seq_len)))
+        # Remove triangular mask as it doesn't make sense for latent queries
+        # self.register_buffer('tril', torch.tril(torch.ones(max_seq_len, max_seq_len)))
         
         self.dropout = nn.Dropout(dropout_prob)
 
@@ -54,9 +53,10 @@ class LatentAttentionHead(nn.Module):
         values = self.value_in(input_tensor)
 
         attention_scores = queries @ keys.transpose(-2, -1) * (keys.shape[-1] ** -0.5)
-        attention_scores = attention_scores.masked_fill(
-            self.tril[:seq_len, :seq_len] == 0, float('-inf')
-        )
+        # Remove masking as it doesn't apply to latent queries
+        # attention_scores = attention_scores.masked_fill(
+        #    self.tril[:seq_len, :seq_len] == 0, float('-inf')
+        # )
         
         attention_weights = F.softmax(attention_scores, dim=-1)
         attention_weights = self.dropout(attention_weights)
@@ -125,6 +125,10 @@ class Block(nn.Module):
             num_heads, embed_dim, head_dim, max_seq_len, dropout_prob, latent_dim, n_latent_vec
         )
         
+        # Add projection layer to reconcile shape difference between latent vectors and sequence length
+        # This maps from (batch, n_latent_vec, embed_dim) to (batch, seq_len, embed_dim)
+        self.latent_to_seq_proj = nn.Linear(n_latent_vec, max_seq_len)
+        
         self.feed_forward = FeedForward(embed_dim, dropout_prob)
         self.layer_norm1 = nn.LayerNorm(embed_dim)
         self.layer_norm2 = nn.LayerNorm(embed_dim)
@@ -137,6 +141,13 @@ class Block(nn.Module):
     def pre_norm(self, input_tensor, latent=None, use_cache=False):
         norm_input_tensor = self.layer_norm1(input_tensor)
         attn_out = self.self_attention(norm_input_tensor, latent, use_cache)
+        
+        # Transform from (batch, n_latent_vec, embed_dim) to (batch, seq_len, embed_dim)
+        # Transpose for linear projection, then transpose back
+        attn_out = attn_out.transpose(1, 2)  # (batch, embed_dim, n_latent_vec)
+        attn_out = self.latent_to_seq_proj(attn_out)  # (batch, embed_dim, seq_len)
+        attn_out = attn_out.transpose(1, 2)  # (batch, seq_len, embed_dim)
+        
         input_tensor = input_tensor + self.dropout(attn_out)
 
         norm_input_tensor = self.layer_norm2(input_tensor)
