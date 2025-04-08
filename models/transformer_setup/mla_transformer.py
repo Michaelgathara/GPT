@@ -40,9 +40,9 @@ class LatentAttentionHead(nn.Module):
         batch_size, seq_len, _ = input_tensor.shape
 
         # hard coding max sequence length into the model, common for MLA
-        # if seq_len > self.max_seq_len:
-        #     input_tensor = input_tensor[:, -self.max_seq_len:, :]
-        #     seq_len = self.max_seq_len
+        if seq_len > self.max_seq_len:
+            input_tensor = input_tensor[:, -self.max_seq_len:, :]
+            seq_len = self.max_seq_len
 
         # Expand latent to match batch size if latent is not passed as an argument
         if latent is None:
