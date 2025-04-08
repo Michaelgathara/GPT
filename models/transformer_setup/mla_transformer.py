@@ -10,6 +10,7 @@ from torch.utils.tensorboard import SummaryWriter
 class LatentAttentionHead(nn.Module):
     def __init__(self, embed_dim, head_dim, max_seq_len, dropout_prob, latent_dim, n_latent_vec):
         super().__init__()
+        self.max_seq_len = max_seq_len
 
         # Linear 1st arg is original dimensions and projects to 2nd arg lower dimension
 
@@ -36,7 +37,12 @@ class LatentAttentionHead(nn.Module):
         '''
         @param input_tensor - batch_size, seq_len, embed_dim --> keys and values
         '''
-        _, seq_len, _ = input_tensor.shape
+        batch_size, seq_len, _ = input_tensor.shape
+
+        # hard coding max sequence length into the model, common for MLA
+        # if seq_len > self.max_seq_len:
+        #     input_tensor = input_tensor[:, -self.max_seq_len:, :]
+        #     seq_len = self.max_seq_len
 
         # Expand latent to match batch size if latent is not passed as an argument
         if latent is None:
