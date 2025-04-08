@@ -29,3 +29,8 @@ class ModelConfig:
         self.checkpoint_dir = 'checkpoints' # Directory to save checkpoints
         self.log_dir = 'logs'               # Directory to save logs
         self.seed = 1337                    # Random seed
+
+        # MLA parameters
+        self.latent_dim = 64                # Dimensionality of each latent query vector --> size of lower-dimensional rep
+        # TODO: fix value later
+        self.n_latent_vec = 128             # Number of learnable latent query vectors

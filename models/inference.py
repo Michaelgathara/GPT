@@ -15,14 +15,13 @@ except ImportError:
 base_folder = os.path.abspath("..")
 print(f"Your base folder is: {base_folder}")
 sys.path.append(base_folder)
-# from tokenization import get_tiktoken_tokenizer
-# tokenizer = get_tiktoken_tokenizer()
+
 from tokenization.custom_tokenizer.trainer import load_tokenizer
 
 tokenizer = load_tokenizer()
 vocab_size = tokenizer.get_vocab_size()
 
-from transformer_setup import ModelConfig, FlashAttentionHead, MultiHead, Head, FeedForward, Block, TransformerModel
+from transformer_setup import ModelConfig, FeedForward, Block, TransformerModel
 config = ModelConfig()
 
 def load_model(checkpoint_path, device):
@@ -41,15 +40,14 @@ def load_model(checkpoint_path, device):
         num_layers=config_dict['n_layer'],
         max_seq_len=config_dict['block_size'],
         dropout_prob=config_dict['dropout'],
-        use_gradient_checkpoint=config_dict['gradient_checkpointing'],
-        use_flash_attn=config_dict['use_flash_attn']
+        latent_dim=config_dict.get('latent_dim', 64),
+        n_latent_vec=config_dict.get('n_latent_vec', 16),  
+        use_gradient_checkpoint=config_dict.get('gradient_checkpointing', False)
     )
+    
     model.load_state_dict(checkpoint['model_state_dict'])
     model.to(device)
-    if config_dict.get('use_flash_attn', False) and device.type == 'cuda':
-        print("Flash attention enabled: casting model to half precision.")
-        model.half()
-
+    
     model.eval()
     print("Model loaded and set to evaluation mode.")
     return model
@@ -65,11 +63,17 @@ def main():
         prompt = input("\nPrompt: ")
         if prompt.lower().strip() == "exit":
             break
+        
         prompt_ids = tokenizer.encode(prompt).ids
         input_tensor = torch.tensor([prompt_ids], dtype=torch.long, device=device)
 
         with torch.no_grad():
-            generated_tensor = model.generate(input_tensor, max_new_tokens=300, max_seq_len=config.block_size, temperature=1.0)
+            generated_tensor = model.generate(
+                input_tensor, 
+                max_new_tokens=300, 
+                max_seq_len=config.block_size, 
+                temperature=1.0
+            )
 
         generated_text = tokenizer.decode(generated_tensor[0].tolist())
         print("\nGenerated text:")
