@@ -9,7 +9,7 @@ class ModelConfig:
         self.dropout = 0.1                  # Dropout rate
         
         # training parameters
-        self.max_iters = 15000               # Number of iterations
+        self.max_iters = 2000               # Number of iterations
         self.eval_interval = 100            # Evaluation interval
         self.learning_rate = 1e-3          # Learning rate
         self.eval_iters = 5                 # Evaluation iterations
