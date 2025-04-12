@@ -608,6 +608,7 @@ def main():
     )
 
     val_data = convert_to_tensor_batches_robust(
+        lm_dataset['science'].select(range(val_size)),
         max_workers=4,  # Use only 2 workers to avoid resource contention
         chunk_size=500,  # Process smaller chunks at a time
         max_examples=50000  # Optionally limit total examples for initial testing
