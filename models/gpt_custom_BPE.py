@@ -613,7 +613,7 @@ def main():
 
     print(f"Train Data: {train_data.shape}, {train_data.dtype}")
     print(f"Val   Data: {val_data.shape}, {val_data.dtype}")
-    print(f"Test  Data: {test_data.shape}, {test_data.dtype}"))
+    print(f"Test  Data: {test_data.shape}, {test_data.dtype}")
     
     mp.spawn(
         train,
