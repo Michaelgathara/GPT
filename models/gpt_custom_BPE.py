@@ -392,7 +392,14 @@ def train(gpu_id, config, train_tensor, val_tensor, test_tensor, vocab_size):
 def process_batch(args):
     dataset, start_idx, end_idx = args
     try:
-        batch_data = dataset.select(range(start_idx, end_idx))['input_ids']
+        batch_data = []
+        chunk_size = 10000  # Process 10k examples at a time
+        
+        for chunk_start in range(start_idx, end_idx, chunk_size):
+            chunk_end = min(chunk_start + chunk_size, end_idx)
+            chunk_data = dataset.select(range(chunk_start, chunk_end))['input_ids']
+            batch_data.extend(chunk_data)
+        
         if not batch_data:
             return torch.zeros((0, config.block_size), dtype=torch.long)
         
@@ -400,7 +407,7 @@ def process_batch(args):
         
         if not batch_data:
             return torch.zeros((0, config.block_size), dtype=torch.long)
-            
+        
         padded_batch = []
         for seq in batch_data:
             if len(seq) > config.block_size:
@@ -413,7 +420,7 @@ def process_batch(args):
         
         return torch.tensor(padded_batch, dtype=torch.long)
     except Exception as e:
-        print(f"Error in process_batch: {e}")
+        print(f"Error in process_batch: {e} for range {start_idx}-{end_idx}")
         raise
     
 # main function to setup distributed training
@@ -512,26 +519,22 @@ def main():
     print(f"Dataset: \n{lm_dataset}")
     
 
-    def convert_to_tensor_batches(dataset, batch_size=500_000, num_workers=None, max_retries=3):
+    def convert_to_tensor_batches(dataset, num_workers=None, max_retries=3):
+        # Use all available cores except one (to keep system responsive)
         if num_workers is None:
-            num_workers = max(1, multiprocessing.cpu_count() - 2)  # Leave two cores free
-        
-        if not hasattr(dataset, 'select'):
-            print("Dataset doesn't have select method. Converting to list first...")
-            from datasets import Dataset as HFDataset
-            dataset_list = [{"input_ids": dataset[i]["input_ids"]} for i in range(len(dataset))]
-            dataset = HFDataset.from_list(dataset_list)
+            num_workers = multiprocessing.cpu_count() - 1
         
         total_length = len(dataset)
-        batch_size = min(batch_size, total_length)  # Don't make batches larger than dataset
-        num_batches = (total_length + batch_size - 1) // batch_size
+        optimal_batch_size = max(1, total_length // (num_workers * 2))  # Ensure at least 2 batches per worker
+        
+        num_batches = (total_length + optimal_batch_size - 1) // optimal_batch_size
         
         print(f"Converting dataset with {total_length} examples using {num_workers} workers")
-        print(f"Using batch size of {batch_size} with {num_batches} batches")
+        print(f"Using batch size of {optimal_batch_size} with {num_batches} batches")
         
         batch_args = []
-        for i in range(0, total_length, batch_size):
-            end_idx = min(i + batch_size, total_length)
+        for i in range(0, total_length, optimal_batch_size):
+            end_idx = min(i + optimal_batch_size, total_length)
             batch_args.append((dataset, i, end_idx))
         
         tensors = []
@@ -545,11 +548,11 @@ def main():
                 args = futures[future]
                 try:
                     tensor_batch = future.result()
-                    tensors.append(tensor_batch)
+                    if tensor_batch.shape[0] > 0:  # Only add non-empty tensors
+                        tensors.append(tensor_batch)
                 except Exception as e:
                     print(f"Batch processing failed: {e}")
-                    start_idx, end_idx = args[1], args[2]
-                    failed_batches.append((dataset, start_idx, end_idx))
+                    failed_batches.append(args)
         
         if failed_batches:
             print(f"Retrying {len(failed_batches)} failed batches sequentially...")
@@ -561,54 +564,58 @@ def main():
                 for args in tqdm(failed_batches, desc=f"Retry {retry+1}/{max_retries}", unit="batch"):
                     try:
                         tensor_batch = process_batch(args)
-                        tensors.append(tensor_batch)
+                        if tensor_batch.shape[0] > 0:
+                            tensors.append(tensor_batch)
                     except Exception as e:
                         print(f"Batch still failing: {e}")
                         still_failed.append(args)
                 
                 failed_batches = still_failed
-                if not failed_batches:
-                    print("All batches recovered successfully")
-                elif retry == max_retries - 1:
-                    print(f"WARNING: {len(failed_batches)} batches could not be processed")
-                    # Fill in failed batches with empty tensors to maintain dataset structure
-                    for args in failed_batches:
-                        _, start_idx, end_idx = args
-                        batch_size = end_idx - start_idx
-                        empty_tensor = torch.zeros((batch_size, config.block_size), dtype=torch.long)
-                        tensors.append(empty_tensor)
         
         if tensors:
             try:
-                return torch.cat(tensors, dim=0)
+                result = torch.cat(tensors, dim=0)
+                print(f"Final tensor shape: {result.shape}")
+                return result
             except RuntimeError as e:
                 print(f"Error concatenating tensors: {e}")
-                print("Trying to concatenate with a different approach...")
-                max_freq_shape = max(set([t.shape[1] for t in tensors]), key=[t.shape[1] for t in tensors].count)
-                filtered_tensors = [t for t in tensors if t.shape[1] == max_freq_shape]
-                print(f"Filtered out {len(tensors) - len(filtered_tensors)} incompatible tensors")
-                return torch.cat(filtered_tensors, dim=0)
+                # Fallback solution
+                max_shape = max(t.shape[1] for t in tensors)
+                compatible_tensors = []
+                
+                for t in tensors:
+                    if t.shape[1] == max_shape:
+                        compatible_tensors.append(t)
+                    else:
+                        # Pad or trim tensor to match max_shape
+                        if t.shape[1] < max_shape:
+                            padding = torch.zeros((t.shape[0], max_shape - t.shape[1]), dtype=t.dtype)
+                            padded_t = torch.cat([t, padding], dim=1)
+                            compatible_tensors.append(padded_t)
+                        else:
+                            compatible_tensors.append(t[:, :max_shape])
+                
+                return torch.cat(compatible_tensors, dim=0)
         else:
             return torch.tensor([], dtype=torch.long)
 
     val_size = len(lm_dataset['science']) // 2
 
+    num_cores_to_use = multiprocessing.cpu_count() - 1
+
     train_data = convert_to_tensor_batches(
-        lm_dataset['code'], 
-        batch_size=500_000,  
-        num_workers=120       
+        lm_dataset['code'],
+        num_workers=num_cores_to_use
     )
 
     val_data = convert_to_tensor_batches(
         lm_dataset['science'].select(range(val_size)),
-        batch_size=500_000,
-        num_workers=120
+        num_workers=num_cores_to_use
     )
 
     test_data = convert_to_tensor_batches(
         lm_dataset['science'].select(range(val_size, len(lm_dataset['science']))),
-        batch_size=500_000,
-        num_workers=120
+        num_workers=num_cores_to_use
     )
 
     print(f"Train Data: {train_data.shape}, {train_data.dtype}")
