@@ -448,6 +448,7 @@ def main():
             "input_ids": encoded
         }
     
+    tokenized_dataset = {}
     for split in processed_dataset:
         tokenized_dataset[split] = processed_dataset[split].map(
             tokenize_batch, 
