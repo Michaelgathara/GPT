@@ -391,8 +391,30 @@ def train(gpu_id, config, train_tensor, val_tensor, test_tensor, vocab_size):
 
 def process_batch(args):
     dataset, start_idx, end_idx = args
-    batch_data = dataset.select(range(start_idx, end_idx))['input_ids']
-    return torch.tensor(batch_data, dtype=torch.long)
+    try:
+        batch_data = dataset.select(range(start_idx, end_idx))['input_ids']
+        if not batch_data:
+            return torch.zeros((0, config.block_size), dtype=torch.long)
+        
+        batch_data = [ids for ids in batch_data if ids]
+        
+        if not batch_data:
+            return torch.zeros((0, config.block_size), dtype=torch.long)
+            
+        padded_batch = []
+        for seq in batch_data:
+            if len(seq) > config.block_size:
+                padded_batch.append(seq[:config.block_size])
+            elif len(seq) < config.block_size:
+                padded_seq = seq + [0] * (config.block_size - len(seq))
+                padded_batch.append(padded_seq)
+            else:
+                padded_batch.append(seq)
+        
+        return torch.tensor(padded_batch, dtype=torch.long)
+    except Exception as e:
+        print(f"Error in process_batch: {e}")
+        raise
     
 # main function to setup distributed training
 # https://pytorch.org/tutorials/intermediate/ddp_tutorial.html
@@ -490,14 +512,22 @@ def main():
     print(f"Dataset: \n{lm_dataset}")
     
 
-    def convert_to_tensor_batches(dataset, batch_size=100_000, num_workers=None):
+    def convert_to_tensor_batches(dataset, batch_size=500_000, num_workers=None, max_retries=3):
         if num_workers is None:
-            num_workers = max(1, multiprocessing.cpu_count() - 1)  # Leave one core free
+            num_workers = max(1, multiprocessing.cpu_count() - 2)  # Leave two cores free
+        
+        if not hasattr(dataset, 'select'):
+            print("Dataset doesn't have select method. Converting to list first...")
+            from datasets import Dataset as HFDataset
+            dataset_list = [{"input_ids": dataset[i]["input_ids"]} for i in range(len(dataset))]
+            dataset = HFDataset.from_list(dataset_list)
         
         total_length = len(dataset)
+        batch_size = min(batch_size, total_length)  # Don't make batches larger than dataset
         num_batches = (total_length + batch_size - 1) // batch_size
         
         print(f"Converting dataset with {total_length} examples using {num_workers} workers")
+        print(f"Using batch size of {batch_size} with {num_batches} batches")
         
         batch_args = []
         for i in range(0, total_length, batch_size):
@@ -505,31 +535,85 @@ def main():
             batch_args.append((dataset, i, end_idx))
         
         tensors = []
+        failed_batches = []
+        
         with ProcessPoolExecutor(max_workers=num_workers) as executor:
-            future_to_batch = {executor.submit(process_batch, args): args for args in batch_args}
+            futures = {executor.submit(process_batch, args): args for args in batch_args}
             
-            for future in tqdm(as_completed(future_to_batch), total=len(batch_args), 
+            for future in tqdm(as_completed(futures), total=len(futures), 
                             desc="Converting to tensors", unit="batch"):
+                args = futures[future]
                 try:
                     tensor_batch = future.result()
                     tensors.append(tensor_batch)
                 except Exception as e:
                     print(f"Batch processing failed: {e}")
+                    start_idx, end_idx = args[1], args[2]
+                    failed_batches.append((dataset, start_idx, end_idx))
+        
+        if failed_batches:
+            print(f"Retrying {len(failed_batches)} failed batches sequentially...")
+            for retry in range(max_retries):
+                if not failed_batches:
+                    break
+                    
+                still_failed = []
+                for args in tqdm(failed_batches, desc=f"Retry {retry+1}/{max_retries}", unit="batch"):
+                    try:
+                        tensor_batch = process_batch(args)
+                        tensors.append(tensor_batch)
+                    except Exception as e:
+                        print(f"Batch still failing: {e}")
+                        still_failed.append(args)
+                
+                failed_batches = still_failed
+                if not failed_batches:
+                    print("All batches recovered successfully")
+                elif retry == max_retries - 1:
+                    print(f"WARNING: {len(failed_batches)} batches could not be processed")
+                    # Fill in failed batches with empty tensors to maintain dataset structure
+                    for args in failed_batches:
+                        _, start_idx, end_idx = args
+                        batch_size = end_idx - start_idx
+                        empty_tensor = torch.zeros((batch_size, config.block_size), dtype=torch.long)
+                        tensors.append(empty_tensor)
         
         if tensors:
-            return torch.cat(tensors, dim=0)
+            try:
+                return torch.cat(tensors, dim=0)
+            except RuntimeError as e:
+                print(f"Error concatenating tensors: {e}")
+                print("Trying to concatenate with a different approach...")
+                max_freq_shape = max(set([t.shape[1] for t in tensors]), key=[t.shape[1] for t in tensors].count)
+                filtered_tensors = [t for t in tensors if t.shape[1] == max_freq_shape]
+                print(f"Filtered out {len(tensors) - len(filtered_tensors)} incompatible tensors")
+                return torch.cat(filtered_tensors, dim=0)
         else:
             return torch.tensor([], dtype=torch.long)
 
     val_size = len(lm_dataset['science']) // 2
-    train_data = convert_to_tensor_batches(lm_dataset['code'])
-    val_data = convert_to_tensor_batches(lm_dataset['science'][:val_size])
-    test_data = convert_to_tensor_batches(lm_dataset['science'][val_size:])
-    
+
+    train_data = convert_to_tensor_batches(
+        lm_dataset['code'], 
+        batch_size=500_000,  
+        num_workers=120       
+    )
+
+    val_data = convert_to_tensor_batches(
+        lm_dataset['science'].select(range(val_size)),
+        batch_size=500_000,
+        num_workers=120
+    )
+
+    test_data = convert_to_tensor_batches(
+        lm_dataset['science'].select(range(val_size, len(lm_dataset['science']))),
+        batch_size=500_000,
+        num_workers=120
+    )
+
     print(f"Train Data: {train_data.shape}, {train_data.dtype}")
     print(f"Val   Data: {val_data.shape}, {val_data.dtype}")
-    print(f"Test  Data: {test_data.shape}, {test_data.dtype}")
-    print(f"Vocabulary size: {vocab_size}")
+    print(f"Test  Data: {test_data.shape}, {test_data.dtype}"))
     
     mp.spawn(
         train,
