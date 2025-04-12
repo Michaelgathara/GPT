@@ -607,13 +607,13 @@ def main():
         max_examples=50000  # Optionally limit total examples for initial testing
     )
 
-    val_data = convert_to_tensor_batches(
+    val_data = convert_to_tensor_batches_robust(
         max_workers=4,  # Use only 2 workers to avoid resource contention
         chunk_size=500,  # Process smaller chunks at a time
         max_examples=50000  # Optionally limit total examples for initial testing
     )
 
-    test_data = convert_to_tensor_batches(
+    test_data = convert_to_tensor_batches_robust(
         lm_dataset['science'].select(range(val_size, len(lm_dataset['science']))),
         max_workers=4,  # Use only 2 workers to avoid resource contention
         chunk_size=500,  # Process smaller chunks at a time
