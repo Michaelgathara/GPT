@@ -409,7 +409,18 @@ def main():
     num_cores = multiprocessing.cpu_count()
     
     def prepare_training_text(example):
-        full_text = example["input"] + " " + example["output"]
+        if isinstance(example["input"], list):
+            input_text = " ".join([str(item) for item in example["input"]])
+        else:
+            input_text = str(example["input"])
+        
+        if isinstance(example["output"], list):
+            output_text = " ".join([str(item) for item in example["output"]])
+        else:
+            output_text = str(example["output"])
+        
+        full_text = input_text + " " + output_text
+        
         return {
             "text": full_text
         }
@@ -423,8 +434,18 @@ def main():
     
     logger.info("Tokenizing dataset...")
     def tokenize_batch(examples, tokenizer):
+        texts = [str(text) for text in examples["text"]]
+        
+        encoded = []
+        for text in texts:
+            try:
+                encoded.append(tokenizer.encode(text).ids)
+            except Exception as e:
+                print(f"Error tokenizing text: {e}")
+                encoded.append([])
+        
         return {
-            "input_ids": [tokenizer.encode(text).ids for text in examples["text"]]
+            "input_ids": encoded
         }
     
     for split in processed_dataset:
