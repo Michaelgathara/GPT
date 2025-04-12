@@ -485,15 +485,28 @@ def main():
     print(f"Dataset: \n{lm_dataset}")
     def convert_to_tensor_batches(dataset, batch_size=100_000):
         tensors = []
-        num_batches = (len(dataset) + batch_size - 1) // batch_size
-        for i in tqdm(range(0, len(dataset), batch_size), 
+        total_length = len(dataset)
+        num_batches = (total_length + batch_size - 1) // batch_size
+        
+        for i in tqdm(range(0, total_length, batch_size), 
                     total=num_batches,
                     desc="Converting to tensors",
                     unit="batch"):
-            end_idx = min(i + batch_size, len(dataset))
-            batch = dataset.select(range(i, end_idx))['input_ids']
-            tensors.append(torch.tensor(batch, dtype=torch.long))
-        return torch.cat(tensors, dim=0)
+            end_idx = min(i + batch_size, total_length)
+
+            "hugginface dataset"            
+            if hasattr(dataset, 'select'):
+                batch_data = dataset.select(range(i, end_idx))['input_ids']
+            else:
+                batch_data = [dataset[j]['input_ids'] for j in range(i, end_idx)]
+            
+            tensor_batch = torch.tensor(batch_data, dtype=torch.long)
+            tensors.append(tensor_batch)
+        
+        if tensors:
+            return torch.cat(tensors, dim=0)
+        else:
+            return torch.tensor([], dtype=torch.long)
 
     val_size = len(lm_dataset['science']) // 2
     train_data = convert_to_tensor_batches(lm_dataset['code'])
