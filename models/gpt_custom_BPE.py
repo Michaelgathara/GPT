@@ -402,8 +402,10 @@ def main():
     np.random.seed(config.seed)
     
     vocab_size = tokenizer.get_vocab_size()
+    print(f"Vocab size: {vocab_size}")
     
     dataset = get_llama_nemotron_data()
+    print(f"Dataset: {dataset}")
     num_cores = multiprocessing.cpu_count()
     
     def prepare_training_text(example):
