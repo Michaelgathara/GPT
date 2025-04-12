@@ -5,6 +5,7 @@ import time
 import logging
 import math
 import multiprocessing
+from concurrent.futures import ProcessPoolExecutor, as_completed
 import numpy as np
 
 # torch imports and shit
@@ -483,26 +484,36 @@ def main():
         )
     
     print(f"Dataset: \n{lm_dataset}")
-    def convert_to_tensor_batches(dataset, batch_size=200_000):
-        tensors = []
+    def process_batch(args):
+        dataset, start_idx, end_idx = args
+        batch_data = dataset.select(range(start_idx, end_idx))['input_ids']
+        return torch.tensor(batch_data, dtype=torch.long)
+
+    def convert_to_tensor_batches(dataset, batch_size=100_000, num_workers=None):
+        if num_workers is None:
+            num_workers = max(1, multiprocessing.cpu_count() - 1)  # Leave one core free
+        
         total_length = len(dataset)
         num_batches = (total_length + batch_size - 1) // batch_size
         
-        for i in tqdm(range(0, total_length, batch_size), 
-                    total=num_batches,
-                    desc="Converting to tensors",
-                    unit="batch"):
+        print(f"Converting dataset with {total_length} examples using {num_workers} workers")
+        
+        batch_args = []
+        for i in range(0, total_length, batch_size):
             end_idx = min(i + batch_size, total_length)
-
-            # "hugginface dataset"            
-            if hasattr(dataset, 'select'):
-                batch_data = dataset.select(range(i, end_idx))['input_ids']
-            else:
-                print(f"Dataset: {dataset}")
-                batch_data = [dataset[j]['input_ids'] for j in range(i, end_idx)]
+            batch_args.append((dataset, i, end_idx))
+        
+        tensors = []
+        with ProcessPoolExecutor(max_workers=num_workers) as executor:
+            future_to_batch = {executor.submit(process_batch, args): args for args in batch_args}
             
-            tensor_batch = torch.tensor(batch_data, dtype=torch.long)
-            tensors.append(tensor_batch)
+            for future in tqdm(as_completed(future_to_batch), total=len(batch_args), 
+                            desc="Converting to tensors", unit="batch"):
+                try:
+                    tensor_batch = future.result()
+                    tensors.append(tensor_batch)
+                except Exception as e:
+                    print(f"Batch processing failed: {e}")
         
         if tensors:
             return torch.cat(tensors, dim=0)
