@@ -483,7 +483,7 @@ def main():
         )
     
     print(f"Dataset: \n{lm_dataset}")
-    def convert_to_tensor_batches(dataset, batch_size=100_000):
+    def convert_to_tensor_batches(dataset, batch_size=10_000):
         tensors = []
         total_length = len(dataset)
         num_batches = (total_length + batch_size - 1) // batch_size
@@ -494,10 +494,11 @@ def main():
                     unit="batch"):
             end_idx = min(i + batch_size, total_length)
 
-            "hugginface dataset"            
+            # "hugginface dataset"            
             if hasattr(dataset, 'select'):
                 batch_data = dataset.select(range(i, end_idx))['input_ids']
             else:
+                print(f"Dataset: {dataset}")
                 batch_data = [dataset[j]['input_ids'] for j in range(i, end_idx)]
             
             tensor_batch = torch.tensor(batch_data, dtype=torch.long)
