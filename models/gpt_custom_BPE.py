@@ -389,7 +389,11 @@ def train(gpu_id, config, train_tensor, val_tensor, test_tensor, vocab_size):
     # clean up
     dist.destroy_process_group()
 
-
+def process_batch(args):
+    dataset, start_idx, end_idx = args
+    batch_data = dataset.select(range(start_idx, end_idx))['input_ids']
+    return torch.tensor(batch_data, dtype=torch.long)
+    
 # main function to setup distributed training
 # https://pytorch.org/tutorials/intermediate/ddp_tutorial.html
 def main():    
@@ -484,10 +488,7 @@ def main():
         )
     
     print(f"Dataset: \n{lm_dataset}")
-    def process_batch(args):
-        dataset, start_idx, end_idx = args
-        batch_data = dataset.select(range(start_idx, end_idx))['input_ids']
-        return torch.tensor(batch_data, dtype=torch.long)
+    
 
     def convert_to_tensor_batches(dataset, batch_size=100_000, num_workers=None):
         if num_workers is None:
