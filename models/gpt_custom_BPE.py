@@ -483,7 +483,7 @@ def main():
         )
     
     print(f"Dataset: \n{lm_dataset}")
-    def convert_to_tensor_batches(dataset, batch_size=10_000):
+    def convert_to_tensor_batches(dataset, batch_size=200_000):
         tensors = []
         total_length = len(dataset)
         num_batches = (total_length + batch_size - 1) // batch_size
