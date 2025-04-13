@@ -486,8 +486,8 @@ def main():
         total_length = (len(concatenated) // config.block_size) * config.block_size
         concatenated = concatenated[:total_length]
     
-        return {"input_ids": [concatenated[i : i + config.block_size] 
-                for i in range(0, total_length, config.block_size)]}
+        return {"input_ids": [concatenated[i : i + config.block_size]
+            for i in range(0, total_length, config.block_size)]}
     
     lm_dataset = {}
     for split in tokenized_dataset:
@@ -501,39 +501,78 @@ def main():
     
     print(f"Dataset: \n{lm_dataset}")
     val_size = len(lm_dataset['science']) // 2
-    
+
     train_data_path = os.path.join(config.checkpoint_dir, 'train_data.pt')
     val_data_path = os.path.join(config.checkpoint_dir, 'val_data.pt')
     test_data_path = os.path.join(config.checkpoint_dir, 'test_data.pt')
 
+    # Check if pre-converted tensors exist
+    train_data = None
+    val_data = None
+    test_data = None
+
     if os.path.exists(train_data_path):
-        print("Loading training tensors from disk...")
+        print("Loading pre-converted training tensor from disk...")
         train_data = torch.load(train_data_path)
     if os.path.exists(val_data_path):
-        print("Loading validation tensors from disk...")
+        print("Loading pre-converted validation tensor from disk...")
         val_data = torch.load(val_data_path)
     if os.path.exists(test_data_path):
-        print("Loading testing tensors from disk...")
+        print("Loading pre-converted testing tensor from disk...")
         test_data = torch.load(test_data_path)
-        
-    print("Converting datasets to tensors...")
-    if not os.path.exists(train_data_path):
-        train_data = fast_convert_to_tensor(lm_dataset['code'])
-        print("Saving training tensors to disk...")
-        torch.save(train_data, train_data_path)
-    if not os.path.exists(val_data_path):
-        val_data = fast_convert_to_tensor(lm_dataset['science'][:val_size])
-        print("Saving validation tensors to disk...")
-        torch.save(val_data, val_data_path)
-    if not os.path.exists(test_data_path):
-        test_data = fast_convert_to_tensor(lm_dataset['science'][val_size:])
-        print("Saving testing tensors to disk...")
-        torch.save(test_data, test_data_path)
 
-    train_data = fast_convert_to_tensor(lm_dataset['code'])
-    val_data = fast_convert_to_tensor(lm_dataset['science'][:val_size])
-    test_data = fast_convert_to_tensor(lm_dataset['science'][val_size:])
-    
+    print("Converting datasets to tensors (if not loaded)...")
+
+    if train_data is None:
+        print("Converting train split ('code') to tensor...")
+        start_time = time.time()
+        # Use with_format for efficient conversion
+        lm_dataset['code'].set_format(type='torch', columns=['input_ids'])
+        # Access the entire column as a tensor (might still be memory intensive)
+        # Concatenate if it's chunked within the dataset format correctly
+        # Assuming group_texts made it into a list of tensors suitable for stacking
+        # If group_texts produced one giant list per row, this needs adjustment
+        # Assuming group_texts resulted in each row being a sequence of block_size
+        train_data = lm_dataset['code']['input_ids'] # This should now be a tensor if format is set
+        # If the above doesn't yield a single tensor (e.g., list of tensors), concatenate:
+        if isinstance(train_data, list):
+            train_data = torch.cat(train_data, dim=0)
+        print(f"Train conversion took: {time.time() - start_time:.2f}s")
+        print("Saving training tensor to disk...")
+        torch.save(train_data, train_data_path)
+        lm_dataset['code'].reset_format() # Reset format if needed elsewhere
+
+    if val_data is None:
+        print("Converting validation split ('science'[:val_size]) to tensor...")
+        start_time = time.time()
+        val_ds_slice = lm_dataset['science'].select(range(val_size))
+        val_ds_slice.set_format(type='torch', columns=['input_ids'])
+        val_data = val_ds_slice['input_ids']
+        if isinstance(val_data, list):
+            val_data = torch.cat(val_data, dim=0)
+        print(f"Validation conversion took: {time.time() - start_time:.2f}s")
+        print("Saving validation tensor to disk...")
+        torch.save(val_data, val_data_path)
+        # No need to reset format as val_ds_slice is temporary
+
+    if test_data is None:
+        print("Converting test split ('science'[val_size:]) to tensor...")
+        start_time = time.time()
+        test_ds_slice = lm_dataset['science'].select(range(val_size, len(lm_dataset['science'])))
+        test_ds_slice.set_format(type='torch', columns=['input_ids'])
+        test_data = test_ds_slice['input_ids']
+        if isinstance(test_data, list):
+            test_data = torch.cat(test_data, dim=0)
+        print(f"Test conversion took: {time.time() - start_time:.2f}s")
+        print("Saving testing tensor to disk...")
+        torch.save(test_data, test_data_path)
+        # No need to reset format
+
+    # Ensure dtype is correct (usually long for indices)
+    train_data = train_data.to(torch.long)
+    val_data = val_data.to(torch.long)
+    test_data = test_data.to(torch.long)
+
     print(f"Train Data: {train_data.shape}, {train_data.dtype}")
     print(f"Val   Data: {val_data.shape}, {val_data.dtype}")
     print(f"Test  Data: {test_data.shape}, {test_data.dtype}")
