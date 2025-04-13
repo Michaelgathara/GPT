@@ -5,8 +5,6 @@ import time
 import logging
 import math
 import multiprocessing
-import gc
-from concurrent.futures import ProcessPoolExecutor
 import numpy as np
 
 # torch imports and shit
@@ -390,180 +388,7 @@ def train(gpu_id, config, train_tensor, val_tensor, test_tensor, vocab_size):
     # clean up
     dist.destroy_process_group()
 
-def process_batch(args):
-    dataset, start_idx, end_idx = args
-    try:
-        batch_data = []
-        chunk_size = 10000  # Process 10k examples at a time
-        
-        for chunk_start in range(start_idx, end_idx, chunk_size):
-            chunk_end = min(chunk_start + chunk_size, end_idx)
-            chunk_data = dataset.select(range(chunk_start, chunk_end))['input_ids']
-            batch_data.extend(chunk_data)
-        
-        if not batch_data:
-            return torch.zeros((0, config.block_size), dtype=torch.long)
-        
-        batch_data = [ids for ids in batch_data if ids]
-        
-        if not batch_data:
-            return torch.zeros((0, config.block_size), dtype=torch.long)
-        
-        padded_batch = []
-        for seq in batch_data:
-            if len(seq) > config.block_size:
-                padded_batch.append(seq[:config.block_size])
-            elif len(seq) < config.block_size:
-                padded_seq = seq + [0] * (config.block_size - len(seq))
-                padded_batch.append(padded_seq)
-            else:
-                padded_batch.append(seq)
-        
-        return torch.tensor(padded_batch, dtype=torch.long)
-    except Exception as e:
-        print(f"Error in process_batch: {e} for range {start_idx}-{end_idx}")
-        raise
-    
-def tensorize_dataset(dataset, block_size, num_workers=None):
-    if num_workers is None:
-        import multiprocessing
-        num_workers = max(1, multiprocessing.cpu_count() - 1)
-    
-    print(f"Flattening sequences with {num_workers} workers...")
-    all_token_ids = []
-    
-    def process_chunk(chunk):
-        chunk_ids = []
-        for example in chunk:
-            if example and len(example) > 0:
-                chunk_ids.extend(example)
-        return chunk_ids
-    
-    chunk_size = 1000
-    num_chunks = (len(dataset) + chunk_size - 1) // chunk_size
-    
-    with ProcessPoolExecutor(max_workers=num_workers) as executor:
-        chunks = [dataset[i:i+chunk_size]['input_ids'] for i in range(0, len(dataset), chunk_size)]
-        for chunk_ids in tqdm(executor.map(process_chunk, chunks), total=num_chunks):
-            all_token_ids.extend(chunk_ids)
-    
-    print(f"Total tokens: {len(all_token_ids)}")
-    
-    total_length = (len(all_token_ids) // block_size) * block_size
-    all_token_ids = all_token_ids[:total_length]
-    
-    num_sequences = len(all_token_ids) // block_size
-    print(f"Creating {num_sequences} sequences of length {block_size}")
-    
-    result_chunks = []
-    chunk_size = 10000  # Number of sequences in each chunk
-    
-    for i in tqdm(range(0, num_sequences, chunk_size)):
-        end_idx = min(i + chunk_size, num_sequences)
-        chunk_start = i * block_size
-        chunk_end = end_idx * block_size
-        
-        chunk_tokens = all_token_ids[chunk_start:chunk_end]
-        chunk_tensor = torch.tensor(
-            np.array(chunk_tokens).reshape(end_idx - i, block_size),
-            dtype=torch.long
-        )
-        result_chunks.append(chunk_tensor)
-    
-    result = torch.cat(result_chunks, dim=0)
-    print(f"Final tensor shape: {result.shape}")
-    
-    return result
 
-def tensorize_large_dataset(dataset, block_size, max_sequences=None, num_workers=None):
-    if num_workers is None:
-        num_workers = max(1, multiprocessing.cpu_count() - 1)
-    
-    print(f"Processing dataset with {num_workers} workers...")
-    
-    # Instead of loading all tokens at once, we'll process in a streaming fashion
-    # by chunking the dataset and creating blocks directly
-    
-    def process_chunk(chunk_data):
-        # Extract all token IDs and concatenate
-        all_ids = []
-        for example in chunk_data:
-            if example and len(example) > 0:
-                all_ids.extend(example)
-        
-        # Create block-sized sequences
-        sequences = []
-        for i in range(0, len(all_ids) - block_size + 1, block_size):
-            if i + block_size <= len(all_ids):
-                sequences.append(all_ids[i:i + block_size])
-        
-        return sequences
-    
-    all_sequences = []
-    chunk_size = 500  # Process smaller chunks of the dataset at once
-    
-    # Calculate total number of chunks
-    total_chunks = (len(dataset) + chunk_size - 1) // chunk_size
-    
-    # Process the dataset in chunks
-    with ProcessPoolExecutor(max_workers=num_workers) as executor:
-        futures = []
-        
-        # Submit all chunks for processing
-        for i in range(0, len(dataset), chunk_size):
-            end_idx = min(i + chunk_size, len(dataset))
-            chunk_data = dataset.select(range(i, end_idx))['input_ids']
-            futures.append(executor.submit(process_chunk, chunk_data))
-        
-        # Process results as they complete
-        for i, future in enumerate(tqdm(futures, total=len(futures))):
-            try:
-                chunk_sequences = future.result()
-                all_sequences.extend(chunk_sequences)
-                
-                # Apply limit if specified
-                if max_sequences and len(all_sequences) >= max_sequences:
-                    all_sequences = all_sequences[:max_sequences]
-                    break
-                
-                # Progress reporting every 10 chunks
-                if (i + 1) % 10 == 0:
-                    print(f"Processed {i+1}/{len(futures)} chunks, created {len(all_sequences)} sequences")
-                    # Force garbage collection
-                    gc.collect()
-                    if torch.cuda.is_available():
-                        torch.cuda.empty_cache()
-            except Exception as e:
-                print(f"Error processing chunk {i}: {e}")
-    
-    print(f"Created {len(all_sequences)} sequences of length {block_size}")
-    
-    # Convert to tensor in batches to avoid memory issues
-    tensor_batch_size = 10000  # Number of sequences to convert at once
-    result_chunks = []
-    
-    for i in range(0, len(all_sequences), tensor_batch_size):
-        end_idx = min(i + tensor_batch_size, len(all_sequences))
-        print(f"Converting sequences {i} to {end_idx} to tensor...")
-        
-        # Convert this batch to tensor
-        batch_tensor = torch.tensor(all_sequences[i:end_idx], dtype=torch.long)
-        result_chunks.append(batch_tensor)
-        
-        # Clean up
-        gc.collect()
-        if torch.cuda.is_available():
-            torch.cuda.empty_cache()
-    
-    # Concatenate all chunks
-    if result_chunks:
-        result = torch.cat(result_chunks, dim=0)
-        print(f"Final tensor shape: {result.shape}")
-        return result
-    else:
-        print("No sequences were created. Check your dataset.")
-        return torch.zeros((0, block_size), dtype=torch.long)
-    
 # main function to setup distributed training
 # https://pytorch.org/tutorials/intermediate/ddp_tutorial.html
 def main():    
@@ -658,55 +483,27 @@ def main():
         )
     
     print(f"Dataset: \n{lm_dataset}")
-    
+    def convert_to_tensor_batches(dataset, batch_size=100_000):
+        tensors = []
+        num_batches = (len(dataset) + batch_size - 1) // batch_size
+        for i in tqdm(range(0, len(dataset), batch_size), 
+                    total=num_batches,
+                    desc="Converting to tensors",
+                    unit="batch"):
+            end_idx = min(i + batch_size, len(dataset))
+            batch = dataset.select(range(i, end_idx))['input_ids']
+            tensors.append(torch.tensor(batch, dtype=torch.long))
+        return torch.cat(tensors, dim=0)
+
     val_size = len(lm_dataset['science']) // 2
-
-    num_cores_to_use = multiprocessing.cpu_count() - 1
-
-    # train_data = tensorize_dataset(
-    #     lm_dataset['code'],
-    #     block_size=config.block_size,
-    #     num_workers=num_cores_to_use
-    # )
-
-    # val_data = tensorize_dataset(
-    #     lm_dataset['science'].select(range(val_size)),
-    #     block_size=config.block_size,
-    #     num_workers=num_cores_to_use
-    # )
-
-    # test_data = tensorize_dataset(
-    #     lm_dataset['science'].select(range(val_size, len(lm_dataset['science']))),
-    #     block_size=config.block_size,
-    #     num_workers=num_cores_to_use
-    # )
+    train_data = convert_to_tensor_batches(lm_dataset['code'])
+    val_data = convert_to_tensor_batches(lm_dataset['science'][:val_size])
+    test_data = convert_to_tensor_batches(lm_dataset['science'][val_size:])
     
-    max_sequences_per_split = 100000
-
-    train_data = tensorize_large_dataset(
-        lm_dataset['code'],
-        block_size=config.block_size,
-        max_sequences=max_sequences_per_split,
-        num_workers=multiprocessing.cpu_count() - 1
-    )
-
-    val_data = tensorize_large_dataset(
-        lm_dataset['science'].select(range(val_size)),
-        block_size=config.block_size,
-        max_sequences=max_sequences_per_split // 2,  # Half as many for validation
-        num_workers=multiprocessing.cpu_count() - 1
-    )
-
-    test_data = tensorize_large_dataset(
-        lm_dataset['science'].select(range(val_size, len(lm_dataset['science']))),
-        block_size=config.block_size,
-        max_sequences=max_sequences_per_split // 2,  # Half as many for testing
-        num_workers=multiprocessing.cpu_count() - 1
-    )
-
     print(f"Train Data: {train_data.shape}, {train_data.dtype}")
     print(f"Val   Data: {val_data.shape}, {val_data.dtype}")
     print(f"Test  Data: {test_data.shape}, {test_data.dtype}")
+    print(f"Vocabulary size: {vocab_size}")
     
     mp.spawn(
         train,
