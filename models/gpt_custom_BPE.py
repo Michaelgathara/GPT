@@ -79,19 +79,19 @@ class CosineWarmupScheduler:
         return self.optimizer.param_groups[0]['lr']
 
 
-class TokenizedDataset(Dataset):
-    def __init__(self, data, block_size):
-        self.data = data
-        self.block_size = block_size
+# class TokenizedDataset(Dataset):
+    # def __init__(self, data, block_size):
+    #     self.data = data
+    #     self.block_size = block_size
     
-    def __len__(self):
-        return len(self.data)
+    # def __len__(self):
+    #     return len(self.data)
     
-    def __getitem__(self, idx):
-        x = self.data[idx]
-        y = x.clone()
-        y[:-1] = x[1:]
-        return x, y
+    # def __getitem__(self, idx):
+    #     x = self.data[idx]
+    #     y = x.clone()
+    #     y[:-1] = x[1:]
+    #     return x, y
 
 
 def get_batch(dataloader):
