@@ -5,7 +5,7 @@ import time
 import logging
 import math
 import multiprocessing
-from concurrent.futures import ProcessPoolExecutor, as_completed
+from concurrent.futures import ProcessPoolExecutor
 import numpy as np
 
 # torch imports and shit
@@ -423,6 +423,57 @@ def process_batch(args):
         print(f"Error in process_batch: {e} for range {start_idx}-{end_idx}")
         raise
     
+def tensorize_dataset(dataset, block_size, num_workers=None):
+    if num_workers is None:
+        import multiprocessing
+        num_workers = max(1, multiprocessing.cpu_count() - 1)
+    
+    print(f"Flattening sequences with {num_workers} workers...")
+    all_token_ids = []
+    
+    def process_chunk(chunk):
+        chunk_ids = []
+        for example in chunk:
+            if example and len(example) > 0:
+                chunk_ids.extend(example)
+        return chunk_ids
+    
+    chunk_size = 1000
+    num_chunks = (len(dataset) + chunk_size - 1) // chunk_size
+    
+    with ProcessPoolExecutor(max_workers=num_workers) as executor:
+        chunks = [dataset[i:i+chunk_size]['input_ids'] for i in range(0, len(dataset), chunk_size)]
+        for chunk_ids in tqdm(executor.map(process_chunk, chunks), total=num_chunks):
+            all_token_ids.extend(chunk_ids)
+    
+    print(f"Total tokens: {len(all_token_ids)}")
+    
+    total_length = (len(all_token_ids) // block_size) * block_size
+    all_token_ids = all_token_ids[:total_length]
+    
+    num_sequences = len(all_token_ids) // block_size
+    print(f"Creating {num_sequences} sequences of length {block_size}")
+    
+    result_chunks = []
+    chunk_size = 10000  # Number of sequences in each chunk
+    
+    for i in tqdm(range(0, num_sequences, chunk_size)):
+        end_idx = min(i + chunk_size, num_sequences)
+        chunk_start = i * block_size
+        chunk_end = end_idx * block_size
+        
+        chunk_tokens = all_token_ids[chunk_start:chunk_end]
+        chunk_tensor = torch.tensor(
+            np.array(chunk_tokens).reshape(end_idx - i, block_size),
+            dtype=torch.long
+        )
+        result_chunks.append(chunk_tensor)
+    
+    result = torch.cat(result_chunks, dim=0)
+    print(f"Final tensor shape: {result.shape}")
+    
+    return result
+    
 # main function to setup distributed training
 # https://pytorch.org/tutorials/intermediate/ddp_tutorial.html
 def main():    
@@ -518,107 +569,26 @@ def main():
     
     print(f"Dataset: \n{lm_dataset}")
     
-
-    def convert_to_tensor_batches_robust(dataset, max_workers=2, chunk_size=500, max_examples=None):
-        total_length = len(dataset) if max_examples is None else min(len(dataset), max_examples)
-        print(f"Processing {total_length} examples with {max_workers} workers and chunk_size={chunk_size}")
-        
-        import tempfile
-        import os
-        temp_dir = tempfile.mkdtemp()
-        print(f"Created temporary directory for tensor chunks: {temp_dir}")
-        
-        processed_chunks = 0
-        chunks_paths = []
-        
-        # Use fewer workers with smaller batches
-        with ProcessPoolExecutor(max_workers=max_workers) as executor:
-            for start_idx in range(0, total_length, chunk_size):
-                end_idx = min(start_idx + chunk_size, total_length)
-                print(f"Processing chunk {processed_chunks+1}: examples {start_idx} to {end_idx}")
-                
-                future = executor.submit(process_batch, (dataset, start_idx, end_idx))
-                
-                try:
-                    tensor_batch = future.result(timeout=300)  # Add timeout to prevent hanging
-                    
-                    if tensor_batch.shape[0] > 0:
-                        chunk_path = os.path.join(temp_dir, f"chunk_{processed_chunks}.pt")
-                        torch.save(tensor_batch, chunk_path)
-                        chunks_paths.append(chunk_path)
-                        processed_chunks += 1
-                        
-                        if processed_chunks % 10 == 0:
-                            print(f"Processed {processed_chunks} chunks. Current memory usage:")
-                            import psutil
-                            print(f"System memory: {psutil.virtual_memory().percent}% used")
-                            
-                    import gc
-                    gc.collect()
-                    torch.cuda.empty_cache() if torch.cuda.is_available() else None
-                    
-                except Exception as e:
-                    print(f"Chunk processing failed for {start_idx}-{end_idx}: {e}")
-                    # Try processing this chunk sequentially if parallel processing failed
-                    try:
-                        print(f"Retrying chunk {start_idx}-{end_idx} sequentially")
-                        tensor_batch = process_batch((dataset, start_idx, end_idx))
-                        if tensor_batch.shape[0] > 0:
-                            chunk_path = os.path.join(temp_dir, f"chunk_{processed_chunks}.pt")
-                            torch.save(tensor_batch, chunk_path)
-                            chunks_paths.append(chunk_path)
-                            processed_chunks += 1
-                    except Exception as e2:
-                        print(f"Sequential processing also failed: {e2}. Skipping this chunk.")
-        
-        print(f"Loading and concatenating {len(chunks_paths)} tensor chunks...")
-        combined_tensors = []
-        
-        for chunk_path in chunks_paths:
-            try:
-                tensor = torch.load(chunk_path)
-                combined_tensors.append(tensor)
-                os.remove(chunk_path)
-            except Exception as e:
-                print(f"Error loading chunk {chunk_path}: {e}")
-        
-        if combined_tensors:
-            try:
-                result = torch.cat(combined_tensors, dim=0)
-                print(f"Successfully created tensor of shape {result.shape}")
-                return result
-            except Exception as e:
-                print(f"Error concatenating tensors: {e}")
-                largest_tensor = max(combined_tensors, key=lambda t: t.shape[0])
-                print(f"Returning largest tensor of shape {largest_tensor.shape}")
-                return largest_tensor
-        else:
-            print("No tensors were successfully processed")
-            return torch.tensor([], dtype=torch.long)
-
     val_size = len(lm_dataset['science']) // 2
 
     num_cores_to_use = multiprocessing.cpu_count() - 1
 
-    train_data = convert_to_tensor_batches_robust(
+    train_data = tensorize_dataset(
         lm_dataset['code'],
-        max_workers=4,  # Use only 2 workers to avoid resource contention
-        chunk_size=500,  # Process smaller chunks at a time
-        max_examples=50000  # Optionally limit total examples for initial testing
+        block_size=config.block_size,
+        num_workers=num_cores_to_use
     )
 
-    val_data = convert_to_tensor_batches_robust(
+    val_data = tensorize_dataset(
         lm_dataset['science'].select(range(val_size)),
-        max_workers=4,  # Use only 2 workers to avoid resource contention
-        chunk_size=500,  # Process smaller chunks at a time
-        max_examples=50000  # Optionally limit total examples for initial testing
+        block_size=config.block_size,
+        num_workers=num_cores_to_use
     )
 
-    test_data = convert_to_tensor_batches_robust(
+    test_data = tensorize_dataset(
         lm_dataset['science'].select(range(val_size, len(lm_dataset['science']))),
-        max_workers=4,  # Use only 2 workers to avoid resource contention
-        chunk_size=500,  # Process smaller chunks at a time
-        max_examples=50000  # Optionally limit total examples for initial testing
+        block_size=config.block_size,
+        num_workers=num_cores_to_use
     )
 
     print(f"Train Data: {train_data.shape}, {train_data.dtype}")
