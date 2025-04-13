@@ -512,7 +512,7 @@ def main():
     if os.path.exists(val_data_path):
         print("Loading validation tensors from disk...")
         val_data = torch.load(val_data_path)
-    if os.path.exists(test_data_path)
+    if os.path.exists(test_data_path):
         print("Loading testing tensors from disk...")
         test_data = torch.load(test_data_path)
         
