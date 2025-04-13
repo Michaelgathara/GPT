@@ -663,22 +663,45 @@ def main():
 
     num_cores_to_use = multiprocessing.cpu_count() - 1
 
-    train_data = tensorize_dataset(
+    # train_data = tensorize_dataset(
+    #     lm_dataset['code'],
+    #     block_size=config.block_size,
+    #     num_workers=num_cores_to_use
+    # )
+
+    # val_data = tensorize_dataset(
+    #     lm_dataset['science'].select(range(val_size)),
+    #     block_size=config.block_size,
+    #     num_workers=num_cores_to_use
+    # )
+
+    # test_data = tensorize_dataset(
+    #     lm_dataset['science'].select(range(val_size, len(lm_dataset['science']))),
+    #     block_size=config.block_size,
+    #     num_workers=num_cores_to_use
+    # )
+    
+    max_sequences_per_split = 100000
+
+    train_data = tensorize_large_dataset(
         lm_dataset['code'],
         block_size=config.block_size,
-        num_workers=num_cores_to_use
+        max_sequences=max_sequences_per_split,
+        num_workers=multiprocessing.cpu_count() - 1
     )
 
-    val_data = tensorize_dataset(
+    val_data = tensorize_large_dataset(
         lm_dataset['science'].select(range(val_size)),
         block_size=config.block_size,
-        num_workers=num_cores_to_use
+        max_sequences=max_sequences_per_split // 2,  # Half as many for validation
+        num_workers=multiprocessing.cpu_count() - 1
     )
 
-    test_data = tensorize_dataset(
+    test_data = tensorize_large_dataset(
         lm_dataset['science'].select(range(val_size, len(lm_dataset['science']))),
         block_size=config.block_size,
-        num_workers=num_cores_to_use
+        max_sequences=max_sequences_per_split // 2,  # Half as many for testing
+        num_workers=multiprocessing.cpu_count() - 1
     )
 
     print(f"Train Data: {train_data.shape}, {train_data.dtype}")
