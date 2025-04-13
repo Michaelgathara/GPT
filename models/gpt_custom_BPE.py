@@ -388,6 +388,23 @@ def train(gpu_id, config, train_tensor, val_tensor, test_tensor, vocab_size):
     # clean up
     dist.destroy_process_group()
 
+def convert_to_tensor_batches(dataset, batch_size=100_000):
+    tensors = []
+    num_batches = (len(dataset) + batch_size - 1) // batch_size
+    for i in tqdm(range(0, len(dataset), batch_size), 
+                total=num_batches,
+                desc="Converting to tensors",
+                unit="batch"):
+        end_idx = min(i + batch_size, len(dataset))
+        batch = dataset.select(range(i, end_idx))['input_ids']
+        tensors.append(torch.tensor(batch, dtype=torch.long))
+    return torch.cat(tensors, dim=0)
+
+def fast_convert_to_tensor(dataset):
+    input_ids = dataset["input_ids"]
+    array = np.array(input_ids, dtype=np.int64)
+    tensor_data = torch.as_tensor(array, dtype=torch.long)
+    return tensor_data
 
 # main function to setup distributed training
 # https://pytorch.org/tutorials/intermediate/ddp_tutorial.html
@@ -483,22 +500,39 @@ def main():
         )
     
     print(f"Dataset: \n{lm_dataset}")
-    def convert_to_tensor_batches(dataset, batch_size=100_000):
-        tensors = []
-        num_batches = (len(dataset) + batch_size - 1) // batch_size
-        for i in tqdm(range(0, len(dataset), batch_size), 
-                    total=num_batches,
-                    desc="Converting to tensors",
-                    unit="batch"):
-            end_idx = min(i + batch_size, len(dataset))
-            batch = dataset.select(range(i, end_idx))['input_ids']
-            tensors.append(torch.tensor(batch, dtype=torch.long))
-        return torch.cat(tensors, dim=0)
-
     val_size = len(lm_dataset['science']) // 2
-    train_data = convert_to_tensor_batches(lm_dataset['code'])
-    val_data = convert_to_tensor_batches(lm_dataset['science'][:val_size])
-    test_data = convert_to_tensor_batches(lm_dataset['science'][val_size:])
+    
+    train_data_path = os.path.join(config.checkpoint_dir, 'train_data.pt')
+    val_data_path = os.path.join(config.checkpoint_dir, 'val_data.pt')
+    test_data_path = os.path.join(config.checkpoint_dir, 'test_data.pt')
+
+    if os.path.exists(train_data_path):
+        print("Loading training tensors from disk...")
+        train_data = torch.load(train_data_path)
+    if os.path.exists(val_data_path):
+        print("Loading validation tensors from disk...")
+        val_data = torch.load(val_data_path)
+    if os.path.exists(test_data_path)
+        print("Loading testing tensors from disk...")
+        test_data = torch.load(test_data_path)
+        
+    print("Converting datasets to tensors...")
+    if not os.path.exists(train_data_path):
+        train_data = fast_convert_to_tensor(lm_dataset['code'])
+        print("Saving training tensors to disk...")
+        torch.save(train_data, train_data_path)
+    if not os.path.exists(val_data_path):
+        val_data = fast_convert_to_tensor(lm_dataset['science'][:val_size])
+        print("Saving validation tensors to disk...")
+        torch.save(val_data, val_data_path)
+    if not os.path.exists(test_data_path):
+        test_data = fast_convert_to_tensor(lm_dataset['science'][val_size:])
+        print("Saving testing tensors to disk...")
+        torch.save(test_data, test_data_path)
+
+    train_data = fast_convert_to_tensor(lm_dataset['code'])
+    val_data = fast_convert_to_tensor(lm_dataset['science'][:val_size])
+    test_data = fast_convert_to_tensor(lm_dataset['science'][val_size:])
     
     print(f"Train Data: {train_data.shape}, {train_data.dtype}")
     print(f"Val   Data: {val_data.shape}, {val_data.dtype}")
