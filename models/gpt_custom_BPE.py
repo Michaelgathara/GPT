@@ -5,6 +5,7 @@ import time
 import logging
 import math
 import multiprocessing
+import gc
 from concurrent.futures import ProcessPoolExecutor
 import numpy as np
 
@@ -473,6 +474,95 @@ def tensorize_dataset(dataset, block_size, num_workers=None):
     print(f"Final tensor shape: {result.shape}")
     
     return result
+
+def tensorize_large_dataset(dataset, block_size, max_sequences=None, num_workers=None):
+    if num_workers is None:
+        num_workers = max(1, multiprocessing.cpu_count() - 1)
+    
+    print(f"Processing dataset with {num_workers} workers...")
+    
+    # Instead of loading all tokens at once, we'll process in a streaming fashion
+    # by chunking the dataset and creating blocks directly
+    
+    def process_chunk(chunk_data):
+        # Extract all token IDs and concatenate
+        all_ids = []
+        for example in chunk_data:
+            if example and len(example) > 0:
+                all_ids.extend(example)
+        
+        # Create block-sized sequences
+        sequences = []
+        for i in range(0, len(all_ids) - block_size + 1, block_size):
+            if i + block_size <= len(all_ids):
+                sequences.append(all_ids[i:i + block_size])
+        
+        return sequences
+    
+    all_sequences = []
+    chunk_size = 500  # Process smaller chunks of the dataset at once
+    
+    # Calculate total number of chunks
+    total_chunks = (len(dataset) + chunk_size - 1) // chunk_size
+    
+    # Process the dataset in chunks
+    with ProcessPoolExecutor(max_workers=num_workers) as executor:
+        futures = []
+        
+        # Submit all chunks for processing
+        for i in range(0, len(dataset), chunk_size):
+            end_idx = min(i + chunk_size, len(dataset))
+            chunk_data = dataset.select(range(i, end_idx))['input_ids']
+            futures.append(executor.submit(process_chunk, chunk_data))
+        
+        # Process results as they complete
+        for i, future in enumerate(tqdm(futures, total=len(futures))):
+            try:
+                chunk_sequences = future.result()
+                all_sequences.extend(chunk_sequences)
+                
+                # Apply limit if specified
+                if max_sequences and len(all_sequences) >= max_sequences:
+                    all_sequences = all_sequences[:max_sequences]
+                    break
+                
+                # Progress reporting every 10 chunks
+                if (i + 1) % 10 == 0:
+                    print(f"Processed {i+1}/{len(futures)} chunks, created {len(all_sequences)} sequences")
+                    # Force garbage collection
+                    gc.collect()
+                    if torch.cuda.is_available():
+                        torch.cuda.empty_cache()
+            except Exception as e:
+                print(f"Error processing chunk {i}: {e}")
+    
+    print(f"Created {len(all_sequences)} sequences of length {block_size}")
+    
+    # Convert to tensor in batches to avoid memory issues
+    tensor_batch_size = 10000  # Number of sequences to convert at once
+    result_chunks = []
+    
+    for i in range(0, len(all_sequences), tensor_batch_size):
+        end_idx = min(i + tensor_batch_size, len(all_sequences))
+        print(f"Converting sequences {i} to {end_idx} to tensor...")
+        
+        # Convert this batch to tensor
+        batch_tensor = torch.tensor(all_sequences[i:end_idx], dtype=torch.long)
+        result_chunks.append(batch_tensor)
+        
+        # Clean up
+        gc.collect()
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
+    
+    # Concatenate all chunks
+    if result_chunks:
+        result = torch.cat(result_chunks, dim=0)
+        print(f"Final tensor shape: {result.shape}")
+        return result
+    else:
+        print("No sequences were created. Check your dataset.")
+        return torch.zeros((0, block_size), dtype=torch.long)
     
 # main function to setup distributed training
 # https://pytorch.org/tutorials/intermediate/ddp_tutorial.html
