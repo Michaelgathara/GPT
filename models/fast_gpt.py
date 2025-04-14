@@ -15,7 +15,7 @@ import torch.nn.functional as F
 # import torch.multiprocessing as mp
 # from torch.nn.parallel import DistributedDataParallel as DDP
 from torch.utils.data import Dataset, DataLoader
-from torch.utils.tensorboard import SummaryWriter
+# from torch.utils.tensorboard import SummaryWriter
 
 from tqdm import tqdm
 from functools import partial
@@ -145,7 +145,7 @@ def train(config, train_tensor, val_tensor, test_tensor, vocab_size, device): # 
     # create checkpoint directory (no rank check needed)
     os.makedirs(config.checkpoint_dir, exist_ok=True)
     os.makedirs(config.log_dir, exist_ok=True)
-    writer = SummaryWriter(log_dir=config.log_dir)
+    # writer = SummaryWriter(log_dir=config.log_dir)
 
     # create datasets
     train_dataset = TokenizedDataset(train_tensor, config.block_size)
@@ -309,10 +309,10 @@ def train(config, train_tensor, val_tensor, test_tensor, vocab_size, device): # 
             print(f"Iter {iter_num}: loss {loss_value:.4f}, lr {lr:.6f}, {tokens_per_sec:.2f} tokens/sec")
 
             # log to tensorboard
-            writer.add_scalar('training/loss', loss_value, iter_num)
-            writer.add_scalar('training/learning_rate', lr, iter_num)
-            writer.add_scalar('training/tokens_per_sec', tokens_per_sec, iter_num)
-            writer.add_scalar('training/tokens_processed', tokens_processed, iter_num)
+            # writer.add_scalar('training/loss', loss_value, iter_num)
+            # writer.add_scalar('training/learning_rate', lr, iter_num)
+            # writer.add_scalar('training/tokens_per_sec', tokens_per_sec, iter_num)
+            # writer.add_scalar('training/tokens_processed', tokens_processed, iter_num)
 
 
         # evaluate model (no rank check needed)
@@ -324,7 +324,7 @@ def train(config, train_tensor, val_tensor, test_tensor, vocab_size, device): # 
             print(f"Iter {iter_num}: val loss {loss_dict['val']:.4f}")
 
             # log evaluation metrics
-            writer.add_scalar(f'evaluation/val_loss', loss_dict['val'], iter_num)
+            # writer.add_scalar(f'evaluation/val_loss', loss_dict['val'], iter_num)
 
             # save model if validation loss improved
             if loss_dict['val'] < best_val_loss:
@@ -367,7 +367,7 @@ def train(config, train_tensor, val_tensor, test_tensor, vocab_size, device): # 
     # Evaluate final test loss
     test_loss_dict = estimate_loss(model, {'test': test_loader}, len(test_loader), device) # Evaluate on all test data
     print(f"Final Test Loss: {test_loss_dict['test']:.4f}")
-    writer.add_scalar('evaluation/final_test_loss', test_loss_dict['test'], config.max_iters)
+    # writer.add_scalar('evaluation/final_test_loss', test_loss_dict['test'], config.max_iters)
 
     model.eval()
     context = torch.zeros((1, 1), dtype=torch.long, device=device) # Start with token 0
@@ -389,7 +389,7 @@ def train(config, train_tensor, val_tensor, test_tensor, vocab_size, device): # 
     print("Training completed!")
 
     # close tensorboard writer
-    writer.close()
+    # writer.close()
 
 def convert_to_tensor_batches(dataset, batch_size=100_000):
     tensors = []
@@ -433,128 +433,128 @@ def main():
 
     # --- Data Loading and Preprocessing ---
     # This part remains largely the same, ensure num_proc is reasonable
-    dataset = get_llama_nemotron_data()
-    print(f"Dataset: {dataset}")
-    # num_cores = multiprocessing.cpu_count() # Can still use multiprocessing for map
-    num_cores = max(1, os.cpu_count() // 2) # Use half cores to leave resources
+    # dataset = get_llama_nemotron_data()
+    # print(f"Dataset: {dataset}")
+    # # num_cores = multiprocessing.cpu_count() # Can still use multiprocessing for map
+    # num_cores = max(1, os.cpu_count() // 2) # Use half cores to leave resources
 
-    def prepare_training_text(example):
-        # ... (same as before) ...
-        if isinstance(example["input"], list):
-             input_text = " ".join([str(item) for item in example["input"]])
-        else:
-             input_text = str(example["input"])
+    # def prepare_training_text(example):
+    #     # ... (same as before) ...
+    #     if isinstance(example["input"], list):
+    #          input_text = " ".join([str(item) for item in example["input"]])
+    #     else:
+    #          input_text = str(example["input"])
 
-        if isinstance(example["output"], list):
-             output_text = " ".join([str(item) for item in example["output"]])
-        else:
-             output_text = str(example["output"])
+    #     if isinstance(example["output"], list):
+    #          output_text = " ".join([str(item) for item in example["output"]])
+    #     else:
+    #          output_text = str(example["output"])
 
-        # Combine input and output, maybe with a separator if needed by the model
-        # Example: Add EOS token between input and output if desired
-        # full_text = input_text + tokenizer.eos_token + output_text
-        full_text = input_text + " " + output_text # Original simple concatenation
+    #     # Combine input and output, maybe with a separator if needed by the model
+    #     # Example: Add EOS token between input and output if desired
+    #     # full_text = input_text + tokenizer.eos_token + output_text
+    #     full_text = input_text + " " + output_text # Original simple concatenation
 
-        return {"text": full_text}
-
-
-    processed_dataset = {}
-    for split in dataset:
-        processed_dataset[split] = dataset[split].map(
-            prepare_training_text,
-            remove_columns=dataset[split].column_names,
-            num_proc=num_cores, # Use multiprocessing for mapping
-            desc=f"Preparing text for {split}"
-        )
-
-    logger.info("Tokenizing dataset...")
-    def tokenize_batch(examples, tokenizer):
-        # ... (same as before) ...
-        texts = [str(text) for text in examples["text"]]
-
-        encoded = []
-        for text in texts:
-             try:
-                 # Add EOS token if desired for sequence separation during training
-                 encoded_ids = tokenizer.encode(text).ids
-                 # Optionally add EOS token to the end of each sequence
-                 # encoded_ids.append(tokenizer.eos_token_id)
-                 encoded.append(encoded_ids)
-             except Exception as e:
-                 print(f"Error tokenizing text: {e}")
-                 encoded.append([]) # Append empty list on error
-
-        return {"input_ids": encoded}
+    #     return {"text": full_text}
 
 
-    tokenized_dataset = {}
-    for split in processed_dataset:
-        tokenized_dataset[split] = processed_dataset[split].map(
-            tokenize_batch,
-            fn_kwargs={"tokenizer": tokenizer},
-            batched=True,
-            batch_size=10_000, # Adjust as needed
-            num_proc=num_cores, # Use multiprocessing
-            remove_columns=processed_dataset[split].column_names,
-            desc=f"Tokenizing {split}"
-        )
+    # processed_dataset = {}
+    # for split in dataset:
+    #     processed_dataset[split] = dataset[split].map(
+    #         prepare_training_text,
+    #         remove_columns=dataset[split].column_names,
+    #         num_proc=num_cores, # Use multiprocessing for mapping
+    #         desc=f"Preparing text for {split}"
+    #     )
 
-    logger.info("Chunking dataset...")
-    def group_texts(examples):
-        # ... (same as before, ensure it handles empty lists in input_ids) ...
-        concatenated = []
-        for ids in examples["input_ids"]:
-            if ids: # Only extend if the list is not empty
-                 concatenated.extend(ids)
-                 # Optionally add EOS between concatenated sequences if not done in tokenize
-                 # concatenated.append(tokenizer.eos_token_id)
+    # logger.info("Tokenizing dataset...")
+    # def tokenize_batch(examples, tokenizer):
+    #     # ... (same as before) ...
+    #     texts = [str(text) for text in examples["text"]]
 
-        # Calculate total length usable for full blocks
-        total_length = (len(concatenated) // config.block_size) * config.block_size
-        concatenated = concatenated[:total_length]
+    #     encoded = []
+    #     for text in texts:
+    #          try:
+    #              # Add EOS token if desired for sequence separation during training
+    #              encoded_ids = tokenizer.encode(text).ids
+    #              # Optionally add EOS token to the end of each sequence
+    #              # encoded_ids.append(tokenizer.eos_token_id)
+    #              encoded.append(encoded_ids)
+    #          except Exception as e:
+    #              print(f"Error tokenizing text: {e}")
+    #              encoded.append([]) # Append empty list on error
 
-        # Ensure the result is a list of lists, even if empty
-        result = [concatenated[i : i + config.block_size]
-                   for i in range(0, total_length, config.block_size)]
-
-        # Return format expected by datasets.map (dict of lists)
-        return {"input_ids": result}
+    #     return {"input_ids": encoded}
 
 
-    lm_dataset = {}
-    for split in tokenized_dataset:
-        # Filter out empty examples before chunking if necessary
-        # filtered_split = tokenized_dataset[split].filter(lambda ex: len(ex['input_ids']) > 0)
-        # lm_dataset[split] = filtered_split.map(
-        lm_dataset[split] = tokenized_dataset[split].map(
-            group_texts,
-            batched=True,
-            batch_size=1000, # Adjust as needed
-            num_proc=num_cores, # Use multiprocessing
-            desc=f"Chunking {split}"
-        )
-        # Remove empty chunks that might result from filtering/grouping issues
-        lm_dataset[split] = lm_dataset[split].filter(lambda example: len(example['input_ids']) > 0)
+    # tokenized_dataset = {}
+    # for split in processed_dataset:
+    #     tokenized_dataset[split] = processed_dataset[split].map(
+    #         tokenize_batch,
+    #         fn_kwargs={"tokenizer": tokenizer},
+    #         batched=True,
+    #         batch_size=10_000, # Adjust as needed
+    #         num_proc=num_cores, # Use multiprocessing
+    #         remove_columns=processed_dataset[split].column_names,
+    #         desc=f"Tokenizing {split}"
+    #     )
+
+    # logger.info("Chunking dataset...")
+    # def group_texts(examples):
+    #     # ... (same as before, ensure it handles empty lists in input_ids) ...
+    #     concatenated = []
+    #     for ids in examples["input_ids"]:
+    #         if ids: # Only extend if the list is not empty
+    #              concatenated.extend(ids)
+    #              # Optionally add EOS between concatenated sequences if not done in tokenize
+    #              # concatenated.append(tokenizer.eos_token_id)
+
+    #     # Calculate total length usable for full blocks
+    #     total_length = (len(concatenated) // config.block_size) * config.block_size
+    #     concatenated = concatenated[:total_length]
+
+    #     # Ensure the result is a list of lists, even if empty
+    #     result = [concatenated[i : i + config.block_size]
+    #                for i in range(0, total_length, config.block_size)]
+
+    #     # Return format expected by datasets.map (dict of lists)
+    #     return {"input_ids": result}
 
 
-    print(f"Dataset after chunking: \n{lm_dataset}")
-    # Ensure 'science' split exists and has enough data
-    if 'science' not in lm_dataset or len(lm_dataset['science']) < 2:
-         raise ValueError("Science split is missing or too small for val/test split.")
+    # lm_dataset = {}
+    # for split in tokenized_dataset:
+    #     # Filter out empty examples before chunking if necessary
+    #     # filtered_split = tokenized_dataset[split].filter(lambda ex: len(ex['input_ids']) > 0)
+    #     # lm_dataset[split] = filtered_split.map(
+    #     lm_dataset[split] = tokenized_dataset[split].map(
+    #         group_texts,
+    #         batched=True,
+    #         batch_size=1000, # Adjust as needed
+    #         num_proc=num_cores, # Use multiprocessing
+    #         desc=f"Chunking {split}"
+    #     )
+    #     # Remove empty chunks that might result from filtering/grouping issues
+    #     lm_dataset[split] = lm_dataset[split].filter(lambda example: len(example['input_ids']) > 0)
 
-    # Ensure val_size calculation is valid
-    val_size = max(1, len(lm_dataset['science']) // 2) # Ensure at least 1 example if possible
-    test_start_index = val_size
+
+    # print(f"Dataset after chunking: \n{lm_dataset}")
+    # # Ensure 'science' split exists and has enough data
+    # if 'science' not in lm_dataset or len(lm_dataset['science']) < 2:
+    #      raise ValueError("Science split is missing or too small for val/test split.")
+
+    # # Ensure val_size calculation is valid
+    # val_size = max(1, len(lm_dataset['science']) // 2) # Ensure at least 1 example if possible
+    # test_start_index = val_size
 
 
-    # Ensure test set is not empty
-    if test_start_index >= len(lm_dataset['science']):
-         print("Warning: Validation set size calculation results in empty test set. Adjusting.")
-         # Adjust val_size, e.g., take fewer for validation if dataset is small
-         val_size = max(1, len(lm_dataset['science']) - 1)
-         test_start_index = val_size
-         if test_start_index >= len(lm_dataset['science']):
-               raise ValueError("Cannot create non-empty validation and test splits from science data.")
+    # # Ensure test set is not empty
+    # if test_start_index >= len(lm_dataset['science']):
+    #      print("Warning: Validation set size calculation results in empty test set. Adjusting.")
+    #      # Adjust val_size, e.g., take fewer for validation if dataset is small
+    #      val_size = max(1, len(lm_dataset['science']) - 1)
+    #      test_start_index = val_size
+    #      if test_start_index >= len(lm_dataset['science']):
+    #            raise ValueError("Cannot create non-empty validation and test splits from science data.")
 
 
     # --- Tensor Conversion ---
