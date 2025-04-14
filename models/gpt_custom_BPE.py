@@ -559,9 +559,9 @@ def main():
 
     # --- Tensor Conversion ---
     # Define paths
-    train_data_path = os.path.join(config.checkpoint_dir, 'train_data_single.pt')
-    val_data_path = os.path.join(config.checkpoint_dir, 'val_data_single.pt')
-    test_data_path = os.path.join(config.checkpoint_dir, 'test_data_single.pt')
+    train_data_path = os.path.join(config.checkpoint_dir, 'train_data.pt')
+    val_data_path = os.path.join(config.checkpoint_dir, 'val_data.pt')
+    test_data_path = os.path.join(config.checkpoint_dir, 'test_data.pt')
 
     # Load or convert tensors
     train_data = None
