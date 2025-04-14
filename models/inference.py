@@ -29,6 +29,7 @@ def load_model(checkpoint_path, device):
         raise FileNotFoundError(f"Checkpoint not found: {checkpoint_path}")
     checkpoint = torch.load(checkpoint_path, map_location=device, weights_only=False)
     config_dict = checkpoint['config']
+    print(f"DEBUG: n_embd loaded from checkpoint config: {config_dict.get('n_embd', 'Not Found')}")
     print("Checkpoint loaded. Model configuration:")
     for key, val in config_dict.items():
         print(f"  {key}: {val}")
