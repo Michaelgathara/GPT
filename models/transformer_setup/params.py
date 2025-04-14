@@ -4,12 +4,12 @@ class ModelConfig:
         self.batch_size = 72                # Batch size per GPU
         self.block_size = 512               # Context size
         self.n_embd = 768                   # Embedding dimension
-        self.n_head = 12                    # Number of attention heads
-        self.n_layer = 12                   # Number of transformer layers
+        self.n_head = 14                    # Number of attention heads
+        self.n_layer = 14                   # Number of transformer layers
         self.dropout = 0.1                  # Dropout rate
         
         # training parameters
-        self.max_iters = 2000               # Number of iterations
+        self.max_iters = 10000               # Number of iterations
         self.eval_interval = 100            # Evaluation interval
         self.learning_rate = 1e-3          # Learning rate
         self.eval_iters = 5                 # Evaluation iterations
