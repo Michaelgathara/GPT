@@ -14,7 +14,7 @@ import torch.nn.functional as F
 # import torch.distributed as dist
 # import torch.multiprocessing as mp
 # from torch.nn.parallel import DistributedDataParallel as DDP
-# from torch.utils.data import Dataset, DataLoader, DistributedSampler
+from torch.utils.data import Dataset, DataLoader
 from torch.utils.tensorboard import SummaryWriter
 
 from tqdm import tqdm
