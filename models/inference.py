@@ -39,7 +39,7 @@ def load_model(checkpoint_path: str, device: torch.device) -> tuple[TransformerM
     if 'config' not in checkpoint:
         raise KeyError("Checkpoint does not contain the 'config' dictionary.")
     config_dict = checkpoint['config']
-
+    print(f"DEBUG: n_embd loaded from checkpoint config: {config_dict.get('n_embd', 'Not Found')}")
     print("Checkpoint loaded. Model configuration found:")
     for key, val in config_dict.items():
         print(f"  {key}: {val}")
