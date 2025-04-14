@@ -3,7 +3,7 @@ class ModelConfig:
         # model architecture
         self.batch_size = 128               # Batch size per GPU - Increased for H100
         self.block_size = 1024              # Context size - Can increase for longer context
-        self.n_embd = 1536                  # Embedding dimension - Increased model capacity
+        self.n_embd = 1024                  # Embedding dimension - Increased model capacity
         self.n_head = 24                    # Number of attention heads - Keep it divisible by n_embd
         self.n_layer = 24                   # Number of transformer layers - Deeper model
         self.dropout = 0.1                  # Dropout rate - Keep it for regularization
