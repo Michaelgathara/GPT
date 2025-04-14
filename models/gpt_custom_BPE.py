@@ -110,7 +110,7 @@ def estimate_loss(model, dataloaders, eval_iters, device):
             try:
                 # get batch from dataloader
                 x, y = next(iter(dataloader))
-                x, y = x.to(model.device), y.to(model.device)
+                x, y = x.to(device), y.to(device)
                 
                 # Compute loss
                 with torch.amp.autocast('cuda'):
