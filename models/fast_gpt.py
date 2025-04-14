@@ -15,7 +15,7 @@ import torch.nn.functional as F
 # import torch.multiprocessing as mp
 # from torch.nn.parallel import DistributedDataParallel as DDP
 from torch.utils.data import Dataset, DataLoader
-from torch.utils.tensorboard import SummaryWriter
+# from torch.utils.tensorboard import SummaryWriter
 
 from tqdm import tqdm
 from functools import partial
@@ -145,7 +145,7 @@ def train(config, train_tensor, val_tensor, test_tensor, vocab_size, device): # 
     # create checkpoint directory (no rank check needed)
     os.makedirs(config.checkpoint_dir, exist_ok=True)
     os.makedirs(config.log_dir, exist_ok=True)
-    writer = SummaryWriter(log_dir=config.log_dir)
+    # writer = SummaryWriter(log_dir=config.log_dir)
 
     # create datasets
     train_dataset = TokenizedDataset(train_tensor, config.block_size)
@@ -309,10 +309,10 @@ def train(config, train_tensor, val_tensor, test_tensor, vocab_size, device): # 
             print(f"Iter {iter_num}: loss {loss_value:.4f}, lr {lr:.6f}, {tokens_per_sec:.2f} tokens/sec")
 
             # log to tensorboard
-            writer.add_scalar('training/loss', loss_value, iter_num)
-            writer.add_scalar('training/learning_rate', lr, iter_num)
-            writer.add_scalar('training/tokens_per_sec', tokens_per_sec, iter_num)
-            writer.add_scalar('training/tokens_processed', tokens_processed, iter_num)
+            # writer.add_scalar('training/loss', loss_value, iter_num)
+            # writer.add_scalar('training/learning_rate', lr, iter_num)
+            # writer.add_scalar('training/tokens_per_sec', tokens_per_sec, iter_num)
+            # writer.add_scalar('training/tokens_processed', tokens_processed, iter_num)
 
 
         # evaluate model (no rank check needed)
@@ -324,7 +324,7 @@ def train(config, train_tensor, val_tensor, test_tensor, vocab_size, device): # 
             print(f"Iter {iter_num}: val loss {loss_dict['val']:.4f}")
 
             # log evaluation metrics
-            writer.add_scalar(f'evaluation/val_loss', loss_dict['val'], iter_num)
+            # writer.add_scalar(f'evaluation/val_loss', loss_dict['val'], iter_num)
 
             # save model if validation loss improved
             if loss_dict['val'] < best_val_loss:
@@ -367,7 +367,7 @@ def train(config, train_tensor, val_tensor, test_tensor, vocab_size, device): # 
     # Evaluate final test loss
     test_loss_dict = estimate_loss(model, {'test': test_loader}, len(test_loader), device) # Evaluate on all test data
     print(f"Final Test Loss: {test_loss_dict['test']:.4f}")
-    writer.add_scalar('evaluation/final_test_loss', test_loss_dict['test'], config.max_iters)
+    # writer.add_scalar('evaluation/final_test_loss', test_loss_dict['test'], config.max_iters)
 
     model.eval()
     context = torch.zeros((1, 1), dtype=torch.long, device=device) # Start with token 0
@@ -389,7 +389,7 @@ def train(config, train_tensor, val_tensor, test_tensor, vocab_size, device): # 
     print("Training completed!")
 
     # close tensorboard writer
-    writer.close()
+    # writer.close()
 
 def convert_to_tensor_batches(dataset, batch_size=100_000):
     tensors = []
