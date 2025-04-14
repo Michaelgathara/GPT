@@ -100,7 +100,7 @@ def get_batch(dataloader):
 
 
 @torch.no_grad()
-def estimate_loss(model, dataloaders, eval_iters):
+def estimate_loss(model, dataloaders, eval_iters, device):
     model.eval()
     losses = {}
     
