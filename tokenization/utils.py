@@ -1,4 +1,4 @@
-import os
+import os, sys
 from tokenizers import Tokenizer
 
 base_folder = os.path.abspath("../")
