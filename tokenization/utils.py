@@ -1,15 +1,12 @@
 import os
 from tokenizers import Tokenizer
 
-base_folder = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+base_folder = os.path.abspath("../..")
+sys.path.append(base_folder)
 
-from .custom_tokenizer.config import FINEWEB_TOKENIZER_PATH
-
+from tokenization.custom_tokenizer.config import FINEWEB_TOKENIZER_PATH
 
 def load_fineweb_tokenizer() -> Tokenizer:
-    """
-    Loads the trained FineWeb BPE tokenizer.
-    """
     path = FINEWEB_TOKENIZER_PATH
     if not os.path.exists(path):
         raise FileNotFoundError(
