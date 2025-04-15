@@ -7,7 +7,7 @@ from tokenizers.pre_tokenizers import Whitespace
 from tokenizers.processors import TemplateProcessing
 import time
 
-base_folder = os.path.abspath("../..")
+base_folder = os.path.abspath("../")
 sys.path.append(base_folder)
 
 from data import get_fineweb_data 

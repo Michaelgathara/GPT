@@ -1,7 +1,7 @@
 import os
 from tokenizers import Tokenizer
 
-base_folder = os.path.abspath("../..")
+base_folder = os.path.abspath("../")
 sys.path.append(base_folder)
 
 from tokenization.custom_tokenizer.config import FINEWEB_TOKENIZER_PATH
