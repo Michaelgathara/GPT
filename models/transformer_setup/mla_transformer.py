@@ -55,31 +55,22 @@ class LatentAttentionHead(nn.Module):
             
         # Compute attention using flash attention if available, otherwise use standard attention
         if self.has_flash_attn:
-            # reshape for flash_attn_unpadded which expects (B, S, H)
-            # Here our batch already contains only one head, so no need to reshape for num_heads
-            Q = queries
-            K = keys
-            V = values
+            # Reshape for flash_attn_func (add head dimension)
+            q = queries.unsqueeze(2)  # (batch_size, n_latent_vec, 1, head_dim)
+            k = keys.unsqueeze(2)     # (batch_size, seq_len, 1, head_dim)
+            v = values.unsqueeze(2)   # (batch_size, seq_len, 1, head_dim)
             
-            # flash_attn_unpadded expects contiguous tensors
-            Q = Q.contiguous()
-            K = K.contiguous()
-            V = V.contiguous()
-            
-            # Generate sequence length tensors
-            Q_lengths = torch.full((Q.shape[0],), Q.shape[1], device=Q.device, dtype=torch.int32)
-            K_lengths = torch.full((K.shape[0],), K.shape[1], device=K.device, dtype=torch.int32)
-            
-            # Call flash attention - note that it's non-causal for latent attention
+            # Call flash attention
             dropout_p = self.dropout.p if self.training else 0.0
-            output = flash_attn_func(
-                Q, K, V,
-                Q_lengths=Q_lengths,
-                K_lengths=K_lengths,
+            output = self.flash_attn_func(
+                q, k, v,
+                dropout_p=dropout_p,
                 causal=False,
-                dropout_p=dropout_p
+                softmax_scale=1.0 / math.sqrt(self.head_dim)
             )
-            return output
+            
+            # Remove head dimension
+            return output.squeeze(2)  # (batch_size, n_latent_vec, head_dim)
         else:
             # Original attention mechanism
             scores = queries @ keys.transpose(-2, -1) * (self.head_dim ** -0.5)
