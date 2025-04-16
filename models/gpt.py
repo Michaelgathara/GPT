@@ -369,42 +369,42 @@ def main():
 
         # --- Evaluation & Checkpointing ---
         # Use eval_interval from config
-         if iter_num > 0 and (iter_num % config.eval_interval == 0 or iter_num == config.max_iters - 1):
-             logger.info(f"--- Running Evaluation at Iteration {iter_num} ---")
-             # Pass val_loader, use eval_iters from config
-             val_loss = estimate_loss(model, val_loader, config.eval_iters, device)
+        if iter_num > 0 and (iter_num % config.eval_interval == 0 or iter_num == config.max_iters - 1):
+            logger.info(f"--- Running Evaluation at Iteration {iter_num} ---")
+            # Pass val_loader, use eval_iters from config
+            val_loss = estimate_loss(model, val_loader, config.eval_iters, device)
 
-             if val_loss < best_val_loss:
-                 best_val_loss = val_loss
-                 logger.info(f"*** New best validation loss: {best_val_loss:.4f} ***")
-                 # Save checkpoint
-                 checkpoint = {
-                     'model_state_dict': model.state_dict(),
-                     'optimizer_state_dict': optimizer.state_dict(),
-                     'scaler_state_dict': scaler.state_dict(),
-                     'iter_num': iter_num,
-                     'best_val_loss': best_val_loss,
-                     'config': vars(config)
-                 }
-                 best_ckpt_path = os.path.join(checkpoint_dir, 'best_model.pt')
-                 torch.save(checkpoint, best_ckpt_path)
-                 logger.info(f"Saved best model checkpoint to {best_ckpt_path}")
-             else:
-                  logger.info(f"Validation loss {val_loss:.4f} did not improve from best {best_val_loss:.4f}")
+            if val_loss < best_val_loss:
+                best_val_loss = val_loss
+                logger.info(f"*** New best validation loss: {best_val_loss:.4f} ***")
+                # Save checkpoint
+                checkpoint = {
+                    'model_state_dict': model.state_dict(),
+                    'optimizer_state_dict': optimizer.state_dict(),
+                    'scaler_state_dict': scaler.state_dict(),
+                    'iter_num': iter_num,
+                    'best_val_loss': best_val_loss,
+                    'config': vars(config)
+                }
+                best_ckpt_path = os.path.join(checkpoint_dir, 'best_model.pt')
+                torch.save(checkpoint, best_ckpt_path)
+                logger.info(f"Saved best model checkpoint to {best_ckpt_path}")
+            else:
+                logger.info(f"Validation loss {val_loss:.4f} did not improve from best {best_val_loss:.4f}")
 
-             # Periodic checkpoint
-             if iter_num % (config.eval_interval * 5) == 0:
-                  periodic_ckpt_path = os.path.join(checkpoint_dir, f'checkpoint_{iter_num}.pt')
-                  checkpoint = {
-                     'model_state_dict': model.state_dict(),
-                     'optimizer_state_dict': optimizer.state_dict(),
-                     'scaler_state_dict': scaler.state_dict(),
-                     'iter_num': iter_num,
-                     'val_loss': val_loss,
-                     'config': vars(config)
-                  }
-                  torch.save(checkpoint, periodic_ckpt_path)
-                  logger.info(f"Saved periodic checkpoint to {periodic_ckpt_path}")
+            # Periodic checkpoint
+            if iter_num % (config.eval_interval * 5) == 0:
+                periodic_ckpt_path = os.path.join(checkpoint_dir, f'checkpoint_{iter_num}.pt')
+                checkpoint = {
+                    'model_state_dict': model.state_dict(),
+                    'optimizer_state_dict': optimizer.state_dict(),
+                    'scaler_state_dict': scaler.state_dict(),
+                    'iter_num': iter_num,
+                    'val_loss': val_loss,
+                    'config': vars(config)
+                }
+                torch.save(checkpoint, periodic_ckpt_path)
+                logger.info(f"Saved periodic checkpoint to {periodic_ckpt_path}")
 
 
         iter_num += 1
