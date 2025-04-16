@@ -74,7 +74,20 @@ class NemotronPreprocessor:
                     )
         
         return datasets_dict
-    
+
+    def ensure_string(text):
+        if text is None:
+            return ""
+        elif isinstance(text, list):
+            return " ".join(str(item) for item in text)
+        elif isinstance(text, (int, float, bool)):
+            return str(text)
+        elif isinstance(text, dict):
+            import json
+            return json.dumps(text)
+        else:
+            return str(text)
+
     def format_for_qwen2(self, datasets_dict: Dict[str, Dataset]) -> Dict[str, Dataset]:
         """Format the dataset for Qwen2's expected chat format"""
         logger.info("Formatting dataset for Qwen2...")
@@ -85,31 +98,30 @@ class NemotronPreprocessor:
             logger.info(f"Formatting '{split_name}' split...")
             
             def format_example(example):
-                # Get input/output from example
-                input_text = example["input"] if example["input"] else ""
-                output_text = example["output"] if example["output"] else ""
+                input_text = ensure_string(example["input"])
+                output_text = ensure_string(example["output"])
                 
-                # Create messages structure
                 messages = [
                     {"role": "system", "content": "You are a helpful assistant."},
                     {"role": "user", "content": input_text},
                     {"role": "assistant", "content": output_text}
                 ]
                 
-                # Apply Qwen2's chat template
                 formatted_chat = self.tokenizer.apply_chat_template(
                     messages,
                     tokenize=False,
                     add_generation_prompt=False
                 )
                 
-                # Add quality score based on if reasoning exists
-                quality_score = 2 if example.get("reasoning") and example["reasoning"] else 1
+                reasoning = ensure_string(example.get("reasoning", ""))
+                quality_score = 2 if reasoning and len(reasoning) > 10 else 1
+                
+                category = ensure_string(example.get("category", "unknown"))
                 
                 return {
                     "formatted_chat": formatted_chat,
                     "quality_score": quality_score,
-                    "category": example.get("category", "unknown"),
+                    "category": category,
                     "input": input_text,
                     "output": output_text
                 }
