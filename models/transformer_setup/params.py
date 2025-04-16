@@ -1,7 +1,7 @@
 class ModelConfig:
     def __init__(self):
         # model architecture
-        self.batch_size = 128               # Batch size per GPU - Increased for H100
+        self.batch_size = 4               # Batch size per GPU - Increased for H100
         self.block_size = 1024              # Context size - Can increase for longer context
         self.n_embd = 1536                  # Embedding dimension - Increased model capacity
         self.n_head = 24                    # Number of attention heads - Keep it divisible by n_embd
@@ -12,12 +12,12 @@ class ModelConfig:
         self.max_iters = 10000               # Number of iterations - Train longer with larger model
         self.eval_interval = 200            # Evaluation interval - Adjust accordingly
         self.learning_rate = 3e-4          # Learning rate - Tune this carefully
-        self.eval_iters = 10                 # Evaluation iterations - More for better estimate
-        self.accumulation_steps = 2         # Gradient accumulation steps - Tradeoff memory/compute
+        self.eval_iters = 100                 # Evaluation iterations - More for better estimate
+        self.accumulation_steps = 64         # Gradient accumulation steps - Tradeoff memory/compute
         self.warmup_iters = 1000             # Learning rate warmup iterations - Longer for stability
         
         # Optimizer Settings
-        self.weight_decay = 1e-4
+        self.weight_decay = 0.1
         self.beta1 = 0.9
         self.beta2 = 0.95
         
