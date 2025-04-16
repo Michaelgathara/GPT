@@ -75,124 +75,6 @@ class NemotronPreprocessor:
         
         return datasets_dict
     
-    def analyze_dataset(self, datasets_dict: Dict[str, Dataset]) -> Dict[str, Any]:
-        logger.info("Analyzing dataset characteristics...")
-        
-        analysis = {}
-        
-        for split_name, dataset in datasets_dict.items():
-            split_analysis = {}
-            
-            # Sample size
-            split_analysis["sample_size"] = len(dataset)
-            
-            # Analyze input lengths
-            input_lengths = [len(example["input"]) if example["input"] else 0 for example in dataset]
-            split_analysis["input_length"] = {
-                "mean": np.mean(input_lengths),
-                "median": np.median(input_lengths),
-                "min": min(input_lengths),
-                "max": max(input_lengths),
-                "std": np.std(input_lengths)
-            }
-            
-            # Analyze output lengths
-            output_lengths = [len(example["output"]) if example["output"] else 0 for example in dataset]
-            split_analysis["output_length"] = {
-                "mean": np.mean(output_lengths),
-                "median": np.median(output_lengths),
-                "min": min(output_lengths),
-                "max": max(output_lengths),
-                "std": np.std(output_lengths)
-            }
-            
-            # Category distribution
-            categories = {}
-            for example in dataset:
-                category = example.get("category", "unknown")
-                if category not in categories:
-                    categories[category] = 0
-                categories[category] += 1
-            
-            split_analysis["category_distribution"] = {
-                k: v / len(dataset) for k, v in categories.items()
-            }
-            
-            # Reasoning path presence
-            reasoning_count = sum(1 for example in dataset if example.get("reasoning") and example["reasoning"])
-            split_analysis["reasoning_presence"] = reasoning_count / len(dataset)
-            
-            analysis[split_name] = split_analysis
-        
-        # Save analysis
-        with open(os.path.join(self.output_dir, "dataset_analysis.json"), "w") as f:
-            json.dump(analysis, f, indent=2)
-        
-        return analysis
-    
-    def clean_and_filter_dataset(self, datasets_dict: Dict[str, Dataset]) -> Dict[str, Dataset]:
-        logger.info("Cleaning and filtering dataset...")
-        
-        filtered_datasets = {}
-        
-        for split_name, dataset in datasets_dict.items():
-            logger.info(f"Processing '{split_name}' split...")
-            
-            # Filter invalid examples
-            def is_valid_example(example):
-                # Ensure input and output are not empty
-                if not example["input"] or not example["output"]:
-                    return False
-                
-                # Check if input is too short (possibly noise)
-                if len(example["input"]) < 10:
-                    return False
-                
-                # Filter out very long sequences
-                input_output_length = len(example["input"]) + len(example["output"])
-                if input_output_length > self.max_seq_length * 0.9:  # Allow some buffer for formatting
-                    return False
-                
-                return True
-            
-            filtered_dataset = dataset.filter(
-                is_valid_example,
-                desc=f"Filtering invalid examples from '{split_name}'"
-            )
-            
-            logger.info(f"After filtering: {len(filtered_dataset)} examples (removed {len(dataset) - len(filtered_dataset)})")
-            filtered_datasets[split_name] = filtered_dataset
-        
-        return filtered_datasets
-    
-    def deduplicate_dataset(self, datasets_dict: Dict[str, Dataset]) -> Dict[str, Dataset]:
-        logger.info("Deduplicating dataset...")
-        
-        deduplicated_datasets = {}
-        
-        for split_name, dataset in datasets_dict.items():
-            logger.info(f"Deduplicating '{split_name}' split...")
-            
-            # Create hashes for each example
-            hashes = set()
-            unique_indices = []
-            
-            for i, example in enumerate(tqdm(dataset, desc=f"Hashing examples in '{split_name}'")):
-                # Create a hash of the input and output
-                hash_str = f"{example['input']}_{example['output']}"
-                hash_val = hashlib.md5(hash_str.encode()).hexdigest()
-                
-                if hash_val not in hashes:
-                    hashes.add(hash_val)
-                    unique_indices.append(i)
-            
-            deduplicated_dataset = dataset.select(unique_indices)
-            logger.info(f"After deduplication: {len(deduplicated_dataset)} examples (removed {len(dataset) - len(deduplicated_dataset)})")
-            
-            deduplicated_datasets[split_name] = deduplicated_dataset
-        
-        return deduplicated_datasets
-    
     def format_for_qwen2(self, datasets_dict: Dict[str, Dataset]) -> Dict[str, Dataset]:
         """Format the dataset for Qwen2's expected chat format"""
         logger.info("Formatting dataset for Qwen2...")
@@ -312,17 +194,8 @@ class NemotronPreprocessor:
         # 1. Load the dataset
         datasets_dict = self.load_nemotron_dataset()
         
-        # 2. Analyze the dataset
-        analysis = self.analyze_dataset(datasets_dict)
-        
-        # 3. Clean and filter the dataset
-        filtered_datasets = self.clean_and_filter_dataset(datasets_dict)
-        
-        # 4. Deduplicate the dataset
-        deduplicated_datasets = self.deduplicate_dataset(filtered_datasets)
-        
         # 5. Format for Qwen2
-        formatted_datasets = self.format_for_qwen2(deduplicated_datasets)
+        formatted_datasets = self.format_for_qwen2(datasets_dict)
         
         # 6. Create train/val/test splits
         split_datasets = self.create_train_val_test_split(formatted_datasets)
