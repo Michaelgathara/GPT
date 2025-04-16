@@ -70,7 +70,7 @@ class TrainingConfig:
         seed: int = 42,
         mixed_precision: str = "bf16",  # H100 supports bf16 natively
         max_samples_per_dataset: Optional[int] = None,  # Set to limit samples per dataset
-        use_wandb: bool = True,
+        use_wandb: bool = False,
         use_curriculum: bool = True,  # Use curriculum learning
     ):
         self.model_name = model_name
