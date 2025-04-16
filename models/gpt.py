@@ -263,17 +263,13 @@ def main():
             train_dataset,
             batch_size=config.batch_size,
             num_workers=workers, # Start with 0 for IterableDataset stability
-            pin_memory=True,
-            prefetch_factor=2,
-            persistent_workers=True
+            pin_memory=True
         )
         val_loader = DataLoader(
             val_dataset,
             batch_size=config.batch_size, # Use same batch size for evaluation consistency
             num_workers=workers,
-            pin_memory=True,
-            prefetch_factor=2,
-            persistent_workers=True
+            pin_memory=True
         )
         logger.info("DataLoaders created.")
 
