@@ -15,6 +15,15 @@ class LatentAttentionHead(nn.Module):
         self.query_in = nn.Linear(latent_dim, head_dim, bias=False)
         self.dropout = nn.Dropout(dropout_prob)
         self.clear_cache()
+        # Check if flash attention is available
+        self.has_flash_attn = False
+        try:
+            from flash_attn import flash_attn_unpadded
+            self.flash_attn_unpadded = flash_attn_unpadded
+            self.has_flash_attn = True
+            print("Flash Attention is available and will be used")
+        except ImportError:
+            print("Flash Attention not available, falling back to standard attention")
 
     def forward(self, input_tensor, latent=None, use_cache=False):
         batch_size, seq_len, _ = input_tensor.shape
@@ -43,10 +52,40 @@ class LatentAttentionHead(nn.Module):
             keys = self.key_in(inp)
             values = self.value_in(inp)
             self.clear_cache()
-        scores = queries @ keys.transpose(-2, -1) * (self.head_dim ** -0.5)
-        weights = F.softmax(scores, dim=-1)
-        weights = self.dropout(weights)
-        return weights @ values
+            
+        # Compute attention using flash attention if available, otherwise use standard attention
+        if self.has_flash_attn:
+            # reshape for flash_attn_unpadded which expects (B, S, H)
+            # Here our batch already contains only one head, so no need to reshape for num_heads
+            Q = queries
+            K = keys
+            V = values
+            
+            # flash_attn_unpadded expects contiguous tensors
+            Q = Q.contiguous()
+            K = K.contiguous()
+            V = V.contiguous()
+            
+            # Generate sequence length tensors
+            Q_lengths = torch.full((Q.shape[0],), Q.shape[1], device=Q.device, dtype=torch.int32)
+            K_lengths = torch.full((K.shape[0],), K.shape[1], device=K.device, dtype=torch.int32)
+            
+            # Call flash attention - note that it's non-causal for latent attention
+            dropout_p = self.dropout.p if self.training else 0.0
+            output = self.flash_attn_unpadded(
+                Q, K, V,
+                Q_lengths=Q_lengths,
+                K_lengths=K_lengths,
+                causal=False,
+                dropout_p=dropout_p
+            )
+            return output
+        else:
+            # Original attention mechanism
+            scores = queries @ keys.transpose(-2, -1) * (self.head_dim ** -0.5)
+            weights = F.softmax(scores, dim=-1)
+            weights = self.dropout(weights)
+            return weights @ values
 
     def clear_cache(self):
         self.k_cache = None
