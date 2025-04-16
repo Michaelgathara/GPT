@@ -11,7 +11,7 @@ class ModelConfig:
         # training parameters
         self.max_iters = 10000               # Number of iterations - Train longer with larger model
         self.eval_interval = 200            # Evaluation interval - Adjust accordingly
-        self.learning_rate = 3e-4          # Learning rate - Tune this carefully
+        self.learning_rate = 1e-4          # Learning rate - Tune this carefully
         self.eval_iters = 100                 # Evaluation iterations - More for better estimate
         self.accumulation_steps = 64         # Gradient accumulation steps - Tradeoff memory/compute
         self.warmup_iters = 1000             # Learning rate warmup iterations - Longer for stability
