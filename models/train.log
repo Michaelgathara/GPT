@@ -1,45 +1,2284 @@
 nohup: ignoring input
 Your base folder is: /workspace/GPT
-Your base folder is: /workspace/GPT
-Tokenizer loaded from /workspace/GPT/tokenization/custom_tokenizer.json
+Tokenizer loaded
 Flash Attention is available!
-Flash Attention is available!
-Training with 1 GPUs
-2025-03-25 19:11:24,853 - transformer_training - INFO - Tokenizing dataset...
-Tokenizing (num_proc=256):   0%|          | 0/2530 [00:00<?, ? examples/s]Tokenizing (num_proc=256):   0%|          | 0/2530 [00:00<?, ? examples/s]Tokenizing (num_proc=256):   0%|          | 0/2530 [00:00<?, ? examples/s]Tokenizing (num_proc=256):   0%|          | 0/2530 [00:00<?, ? examples/s]Tokenizing (num_proc=256):   0%|          | 0/2530 [00:00<?, ? examples/s]Tokenizing (num_proc=256):   0%|          | 0/2530 [00:00<?, ? examples/s]
-multiprocess.pool.RemoteTraceback: 
-"""
-Traceback (most recent call last):
-  File "/workspace/GPT/.venv/lib/python3.10/site-packages/multiprocess/pool.py", line 125, in worker
-    result = (True, func(*args, **kwds))
-  File "/workspace/GPT/.venv/lib/python3.10/site-packages/datasets/utils/py_utils.py", line 680, in _write_generator_to_queue
-    for i, result in enumerate(func(**kwargs)):
-  File "/workspace/GPT/.venv/lib/python3.10/site-packages/datasets/arrow_dataset.py", line 3516, in _map_single
-    for i, batch in iter_outputs(shard_iterable):
-  File "/workspace/GPT/.venv/lib/python3.10/site-packages/datasets/arrow_dataset.py", line 3466, in iter_outputs
-    yield i, apply_function(example, i, offset=offset)
-  File "/workspace/GPT/.venv/lib/python3.10/site-packages/datasets/arrow_dataset.py", line 3389, in apply_function
-    processed_inputs = function(*fn_args, *additional_args, **fn_kwargs)
-TypeError: main.<locals>.tokenize_batch() missing 1 required positional argument: 'tokenizer'
-"""
-
-The above exception was the direct cause of the following exception:
-
-Traceback (most recent call last):
-  File "/workspace/GPT/models/gpt_custom_BPE.py", line 494, in <module>
-    main()
-  File "/workspace/GPT/models/gpt_custom_BPE.py", line 435, in main
-    tokenized_dataset = cleaned_dataset.map(
-  File "/workspace/GPT/.venv/lib/python3.10/site-packages/datasets/dataset_dict.py", line 941, in map
-    dataset_dict[split] = dataset.map(
-  File "/workspace/GPT/.venv/lib/python3.10/site-packages/datasets/arrow_dataset.py", line 557, in wrapper
-    out: Union["Dataset", "DatasetDict"] = func(self, *args, **kwargs)
-  File "/workspace/GPT/.venv/lib/python3.10/site-packages/datasets/arrow_dataset.py", line 3166, in map
-    for rank, done, content in iflatmap_unordered(
-  File "/workspace/GPT/.venv/lib/python3.10/site-packages/datasets/utils/py_utils.py", line 720, in iflatmap_unordered
-    [async_result.get(timeout=0.05) for async_result in async_results]
-  File "/workspace/GPT/.venv/lib/python3.10/site-packages/datasets/utils/py_utils.py", line 720, in <listcomp>
-    [async_result.get(timeout=0.05) for async_result in async_results]
-  File "/workspace/GPT/.venv/lib/python3.10/site-packages/multiprocess/pool.py", line 774, in get
-    raise self._value
-TypeError: main.<locals>.tokenize_batch() missing 1 required positional argument: 'tokenizer'
+Using GPU: NVIDIA H100 80GB HBM3
+Vocab size: 32000
+Loading pre-converted training tensor from disk...
+Loading pre-converted validation tensor from disk...
+Loading pre-converted testing tensor from disk...
+Converting datasets to tensors (if not loaded)...
+Train Data: torch.Size([21052256, 512]), torch.int64
+Val   Data: torch.Size([1294239, 512]), torch.int64
+Test  Data: torch.Size([1294239, 512]), torch.int64
+Vocabulary size: 32000
+Model initialized with 975,739,136 parameters
+Total iterations: 10000
+Batches per epoch: 164471
+2025-04-14 23:05:05,849 - transformer_training - INFO - Main loop iteration: 0
+Iter 0: loss 10.6812, lr 0.000300, 14598.85 tokens/sec
+Iter 0: val loss 10.6849
+New best model saved with val loss: 10.6849
+2025-04-14 23:05:22,244 - transformer_training - INFO - Main loop iteration: 1
+2025-04-14 23:05:26,161 - transformer_training - INFO - Main loop iteration: 2
+2025-04-14 23:05:29,560 - transformer_training - INFO - Main loop iteration: 3
+2025-04-14 23:05:33,347 - transformer_training - INFO - Main loop iteration: 4
+2025-04-14 23:05:36,743 - transformer_training - INFO - Main loop iteration: 5
+2025-04-14 23:05:40,366 - transformer_training - INFO - Main loop iteration: 6
+2025-04-14 23:05:43,943 - transformer_training - INFO - Main loop iteration: 7
+2025-04-14 23:05:47,566 - transformer_training - INFO - Main loop iteration: 8
+2025-04-14 23:05:51,269 - transformer_training - INFO - Main loop iteration: 9
+2025-04-14 23:05:54,891 - transformer_training - INFO - Main loop iteration: 10
+Iter 10: loss 10.2404, lr 0.000001, 19284.38 tokens/sec
+2025-04-14 23:05:58,290 - transformer_training - INFO - Main loop iteration: 11
+2025-04-14 23:06:02,063 - transformer_training - INFO - Main loop iteration: 12
+2025-04-14 23:06:05,462 - transformer_training - INFO - Main loop iteration: 13
+2025-04-14 23:06:09,084 - transformer_training - INFO - Main loop iteration: 14
+2025-04-14 23:06:12,793 - transformer_training - INFO - Main loop iteration: 15
+2025-04-14 23:06:16,415 - transformer_training - INFO - Main loop iteration: 16
+2025-04-14 23:06:19,975 - transformer_training - INFO - Main loop iteration: 17
+2025-04-14 23:06:23,598 - transformer_training - INFO - Main loop iteration: 18
+2025-04-14 23:06:26,995 - transformer_training - INFO - Main loop iteration: 19
+2025-04-14 23:06:30,954 - transformer_training - INFO - Main loop iteration: 20
+Iter 20: loss 10.1996, lr 0.000003, 19289.97 tokens/sec
+2025-04-14 23:06:34,352 - transformer_training - INFO - Main loop iteration: 21
+2025-04-14 23:06:38,140 - transformer_training - INFO - Main loop iteration: 22
+2025-04-14 23:06:41,542 - transformer_training - INFO - Main loop iteration: 23
+2025-04-14 23:06:45,168 - transformer_training - INFO - Main loop iteration: 24
+2025-04-14 23:06:48,892 - transformer_training - INFO - Main loop iteration: 25
+2025-04-14 23:06:52,517 - transformer_training - INFO - Main loop iteration: 26
+2025-04-14 23:06:55,918 - transformer_training - INFO - Main loop iteration: 27
+2025-04-14 23:06:59,726 - transformer_training - INFO - Main loop iteration: 28
+2025-04-14 23:07:03,125 - transformer_training - INFO - Main loop iteration: 29
+2025-04-14 23:07:07,100 - transformer_training - INFO - Main loop iteration: 30
+Iter 30: loss 10.1180, lr 0.000004, 19274.28 tokens/sec
+2025-04-14 23:07:10,502 - transformer_training - INFO - Main loop iteration: 31
+2025-04-14 23:07:14,127 - transformer_training - INFO - Main loop iteration: 32
+2025-04-14 23:07:17,695 - transformer_training - INFO - Main loop iteration: 33
+2025-04-14 23:07:21,321 - transformer_training - INFO - Main loop iteration: 34
+2025-04-14 23:07:25,035 - transformer_training - INFO - Main loop iteration: 35
+2025-04-14 23:07:28,657 - transformer_training - INFO - Main loop iteration: 36
+2025-04-14 23:07:32,056 - transformer_training - INFO - Main loop iteration: 37
+2025-04-14 23:07:35,840 - transformer_training - INFO - Main loop iteration: 38
+2025-04-14 23:07:39,244 - transformer_training - INFO - Main loop iteration: 39
+2025-04-14 23:07:43,214 - transformer_training - INFO - Main loop iteration: 40
+Iter 40: loss 9.9375, lr 0.000006, 19258.36 tokens/sec
+2025-04-14 23:07:46,618 - transformer_training - INFO - Main loop iteration: 41
+2025-04-14 23:07:50,252 - transformer_training - INFO - Main loop iteration: 42
+2025-04-14 23:07:53,812 - transformer_training - INFO - Main loop iteration: 43
+2025-04-14 23:07:57,438 - transformer_training - INFO - Main loop iteration: 44
+2025-04-14 23:08:01,193 - transformer_training - INFO - Main loop iteration: 45
+2025-04-14 23:08:04,816 - transformer_training - INFO - Main loop iteration: 46
+2025-04-14 23:08:08,216 - transformer_training - INFO - Main loop iteration: 47
+2025-04-14 23:08:12,025 - transformer_training - INFO - Main loop iteration: 48
+2025-04-14 23:08:15,426 - transformer_training - INFO - Main loop iteration: 49
+2025-04-14 23:08:19,433 - transformer_training - INFO - Main loop iteration: 50
+Iter 50: loss 9.6466, lr 0.000007, 19287.91 tokens/sec
+2025-04-14 23:08:22,832 - transformer_training - INFO - Main loop iteration: 51
+2025-04-14 23:08:26,458 - transformer_training - INFO - Main loop iteration: 52
+2025-04-14 23:08:30,022 - transformer_training - INFO - Main loop iteration: 53
+2025-04-14 23:08:33,651 - transformer_training - INFO - Main loop iteration: 54
+2025-04-14 23:08:37,053 - transformer_training - INFO - Main loop iteration: 55
+2025-04-14 23:08:40,975 - transformer_training - INFO - Main loop iteration: 56
+2025-04-14 23:08:44,375 - transformer_training - INFO - Main loop iteration: 57
+2025-04-14 23:08:48,187 - transformer_training - INFO - Main loop iteration: 58
+2025-04-14 23:08:51,598 - transformer_training - INFO - Main loop iteration: 59
+2025-04-14 23:08:55,227 - transformer_training - INFO - Main loop iteration: 60
+Iter 60: loss 9.2796, lr 0.000009, 17611.83 tokens/sec
+2025-04-14 23:08:58,949 - transformer_training - INFO - Main loop iteration: 61
+2025-04-14 23:09:02,570 - transformer_training - INFO - Main loop iteration: 62
+2025-04-14 23:09:05,973 - transformer_training - INFO - Main loop iteration: 63
+2025-04-14 23:09:09,755 - transformer_training - INFO - Main loop iteration: 64
+2025-04-14 23:09:13,158 - transformer_training - INFO - Main loop iteration: 65
+2025-04-14 23:09:17,097 - transformer_training - INFO - Main loop iteration: 66
+2025-04-14 23:09:20,499 - transformer_training - INFO - Main loop iteration: 67
+2025-04-14 23:09:24,120 - transformer_training - INFO - Main loop iteration: 68
+2025-04-14 23:09:27,695 - transformer_training - INFO - Main loop iteration: 69
+2025-04-14 23:09:31,319 - transformer_training - INFO - Main loop iteration: 70
+Iter 70: loss 8.6885, lr 0.000010, 17599.67 tokens/sec
+2025-04-14 23:09:35,044 - transformer_training - INFO - Main loop iteration: 71
+2025-04-14 23:09:38,667 - transformer_training - INFO - Main loop iteration: 72
+2025-04-14 23:09:42,066 - transformer_training - INFO - Main loop iteration: 73
+2025-04-14 23:09:45,841 - transformer_training - INFO - Main loop iteration: 74
+2025-04-14 23:09:49,242 - transformer_training - INFO - Main loop iteration: 75
+2025-04-14 23:09:52,867 - transformer_training - INFO - Main loop iteration: 76
+2025-04-14 23:09:56,576 - transformer_training - INFO - Main loop iteration: 77
+2025-04-14 23:10:00,210 - transformer_training - INFO - Main loop iteration: 78
+2025-04-14 23:10:03,783 - transformer_training - INFO - Main loop iteration: 79
+2025-04-14 23:10:07,407 - transformer_training - INFO - Main loop iteration: 80
+Iter 80: loss 8.2204, lr 0.000012, 19292.24 tokens/sec
+2025-04-14 23:10:10,805 - transformer_training - INFO - Main loop iteration: 81
+2025-04-14 23:10:14,761 - transformer_training - INFO - Main loop iteration: 82
+2025-04-14 23:10:18,157 - transformer_training - INFO - Main loop iteration: 83
+2025-04-14 23:10:21,945 - transformer_training - INFO - Main loop iteration: 84
+2025-04-14 23:10:25,345 - transformer_training - INFO - Main loop iteration: 85
+2025-04-14 23:10:28,968 - transformer_training - INFO - Main loop iteration: 86
+2025-04-14 23:10:32,676 - transformer_training - INFO - Main loop iteration: 87
+2025-04-14 23:10:36,312 - transformer_training - INFO - Main loop iteration: 88
+2025-04-14 23:10:39,719 - transformer_training - INFO - Main loop iteration: 89
+2025-04-14 23:10:43,516 - transformer_training - INFO - Main loop iteration: 90
+Iter 90: loss 7.9929, lr 0.000013, 19289.44 tokens/sec
+2025-04-14 23:10:46,914 - transformer_training - INFO - Main loop iteration: 91
+2025-04-14 23:10:50,869 - transformer_training - INFO - Main loop iteration: 92
+2025-04-14 23:10:54,265 - transformer_training - INFO - Main loop iteration: 93
+2025-04-14 23:10:57,885 - transformer_training - INFO - Main loop iteration: 94
+2025-04-14 23:11:01,444 - transformer_training - INFO - Main loop iteration: 95
+2025-04-14 23:11:05,067 - transformer_training - INFO - Main loop iteration: 96
+2025-04-14 23:11:08,777 - transformer_training - INFO - Main loop iteration: 97
+2025-04-14 23:11:12,398 - transformer_training - INFO - Main loop iteration: 98
+2025-04-14 23:11:15,794 - transformer_training - INFO - Main loop iteration: 99
+2025-04-14 23:11:19,574 - transformer_training - INFO - Main loop iteration: 100
+Iter 100: loss 7.7595, lr 0.000015, 19271.35 tokens/sec
+2025-04-14 23:11:22,976 - transformer_training - INFO - Main loop iteration: 101
+2025-04-14 23:11:26,930 - transformer_training - INFO - Main loop iteration: 102
+2025-04-14 23:11:30,327 - transformer_training - INFO - Main loop iteration: 103
+2025-04-14 23:11:33,948 - transformer_training - INFO - Main loop iteration: 104
+2025-04-14 23:11:37,493 - transformer_training - INFO - Main loop iteration: 105
+2025-04-14 23:11:41,116 - transformer_training - INFO - Main loop iteration: 106
+2025-04-14 23:11:44,854 - transformer_training - INFO - Main loop iteration: 107
+2025-04-14 23:11:48,475 - transformer_training - INFO - Main loop iteration: 108
+2025-04-14 23:11:51,872 - transformer_training - INFO - Main loop iteration: 109
+2025-04-14 23:11:55,665 - transformer_training - INFO - Main loop iteration: 110
+Iter 110: loss 7.6843, lr 0.000016, 19267.22 tokens/sec
+2025-04-14 23:11:59,067 - transformer_training - INFO - Main loop iteration: 111
+2025-04-14 23:12:03,088 - transformer_training - INFO - Main loop iteration: 112
+2025-04-14 23:12:06,485 - transformer_training - INFO - Main loop iteration: 113
+2025-04-14 23:12:10,109 - transformer_training - INFO - Main loop iteration: 114
+2025-04-14 23:12:13,676 - transformer_training - INFO - Main loop iteration: 115
+2025-04-14 23:12:17,298 - transformer_training - INFO - Main loop iteration: 116
+2025-04-14 23:12:20,693 - transformer_training - INFO - Main loop iteration: 117
+2025-04-14 23:12:24,632 - transformer_training - INFO - Main loop iteration: 118
+2025-04-14 23:12:28,026 - transformer_training - INFO - Main loop iteration: 119
+2025-04-14 23:12:31,812 - transformer_training - INFO - Main loop iteration: 120
+Iter 120: loss 7.4637, lr 0.000018, 19300.55 tokens/sec
+2025-04-14 23:12:35,208 - transformer_training - INFO - Main loop iteration: 121
+2025-04-14 23:12:38,832 - transformer_training - INFO - Main loop iteration: 122
+2025-04-14 23:12:42,552 - transformer_training - INFO - Main loop iteration: 123
+2025-04-14 23:12:46,171 - transformer_training - INFO - Main loop iteration: 124
+2025-04-14 23:12:49,568 - transformer_training - INFO - Main loop iteration: 125
+2025-04-14 23:12:53,334 - transformer_training - INFO - Main loop iteration: 126
+2025-04-14 23:12:56,727 - transformer_training - INFO - Main loop iteration: 127
+2025-04-14 23:13:00,674 - transformer_training - INFO - Main loop iteration: 128
+2025-04-14 23:13:04,069 - transformer_training - INFO - Main loop iteration: 129
+2025-04-14 23:13:07,690 - transformer_training - INFO - Main loop iteration: 130
+Iter 130: loss 7.3626, lr 0.000019, 18394.63 tokens/sec
+2025-04-14 23:13:11,253 - transformer_training - INFO - Main loop iteration: 131
+2025-04-14 23:13:14,874 - transformer_training - INFO - Main loop iteration: 132
+2025-04-14 23:13:18,592 - transformer_training - INFO - Main loop iteration: 133
+2025-04-14 23:13:22,213 - transformer_training - INFO - Main loop iteration: 134
+2025-04-14 23:13:25,616 - transformer_training - INFO - Main loop iteration: 135
+2025-04-14 23:13:29,384 - transformer_training - INFO - Main loop iteration: 136
+2025-04-14 23:13:32,782 - transformer_training - INFO - Main loop iteration: 137
+2025-04-14 23:13:36,418 - transformer_training - INFO - Main loop iteration: 138
+2025-04-14 23:13:40,143 - transformer_training - INFO - Main loop iteration: 139
+2025-04-14 23:13:43,762 - transformer_training - INFO - Main loop iteration: 140
+Iter 140: loss 7.1370, lr 0.000021, 18353.91 tokens/sec
+2025-04-14 23:13:47,333 - transformer_training - INFO - Main loop iteration: 141
+2025-04-14 23:13:50,958 - transformer_training - INFO - Main loop iteration: 142
+2025-04-14 23:13:54,354 - transformer_training - INFO - Main loop iteration: 143
+2025-04-14 23:13:58,299 - transformer_training - INFO - Main loop iteration: 144
+2025-04-14 23:14:01,693 - transformer_training - INFO - Main loop iteration: 145
+2025-04-14 23:14:05,482 - transformer_training - INFO - Main loop iteration: 146
+2025-04-14 23:14:08,884 - transformer_training - INFO - Main loop iteration: 147
+2025-04-14 23:14:12,501 - transformer_training - INFO - Main loop iteration: 148
+2025-04-14 23:14:16,223 - transformer_training - INFO - Main loop iteration: 149
+2025-04-14 23:14:19,855 - transformer_training - INFO - Main loop iteration: 150
+Iter 150: loss 7.0335, lr 0.000022, 19313.33 tokens/sec
+2025-04-14 23:14:23,249 - transformer_training - INFO - Main loop iteration: 151
+2025-04-14 23:14:27,057 - transformer_training - INFO - Main loop iteration: 152
+2025-04-14 23:14:30,453 - transformer_training - INFO - Main loop iteration: 153
+2025-04-14 23:14:34,398 - transformer_training - INFO - Main loop iteration: 154
+2025-04-14 23:14:37,795 - transformer_training - INFO - Main loop iteration: 155
+2025-04-14 23:14:41,414 - transformer_training - INFO - Main loop iteration: 156
+2025-04-14 23:14:44,984 - transformer_training - INFO - Main loop iteration: 157
+2025-04-14 23:14:48,606 - transformer_training - INFO - Main loop iteration: 158
+2025-04-14 23:14:52,328 - transformer_training - INFO - Main loop iteration: 159
+2025-04-14 23:14:55,947 - transformer_training - INFO - Main loop iteration: 160
+Iter 160: loss 6.8120, lr 0.000024, 19288.47 tokens/sec
+2025-04-14 23:14:59,346 - transformer_training - INFO - Main loop iteration: 161
+2025-04-14 23:15:03,117 - transformer_training - INFO - Main loop iteration: 162
+2025-04-14 23:15:06,516 - transformer_training - INFO - Main loop iteration: 163
+2025-04-14 23:15:10,481 - transformer_training - INFO - Main loop iteration: 164
+2025-04-14 23:15:13,877 - transformer_training - INFO - Main loop iteration: 165
+2025-04-14 23:15:17,505 - transformer_training - INFO - Main loop iteration: 166
+2025-04-14 23:15:21,053 - transformer_training - INFO - Main loop iteration: 167
+2025-04-14 23:15:24,678 - transformer_training - INFO - Main loop iteration: 168
+2025-04-14 23:15:28,426 - transformer_training - INFO - Main loop iteration: 169
+2025-04-14 23:15:32,045 - transformer_training - INFO - Main loop iteration: 170
+Iter 170: loss 6.6538, lr 0.000025, 19298.08 tokens/sec
+2025-04-14 23:15:35,442 - transformer_training - INFO - Main loop iteration: 171
+2025-04-14 23:15:39,227 - transformer_training - INFO - Main loop iteration: 172
+2025-04-14 23:15:42,626 - transformer_training - INFO - Main loop iteration: 173
+2025-04-14 23:15:46,643 - transformer_training - INFO - Main loop iteration: 174
+2025-04-14 23:15:50,038 - transformer_training - INFO - Main loop iteration: 175
+2025-04-14 23:15:53,659 - transformer_training - INFO - Main loop iteration: 176
+2025-04-14 23:15:57,215 - transformer_training - INFO - Main loop iteration: 177
+2025-04-14 23:16:00,839 - transformer_training - INFO - Main loop iteration: 178
+2025-04-14 23:16:04,235 - transformer_training - INFO - Main loop iteration: 179
+2025-04-14 23:16:08,155 - transformer_training - INFO - Main loop iteration: 180
+Iter 180: loss 6.3866, lr 0.000027, 19255.30 tokens/sec
+2025-04-14 23:16:11,560 - transformer_training - INFO - Main loop iteration: 181
+2025-04-14 23:16:15,343 - transformer_training - INFO - Main loop iteration: 182
+2025-04-14 23:16:18,739 - transformer_training - INFO - Main loop iteration: 183
+2025-04-14 23:16:22,360 - transformer_training - INFO - Main loop iteration: 184
+2025-04-14 23:16:26,082 - transformer_training - INFO - Main loop iteration: 185
+2025-04-14 23:16:29,707 - transformer_training - INFO - Main loop iteration: 186
+2025-04-14 23:16:33,106 - transformer_training - INFO - Main loop iteration: 187
+2025-04-14 23:16:36,885 - transformer_training - INFO - Main loop iteration: 188
+2025-04-14 23:16:40,286 - transformer_training - INFO - Main loop iteration: 189
+2025-04-14 23:16:44,227 - transformer_training - INFO - Main loop iteration: 190
+Iter 190: loss 6.3074, lr 0.000028, 19295.06 tokens/sec
+2025-04-14 23:16:47,625 - transformer_training - INFO - Main loop iteration: 191
+2025-04-14 23:16:51,250 - transformer_training - INFO - Main loop iteration: 192
+2025-04-14 23:16:54,816 - transformer_training - INFO - Main loop iteration: 193
+2025-04-14 23:16:58,442 - transformer_training - INFO - Main loop iteration: 194
+2025-04-14 23:17:02,177 - transformer_training - INFO - Main loop iteration: 195
+2025-04-14 23:17:05,798 - transformer_training - INFO - Main loop iteration: 196
+2025-04-14 23:17:09,195 - transformer_training - INFO - Main loop iteration: 197
+2025-04-14 23:17:12,971 - transformer_training - INFO - Main loop iteration: 198
+2025-04-14 23:17:16,368 - transformer_training - INFO - Main loop iteration: 199
+2025-04-14 23:17:19,991 - transformer_training - INFO - Main loop iteration: 200
+Iter 200: loss 6.0905, lr 0.000030, 17674.67 tokens/sec
+Iter 200: val loss 7.4249
+New best model saved with val loss: 7.4249
+2025-04-14 23:17:44,506 - transformer_training - INFO - Main loop iteration: 201
+2025-04-14 23:17:48,366 - transformer_training - INFO - Main loop iteration: 202
+2025-04-14 23:17:51,767 - transformer_training - INFO - Main loop iteration: 203
+2025-04-14 23:17:55,713 - transformer_training - INFO - Main loop iteration: 204
+2025-04-14 23:17:59,111 - transformer_training - INFO - Main loop iteration: 205
+2025-04-14 23:18:02,727 - transformer_training - INFO - Main loop iteration: 206
+2025-04-14 23:18:06,296 - transformer_training - INFO - Main loop iteration: 207
+2025-04-14 23:18:09,917 - transformer_training - INFO - Main loop iteration: 208
+2025-04-14 23:18:13,316 - transformer_training - INFO - Main loop iteration: 209
+2025-04-14 23:18:17,238 - transformer_training - INFO - Main loop iteration: 210
+Iter 210: loss 5.9598, lr 0.000031, 19296.09 tokens/sec
+2025-04-14 23:18:20,635 - transformer_training - INFO - Main loop iteration: 211
+2025-04-14 23:18:24,425 - transformer_training - INFO - Main loop iteration: 212
+2025-04-14 23:18:27,824 - transformer_training - INFO - Main loop iteration: 213
+2025-04-14 23:18:31,441 - transformer_training - INFO - Main loop iteration: 214
+2025-04-14 23:18:35,156 - transformer_training - INFO - Main loop iteration: 215
+2025-04-14 23:18:38,777 - transformer_training - INFO - Main loop iteration: 216
+2025-04-14 23:18:42,348 - transformer_training - INFO - Main loop iteration: 217
+2025-04-14 23:18:45,970 - transformer_training - INFO - Main loop iteration: 218
+2025-04-14 23:18:49,371 - transformer_training - INFO - Main loop iteration: 219
+2025-04-14 23:18:53,305 - transformer_training - INFO - Main loop iteration: 220
+Iter 220: loss 5.7925, lr 0.000033, 19265.92 tokens/sec
+2025-04-14 23:18:56,708 - transformer_training - INFO - Main loop iteration: 221
+2025-04-14 23:19:00,331 - transformer_training - INFO - Main loop iteration: 222
+2025-04-14 23:19:03,890 - transformer_training - INFO - Main loop iteration: 223
+2025-04-14 23:19:07,515 - transformer_training - INFO - Main loop iteration: 224
+2025-04-14 23:19:11,228 - transformer_training - INFO - Main loop iteration: 225
+2025-04-14 23:19:14,861 - transformer_training - INFO - Main loop iteration: 226
+2025-04-14 23:19:18,256 - transformer_training - INFO - Main loop iteration: 227
+2025-04-14 23:19:22,039 - transformer_training - INFO - Main loop iteration: 228
+2025-04-14 23:19:25,437 - transformer_training - INFO - Main loop iteration: 229
+2025-04-14 23:19:29,077 - transformer_training - INFO - Main loop iteration: 230
+Iter 230: loss 5.7190, lr 0.000034, 17622.59 tokens/sec
+2025-04-14 23:19:32,796 - transformer_training - INFO - Main loop iteration: 231
+2025-04-14 23:19:36,417 - transformer_training - INFO - Main loop iteration: 232
+2025-04-14 23:19:39,982 - transformer_training - INFO - Main loop iteration: 233
+2025-04-14 23:19:43,602 - transformer_training - INFO - Main loop iteration: 234
+2025-04-14 23:19:46,999 - transformer_training - INFO - Main loop iteration: 235
+2025-04-14 23:19:50,962 - transformer_training - INFO - Main loop iteration: 236
+2025-04-14 23:19:54,358 - transformer_training - INFO - Main loop iteration: 237
+2025-04-14 23:19:57,980 - transformer_training - INFO - Main loop iteration: 238
+2025-04-14 23:20:01,560 - transformer_training - INFO - Main loop iteration: 239
+2025-04-14 23:20:05,188 - transformer_training - INFO - Main loop iteration: 240
+Iter 240: loss 5.5749, lr 0.000036, 17658.38 tokens/sec
+2025-04-14 23:20:08,900 - transformer_training - INFO - Main loop iteration: 241
+2025-04-14 23:20:12,525 - transformer_training - INFO - Main loop iteration: 242
+2025-04-14 23:20:15,921 - transformer_training - INFO - Main loop iteration: 243
+2025-04-14 23:20:19,712 - transformer_training - INFO - Main loop iteration: 244
+2025-04-14 23:20:23,110 - transformer_training - INFO - Main loop iteration: 245
+2025-04-14 23:20:27,053 - transformer_training - INFO - Main loop iteration: 246
+2025-04-14 23:20:30,451 - transformer_training - INFO - Main loop iteration: 247
+2025-04-14 23:20:34,078 - transformer_training - INFO - Main loop iteration: 248
+2025-04-14 23:20:37,639 - transformer_training - INFO - Main loop iteration: 249
+2025-04-14 23:20:41,265 - transformer_training - INFO - Main loop iteration: 250
+Iter 250: loss 5.4732, lr 0.000037, 17570.65 tokens/sec
+2025-04-14 23:20:44,996 - transformer_training - INFO - Main loop iteration: 251
+2025-04-14 23:20:48,618 - transformer_training - INFO - Main loop iteration: 252
+2025-04-14 23:20:52,018 - transformer_training - INFO - Main loop iteration: 253
+2025-04-14 23:20:55,804 - transformer_training - INFO - Main loop iteration: 254
+2025-04-14 23:20:59,202 - transformer_training - INFO - Main loop iteration: 255
+2025-04-14 23:21:02,832 - transformer_training - INFO - Main loop iteration: 256
+2025-04-14 23:21:06,561 - transformer_training - INFO - Main loop iteration: 257
+2025-04-14 23:21:10,182 - transformer_training - INFO - Main loop iteration: 258
+2025-04-14 23:21:13,578 - transformer_training - INFO - Main loop iteration: 259
+2025-04-14 23:21:17,420 - transformer_training - INFO - Main loop iteration: 260
+Iter 260: loss 5.5226, lr 0.000039, 19285.67 tokens/sec
+2025-04-14 23:21:20,819 - transformer_training - INFO - Main loop iteration: 261
+2025-04-14 23:21:24,709 - transformer_training - INFO - Main loop iteration: 262
+2025-04-14 23:21:28,106 - transformer_training - INFO - Main loop iteration: 263
+2025-04-14 23:21:31,733 - transformer_training - INFO - Main loop iteration: 264
+2025-04-14 23:21:35,329 - transformer_training - INFO - Main loop iteration: 265
+2025-04-14 23:21:38,953 - transformer_training - INFO - Main loop iteration: 266
+2025-04-14 23:21:42,351 - transformer_training - INFO - Main loop iteration: 267
+2025-04-14 23:21:46,256 - transformer_training - INFO - Main loop iteration: 268
+2025-04-14 23:21:49,653 - transformer_training - INFO - Main loop iteration: 269
+2025-04-14 23:21:53,462 - transformer_training - INFO - Main loop iteration: 270
+Iter 270: loss 5.2672, lr 0.000041, 19299.07 tokens/sec
+2025-04-14 23:21:56,859 - transformer_training - INFO - Main loop iteration: 271
+2025-04-14 23:22:00,479 - transformer_training - INFO - Main loop iteration: 272
+2025-04-14 23:22:04,197 - transformer_training - INFO - Main loop iteration: 273
+2025-04-14 23:22:07,819 - transformer_training - INFO - Main loop iteration: 274
+2025-04-14 23:22:11,399 - transformer_training - INFO - Main loop iteration: 275
+2025-04-14 23:22:15,036 - transformer_training - INFO - Main loop iteration: 276
+2025-04-14 23:22:18,431 - transformer_training - INFO - Main loop iteration: 277
+2025-04-14 23:22:22,369 - transformer_training - INFO - Main loop iteration: 278
+2025-04-14 23:22:25,767 - transformer_training - INFO - Main loop iteration: 279
+2025-04-14 23:22:29,397 - transformer_training - INFO - Main loop iteration: 280
+Iter 280: loss 5.2568, lr 0.000042, 17608.92 tokens/sec
+2025-04-14 23:22:33,119 - transformer_training - INFO - Main loop iteration: 281
+2025-04-14 23:22:36,740 - transformer_training - INFO - Main loop iteration: 282
+2025-04-14 23:22:40,312 - transformer_training - INFO - Main loop iteration: 283
+2025-04-14 23:22:43,935 - transformer_training - INFO - Main loop iteration: 284
+2025-04-14 23:22:47,333 - transformer_training - INFO - Main loop iteration: 285
+2025-04-14 23:22:51,282 - transformer_training - INFO - Main loop iteration: 286
+2025-04-14 23:22:54,680 - transformer_training - INFO - Main loop iteration: 287
+2025-04-14 23:22:58,300 - transformer_training - INFO - Main loop iteration: 288
+2025-04-14 23:23:01,862 - transformer_training - INFO - Main loop iteration: 289
+2025-04-14 23:23:05,486 - transformer_training - INFO - Main loop iteration: 290
+Iter 290: loss 5.1890, lr 0.000043, 19269.16 tokens/sec
+2025-04-14 23:23:08,888 - transformer_training - INFO - Main loop iteration: 291
+2025-04-14 23:23:12,836 - transformer_training - INFO - Main loop iteration: 292
+2025-04-14 23:23:16,234 - transformer_training - INFO - Main loop iteration: 293
+2025-04-14 23:23:20,030 - transformer_training - INFO - Main loop iteration: 294
+2025-04-14 23:23:23,431 - transformer_training - INFO - Main loop iteration: 295
+2025-04-14 23:23:27,054 - transformer_training - INFO - Main loop iteration: 296
+2025-04-14 23:23:30,768 - transformer_training - INFO - Main loop iteration: 297
+2025-04-14 23:23:34,391 - transformer_training - INFO - Main loop iteration: 298
+2025-04-14 23:23:37,793 - transformer_training - INFO - Main loop iteration: 299
+2025-04-14 23:23:41,583 - transformer_training - INFO - Main loop iteration: 300
+Iter 300: loss 5.1407, lr 0.000045, 19285.33 tokens/sec
+2025-04-14 23:23:44,982 - transformer_training - INFO - Main loop iteration: 301
+2025-04-14 23:23:48,935 - transformer_training - INFO - Main loop iteration: 302
+2025-04-14 23:23:52,331 - transformer_training - INFO - Main loop iteration: 303
+2025-04-14 23:23:55,957 - transformer_training - INFO - Main loop iteration: 304
+2025-04-14 23:23:59,519 - transformer_training - INFO - Main loop iteration: 305
+2025-04-14 23:24:03,145 - transformer_training - INFO - Main loop iteration: 306
+2025-04-14 23:24:06,872 - transformer_training - INFO - Main loop iteration: 307
+2025-04-14 23:24:10,492 - transformer_training - INFO - Main loop iteration: 308
+2025-04-14 23:24:13,890 - transformer_training - INFO - Main loop iteration: 309
+2025-04-14 23:24:17,683 - transformer_training - INFO - Main loop iteration: 310
+Iter 310: loss 5.1639, lr 0.000046, 19246.05 tokens/sec
+2025-04-14 23:24:21,089 - transformer_training - INFO - Main loop iteration: 311
+2025-04-14 23:24:24,715 - transformer_training - INFO - Main loop iteration: 312
+2025-04-14 23:24:28,440 - transformer_training - INFO - Main loop iteration: 313
+2025-04-14 23:24:32,061 - transformer_training - INFO - Main loop iteration: 314
+2025-04-14 23:24:35,628 - transformer_training - INFO - Main loop iteration: 315
+2025-04-14 23:24:39,251 - transformer_training - INFO - Main loop iteration: 316
+2025-04-14 23:24:42,649 - transformer_training - INFO - Main loop iteration: 317
+2025-04-14 23:24:46,596 - transformer_training - INFO - Main loop iteration: 318
+2025-04-14 23:24:49,995 - transformer_training - INFO - Main loop iteration: 319
+2025-04-14 23:24:53,617 - transformer_training - INFO - Main loop iteration: 320
+Iter 320: loss 5.1218, lr 0.000048, 18397.85 tokens/sec
+2025-04-14 23:24:57,180 - transformer_training - INFO - Main loop iteration: 321
+2025-04-14 23:25:00,806 - transformer_training - INFO - Main loop iteration: 322
+2025-04-14 23:25:04,211 - transformer_training - INFO - Main loop iteration: 323
+2025-04-14 23:25:08,141 - transformer_training - INFO - Main loop iteration: 324
+2025-04-14 23:25:11,540 - transformer_training - INFO - Main loop iteration: 325
+2025-04-14 23:25:15,337 - transformer_training - INFO - Main loop iteration: 326
+2025-04-14 23:25:18,735 - transformer_training - INFO - Main loop iteration: 327
+2025-04-14 23:25:22,361 - transformer_training - INFO - Main loop iteration: 328
+2025-04-14 23:25:26,078 - transformer_training - INFO - Main loop iteration: 329
+2025-04-14 23:25:29,712 - transformer_training - INFO - Main loop iteration: 330
+Iter 330: loss 4.9687, lr 0.000049, 19264.67 tokens/sec
+2025-04-14 23:25:33,115 - transformer_training - INFO - Main loop iteration: 331
+2025-04-14 23:25:37,055 - transformer_training - INFO - Main loop iteration: 332
+2025-04-14 23:25:40,454 - transformer_training - INFO - Main loop iteration: 333
+2025-04-14 23:25:44,270 - transformer_training - INFO - Main loop iteration: 334
+2025-04-14 23:25:47,670 - transformer_training - INFO - Main loop iteration: 335
+2025-04-14 23:25:51,296 - transformer_training - INFO - Main loop iteration: 336
+2025-04-14 23:25:54,971 - transformer_training - INFO - Main loop iteration: 337
+2025-04-14 23:25:58,594 - transformer_training - INFO - Main loop iteration: 338
+2025-04-14 23:26:02,211 - transformer_training - INFO - Main loop iteration: 339
+2025-04-14 23:26:05,838 - transformer_training - INFO - Main loop iteration: 340
+Iter 340: loss 4.9579, lr 0.000051, 19250.93 tokens/sec
+2025-04-14 23:26:09,243 - transformer_training - INFO - Main loop iteration: 341
+2025-04-14 23:26:13,096 - transformer_training - INFO - Main loop iteration: 342
+2025-04-14 23:26:16,494 - transformer_training - INFO - Main loop iteration: 343
+2025-04-14 23:26:20,119 - transformer_training - INFO - Main loop iteration: 344
+2025-04-14 23:26:23,770 - transformer_training - INFO - Main loop iteration: 345
+2025-04-14 23:26:27,395 - transformer_training - INFO - Main loop iteration: 346
+2025-04-14 23:26:31,022 - transformer_training - INFO - Main loop iteration: 347
+2025-04-14 23:26:34,658 - transformer_training - INFO - Main loop iteration: 348
+2025-04-14 23:26:38,070 - transformer_training - INFO - Main loop iteration: 349
+2025-04-14 23:26:41,950 - transformer_training - INFO - Main loop iteration: 350
+Iter 350: loss 4.8568, lr 0.000052, 19272.98 tokens/sec
+2025-04-14 23:26:45,351 - transformer_training - INFO - Main loop iteration: 351
+2025-04-14 23:26:48,974 - transformer_training - INFO - Main loop iteration: 352
+2025-04-14 23:26:52,702 - transformer_training - INFO - Main loop iteration: 353
+2025-04-14 23:26:56,324 - transformer_training - INFO - Main loop iteration: 354
+2025-04-14 23:26:59,723 - transformer_training - INFO - Main loop iteration: 355
+2025-04-14 23:27:03,530 - transformer_training - INFO - Main loop iteration: 356
+2025-04-14 23:27:06,935 - transformer_training - INFO - Main loop iteration: 357
+2025-04-14 23:27:10,875 - transformer_training - INFO - Main loop iteration: 358
+2025-04-14 23:27:14,276 - transformer_training - INFO - Main loop iteration: 359
+2025-04-14 23:27:17,900 - transformer_training - INFO - Main loop iteration: 360
+Iter 360: loss 4.7788, lr 0.000054, 18452.31 tokens/sec
+2025-04-14 23:27:21,453 - transformer_training - INFO - Main loop iteration: 361
+2025-04-14 23:27:25,075 - transformer_training - INFO - Main loop iteration: 362
+2025-04-14 23:27:28,476 - transformer_training - INFO - Main loop iteration: 363
+2025-04-14 23:27:32,405 - transformer_training - INFO - Main loop iteration: 364
+2025-04-14 23:27:35,803 - transformer_training - INFO - Main loop iteration: 365
+2025-04-14 23:27:39,601 - transformer_training - INFO - Main loop iteration: 366
+2025-04-14 23:27:43,002 - transformer_training - INFO - Main loop iteration: 367
+2025-04-14 23:27:46,624 - transformer_training - INFO - Main loop iteration: 368
+2025-04-14 23:27:50,360 - transformer_training - INFO - Main loop iteration: 369
+2025-04-14 23:27:53,985 - transformer_training - INFO - Main loop iteration: 370
+Iter 370: loss 4.8689, lr 0.000055, 18358.17 tokens/sec
+2025-04-14 23:27:57,555 - transformer_training - INFO - Main loop iteration: 371
+2025-04-14 23:28:01,179 - transformer_training - INFO - Main loop iteration: 372
+2025-04-14 23:28:04,587 - transformer_training - INFO - Main loop iteration: 373
+2025-04-14 23:28:08,532 - transformer_training - INFO - Main loop iteration: 374
+2025-04-14 23:28:11,934 - transformer_training - INFO - Main loop iteration: 375
+2025-04-14 23:28:15,558 - transformer_training - INFO - Main loop iteration: 376
+2025-04-14 23:28:19,124 - transformer_training - INFO - Main loop iteration: 377
+2025-04-14 23:28:22,749 - transformer_training - INFO - Main loop iteration: 378
+2025-04-14 23:28:26,463 - transformer_training - INFO - Main loop iteration: 379
+2025-04-14 23:28:30,086 - transformer_training - INFO - Main loop iteration: 380
+Iter 380: loss 4.7979, lr 0.000057, 19292.77 tokens/sec
+2025-04-14 23:28:33,483 - transformer_training - INFO - Main loop iteration: 381
+2025-04-14 23:28:37,280 - transformer_training - INFO - Main loop iteration: 382
+2025-04-14 23:28:40,681 - transformer_training - INFO - Main loop iteration: 383
+2025-04-14 23:28:44,304 - transformer_training - INFO - Main loop iteration: 384
+2025-04-14 23:28:48,042 - transformer_training - INFO - Main loop iteration: 385
+2025-04-14 23:28:51,665 - transformer_training - INFO - Main loop iteration: 386
+2025-04-14 23:28:55,064 - transformer_training - INFO - Main loop iteration: 387
+2025-04-14 23:28:58,861 - transformer_training - INFO - Main loop iteration: 388
+2025-04-14 23:29:02,263 - transformer_training - INFO - Main loop iteration: 389
+2025-04-14 23:29:06,200 - transformer_training - INFO - Main loop iteration: 390
+Iter 390: loss 4.6832, lr 0.000058, 19276.75 tokens/sec
+2025-04-14 23:29:09,601 - transformer_training - INFO - Main loop iteration: 391
+2025-04-14 23:29:13,235 - transformer_training - INFO - Main loop iteration: 392
+2025-04-14 23:29:16,795 - transformer_training - INFO - Main loop iteration: 393
+2025-04-14 23:29:20,418 - transformer_training - INFO - Main loop iteration: 394
+2025-04-14 23:29:23,831 - transformer_training - INFO - Main loop iteration: 395
+2025-04-14 23:29:27,766 - transformer_training - INFO - Main loop iteration: 396
+2025-04-14 23:29:31,165 - transformer_training - INFO - Main loop iteration: 397
+2025-04-14 23:29:34,959 - transformer_training - INFO - Main loop iteration: 398
+2025-04-14 23:29:38,361 - transformer_training - INFO - Main loop iteration: 399
+2025-04-14 23:29:41,984 - transformer_training - INFO - Main loop iteration: 400
+Iter 400: loss 4.7696, lr 0.000060, 17660.00 tokens/sec
+Iter 400: val loss 7.0449
+New best model saved with val loss: 7.0449
+2025-04-14 23:30:07,034 - transformer_training - INFO - Main loop iteration: 401
+2025-04-14 23:30:10,890 - transformer_training - INFO - Main loop iteration: 402
+2025-04-14 23:30:14,285 - transformer_training - INFO - Main loop iteration: 403
+2025-04-14 23:30:17,905 - transformer_training - INFO - Main loop iteration: 404
+2025-04-14 23:30:21,632 - transformer_training - INFO - Main loop iteration: 405
+2025-04-14 23:30:25,259 - transformer_training - INFO - Main loop iteration: 406
+2025-04-14 23:30:28,652 - transformer_training - INFO - Main loop iteration: 407
+2025-04-14 23:30:32,468 - transformer_training - INFO - Main loop iteration: 408
+2025-04-14 23:30:35,865 - transformer_training - INFO - Main loop iteration: 409
+2025-04-14 23:30:39,816 - transformer_training - INFO - Main loop iteration: 410
+Iter 410: loss 4.6487, lr 0.000061, 19293.61 tokens/sec
+2025-04-14 23:30:43,213 - transformer_training - INFO - Main loop iteration: 411
+2025-04-14 23:30:46,836 - transformer_training - INFO - Main loop iteration: 412
+2025-04-14 23:30:50,408 - transformer_training - INFO - Main loop iteration: 413
+2025-04-14 23:30:54,028 - transformer_training - INFO - Main loop iteration: 414
+2025-04-14 23:30:57,744 - transformer_training - INFO - Main loop iteration: 415
+2025-04-14 23:31:01,365 - transformer_training - INFO - Main loop iteration: 416
+2025-04-14 23:31:04,763 - transformer_training - INFO - Main loop iteration: 417
+2025-04-14 23:31:08,556 - transformer_training - INFO - Main loop iteration: 418
+2025-04-14 23:31:11,954 - transformer_training - INFO - Main loop iteration: 419
+2025-04-14 23:31:15,580 - transformer_training - INFO - Main loop iteration: 420
+Iter 420: loss 4.6486, lr 0.000063, 17666.59 tokens/sec
+2025-04-14 23:31:19,290 - transformer_training - INFO - Main loop iteration: 421
+2025-04-14 23:31:22,915 - transformer_training - INFO - Main loop iteration: 422
+2025-04-14 23:31:26,486 - transformer_training - INFO - Main loop iteration: 423
+2025-04-14 23:31:30,111 - transformer_training - INFO - Main loop iteration: 424
+2025-04-14 23:31:33,509 - transformer_training - INFO - Main loop iteration: 425
+2025-04-14 23:31:37,457 - transformer_training - INFO - Main loop iteration: 426
+2025-04-14 23:31:40,855 - transformer_training - INFO - Main loop iteration: 427
+2025-04-14 23:31:44,478 - transformer_training - INFO - Main loop iteration: 428
+2025-04-14 23:31:48,053 - transformer_training - INFO - Main loop iteration: 429
+2025-04-14 23:31:51,678 - transformer_training - INFO - Main loop iteration: 430
+Iter 430: loss 4.5613, lr 0.000064, 17554.16 tokens/sec
+2025-04-14 23:31:55,412 - transformer_training - INFO - Main loop iteration: 431
+2025-04-14 23:31:59,034 - transformer_training - INFO - Main loop iteration: 432
+2025-04-14 23:32:02,433 - transformer_training - INFO - Main loop iteration: 433
+2025-04-14 23:32:06,228 - transformer_training - INFO - Main loop iteration: 434
+2025-04-14 23:32:09,625 - transformer_training - INFO - Main loop iteration: 435
+2025-04-14 23:32:13,248 - transformer_training - INFO - Main loop iteration: 436
+2025-04-14 23:32:16,967 - transformer_training - INFO - Main loop iteration: 437
+2025-04-14 23:32:20,587 - transformer_training - INFO - Main loop iteration: 438
+2025-04-14 23:32:24,143 - transformer_training - INFO - Main loop iteration: 439
+2025-04-14 23:32:27,768 - transformer_training - INFO - Main loop iteration: 440
+Iter 440: loss 4.5288, lr 0.000066, 19297.52 tokens/sec
+2025-04-14 23:32:31,165 - transformer_training - INFO - Main loop iteration: 441
+2025-04-14 23:32:35,101 - transformer_training - INFO - Main loop iteration: 442
+2025-04-14 23:32:38,503 - transformer_training - INFO - Main loop iteration: 443
+2025-04-14 23:32:42,296 - transformer_training - INFO - Main loop iteration: 444
+2025-04-14 23:32:45,704 - transformer_training - INFO - Main loop iteration: 445
+2025-04-14 23:32:49,316 - transformer_training - INFO - Main loop iteration: 446
+2025-04-14 23:32:53,044 - transformer_training - INFO - Main loop iteration: 447
+2025-04-14 23:32:56,664 - transformer_training - INFO - Main loop iteration: 448
+2025-04-14 23:33:00,065 - transformer_training - INFO - Main loop iteration: 449
+2025-04-14 23:33:04,001 - transformer_training - INFO - Main loop iteration: 450
+Iter 450: loss 4.5155, lr 0.000068, 19300.42 tokens/sec
+2025-04-14 23:33:07,397 - transformer_training - INFO - Main loop iteration: 451
+2025-04-14 23:33:11,198 - transformer_training - INFO - Main loop iteration: 452
+2025-04-14 23:33:14,597 - transformer_training - INFO - Main loop iteration: 453
+2025-04-14 23:33:18,221 - transformer_training - INFO - Main loop iteration: 454
+2025-04-14 23:33:21,858 - transformer_training - INFO - Main loop iteration: 455
+2025-04-14 23:33:25,481 - transformer_training - INFO - Main loop iteration: 456
+2025-04-14 23:33:28,882 - transformer_training - INFO - Main loop iteration: 457
+2025-04-14 23:33:32,764 - transformer_training - INFO - Main loop iteration: 458
+2025-04-14 23:33:36,162 - transformer_training - INFO - Main loop iteration: 459
+2025-04-14 23:33:40,121 - transformer_training - INFO - Main loop iteration: 460
+Iter 460: loss 4.4863, lr 0.000069, 19299.88 tokens/sec
+2025-04-14 23:33:43,517 - transformer_training - INFO - Main loop iteration: 461
+2025-04-14 23:33:47,154 - transformer_training - INFO - Main loop iteration: 462
+2025-04-14 23:33:50,716 - transformer_training - INFO - Main loop iteration: 463
+2025-04-14 23:33:54,340 - transformer_training - INFO - Main loop iteration: 464
+2025-04-14 23:33:57,739 - transformer_training - INFO - Main loop iteration: 465
+2025-04-14 23:34:01,672 - transformer_training - INFO - Main loop iteration: 466
+2025-04-14 23:34:05,074 - transformer_training - INFO - Main loop iteration: 467
+2025-04-14 23:34:08,888 - transformer_training - INFO - Main loop iteration: 468
+2025-04-14 23:34:12,288 - transformer_training - INFO - Main loop iteration: 469
+2025-04-14 23:34:15,912 - transformer_training - INFO - Main loop iteration: 470
+Iter 470: loss 4.4273, lr 0.000070, 17605.50 tokens/sec
+2025-04-14 23:34:19,636 - transformer_training - INFO - Main loop iteration: 471
+2025-04-14 23:34:23,260 - transformer_training - INFO - Main loop iteration: 472
+2025-04-14 23:34:26,657 - transformer_training - INFO - Main loop iteration: 473
+2025-04-14 23:34:30,440 - transformer_training - INFO - Main loop iteration: 474
+2025-04-14 23:34:33,838 - transformer_training - INFO - Main loop iteration: 475
+2025-04-14 23:34:37,776 - transformer_training - INFO - Main loop iteration: 476
+2025-04-14 23:34:41,173 - transformer_training - INFO - Main loop iteration: 477
+2025-04-14 23:34:44,794 - transformer_training - INFO - Main loop iteration: 478
+2025-04-14 23:34:48,365 - transformer_training - INFO - Main loop iteration: 479
+2025-04-14 23:34:51,987 - transformer_training - INFO - Main loop iteration: 480
+Iter 480: loss 4.4147, lr 0.000072, 17631.48 tokens/sec
+2025-04-14 23:34:55,705 - transformer_training - INFO - Main loop iteration: 481
+2025-04-14 23:34:59,328 - transformer_training - INFO - Main loop iteration: 482
+2025-04-14 23:35:02,727 - transformer_training - INFO - Main loop iteration: 483
+2025-04-14 23:35:06,504 - transformer_training - INFO - Main loop iteration: 484
+2025-04-14 23:35:09,908 - transformer_training - INFO - Main loop iteration: 485
+2025-04-14 23:35:13,542 - transformer_training - INFO - Main loop iteration: 486
+2025-04-14 23:35:17,267 - transformer_training - INFO - Main loop iteration: 487
+2025-04-14 23:35:20,891 - transformer_training - INFO - Main loop iteration: 488
+2025-04-14 23:35:24,476 - transformer_training - INFO - Main loop iteration: 489
+2025-04-14 23:35:28,097 - transformer_training - INFO - Main loop iteration: 490
+Iter 490: loss 4.4206, lr 0.000073, 19279.25 tokens/sec
+2025-04-14 23:35:31,497 - transformer_training - INFO - Main loop iteration: 491
+2025-04-14 23:35:35,454 - transformer_training - INFO - Main loop iteration: 492
+2025-04-14 23:35:38,854 - transformer_training - INFO - Main loop iteration: 493
+2025-04-14 23:35:42,481 - transformer_training - INFO - Main loop iteration: 494
+2025-04-14 23:35:46,027 - transformer_training - INFO - Main loop iteration: 495
+2025-04-14 23:35:49,652 - transformer_training - INFO - Main loop iteration: 496
+2025-04-14 23:35:53,394 - transformer_training - INFO - Main loop iteration: 497
+2025-04-14 23:35:57,018 - transformer_training - INFO - Main loop iteration: 498
+2025-04-14 23:36:00,418 - transformer_training - INFO - Main loop iteration: 499
+2025-04-14 23:36:04,219 - transformer_training - INFO - Main loop iteration: 500
+Iter 500: loss 4.4465, lr 0.000075, 19291.75 tokens/sec
+2025-04-14 23:36:07,617 - transformer_training - INFO - Main loop iteration: 501
+2025-04-14 23:36:11,246 - transformer_training - INFO - Main loop iteration: 502
+2025-04-14 23:36:14,979 - transformer_training - INFO - Main loop iteration: 503
+2025-04-14 23:36:18,600 - transformer_training - INFO - Main loop iteration: 504
+2025-04-14 23:36:22,159 - transformer_training - INFO - Main loop iteration: 505
+2025-04-14 23:36:25,783 - transformer_training - INFO - Main loop iteration: 506
+2025-04-14 23:36:29,184 - transformer_training - INFO - Main loop iteration: 507
+2025-04-14 23:36:33,119 - transformer_training - INFO - Main loop iteration: 508
+2025-04-14 23:36:36,518 - transformer_training - INFO - Main loop iteration: 509
+2025-04-14 23:36:40,318 - transformer_training - INFO - Main loop iteration: 510
+Iter 510: loss 4.3267, lr 0.000076, 19268.80 tokens/sec
+2025-04-14 23:36:43,720 - transformer_training - INFO - Main loop iteration: 511
+2025-04-14 23:36:47,346 - transformer_training - INFO - Main loop iteration: 512
+2025-04-14 23:36:51,063 - transformer_training - INFO - Main loop iteration: 513
+2025-04-14 23:36:54,685 - transformer_training - INFO - Main loop iteration: 514
+2025-04-14 23:36:58,249 - transformer_training - INFO - Main loop iteration: 515
+2025-04-14 23:37:01,872 - transformer_training - INFO - Main loop iteration: 516
+2025-04-14 23:37:05,275 - transformer_training - INFO - Main loop iteration: 517
+2025-04-14 23:37:09,224 - transformer_training - INFO - Main loop iteration: 518
+2025-04-14 23:37:12,625 - transformer_training - INFO - Main loop iteration: 519
+2025-04-14 23:37:16,251 - transformer_training - INFO - Main loop iteration: 520
+Iter 520: loss 4.2998, lr 0.000078, 18381.60 tokens/sec
+2025-04-14 23:37:19,817 - transformer_training - INFO - Main loop iteration: 521
+2025-04-14 23:37:23,440 - transformer_training - INFO - Main loop iteration: 522
+2025-04-14 23:37:26,843 - transformer_training - INFO - Main loop iteration: 523
+2025-04-14 23:37:30,791 - transformer_training - INFO - Main loop iteration: 524
+2025-04-14 23:37:34,187 - transformer_training - INFO - Main loop iteration: 525
+2025-04-14 23:37:37,982 - transformer_training - INFO - Main loop iteration: 526
+2025-04-14 23:37:41,384 - transformer_training - INFO - Main loop iteration: 527
+2025-04-14 23:37:45,014 - transformer_training - INFO - Main loop iteration: 528
+2025-04-14 23:37:48,744 - transformer_training - INFO - Main loop iteration: 529
+2025-04-14 23:37:52,364 - transformer_training - INFO - Main loop iteration: 530
+Iter 530: loss 4.2648, lr 0.000079, 19281.06 tokens/sec
+2025-04-14 23:37:55,764 - transformer_training - INFO - Main loop iteration: 531
+2025-04-14 23:37:59,619 - transformer_training - INFO - Main loop iteration: 532
+2025-04-14 23:38:03,017 - transformer_training - INFO - Main loop iteration: 533
+2025-04-14 23:38:06,906 - transformer_training - INFO - Main loop iteration: 534
+2025-04-14 23:38:10,304 - transformer_training - INFO - Main loop iteration: 535
+2025-04-14 23:38:13,925 - transformer_training - INFO - Main loop iteration: 536
+2025-04-14 23:38:17,549 - transformer_training - INFO - Main loop iteration: 537
+2025-04-14 23:38:21,178 - transformer_training - INFO - Main loop iteration: 538
+2025-04-14 23:38:24,858 - transformer_training - INFO - Main loop iteration: 539
+2025-04-14 23:38:28,480 - transformer_training - INFO - Main loop iteration: 540
+Iter 540: loss 4.2997, lr 0.000081, 19287.60 tokens/sec
+2025-04-14 23:38:31,878 - transformer_training - INFO - Main loop iteration: 541
+2025-04-14 23:38:35,686 - transformer_training - INFO - Main loop iteration: 542
+2025-04-14 23:38:39,084 - transformer_training - INFO - Main loop iteration: 543
+2025-04-14 23:38:42,709 - transformer_training - INFO - Main loop iteration: 544
+2025-04-14 23:38:46,417 - transformer_training - INFO - Main loop iteration: 545
+2025-04-14 23:38:50,040 - transformer_training - INFO - Main loop iteration: 546
+2025-04-14 23:38:53,619 - transformer_training - INFO - Main loop iteration: 547
+2025-04-14 23:38:57,251 - transformer_training - INFO - Main loop iteration: 548
+2025-04-14 23:39:00,649 - transformer_training - INFO - Main loop iteration: 549
+2025-04-14 23:39:04,596 - transformer_training - INFO - Main loop iteration: 550
+Iter 550: loss 4.2852, lr 0.000082, 19201.09 tokens/sec
+2025-04-14 23:39:08,010 - transformer_training - INFO - Main loop iteration: 551
+2025-04-14 23:39:11,633 - transformer_training - INFO - Main loop iteration: 552
+2025-04-14 23:39:15,363 - transformer_training - INFO - Main loop iteration: 553
+2025-04-14 23:39:18,989 - transformer_training - INFO - Main loop iteration: 554
+2025-04-14 23:39:22,386 - transformer_training - INFO - Main loop iteration: 555
+2025-04-14 23:39:26,186 - transformer_training - INFO - Main loop iteration: 556
+2025-04-14 23:39:29,588 - transformer_training - INFO - Main loop iteration: 557
+2025-04-14 23:39:33,545 - transformer_training - INFO - Main loop iteration: 558
+2025-04-14 23:39:36,946 - transformer_training - INFO - Main loop iteration: 559
+2025-04-14 23:39:40,567 - transformer_training - INFO - Main loop iteration: 560
+Iter 560: loss 4.3444, lr 0.000084, 18453.12 tokens/sec
+2025-04-14 23:39:44,119 - transformer_training - INFO - Main loop iteration: 561
+2025-04-14 23:39:47,741 - transformer_training - INFO - Main loop iteration: 562
+2025-04-14 23:39:51,150 - transformer_training - INFO - Main loop iteration: 563
+2025-04-14 23:39:55,101 - transformer_training - INFO - Main loop iteration: 564
+2025-04-14 23:39:58,500 - transformer_training - INFO - Main loop iteration: 565
+2025-04-14 23:40:02,304 - transformer_training - INFO - Main loop iteration: 566
+2025-04-14 23:40:05,708 - transformer_training - INFO - Main loop iteration: 567
+2025-04-14 23:40:09,337 - transformer_training - INFO - Main loop iteration: 568
+2025-04-14 23:40:13,055 - transformer_training - INFO - Main loop iteration: 569
+2025-04-14 23:40:16,680 - transformer_training - INFO - Main loop iteration: 570
+Iter 570: loss 4.2000, lr 0.000085, 18330.84 tokens/sec
+2025-04-14 23:40:20,256 - transformer_training - INFO - Main loop iteration: 571
+2025-04-14 23:40:23,877 - transformer_training - INFO - Main loop iteration: 572
+2025-04-14 23:40:27,277 - transformer_training - INFO - Main loop iteration: 573
+2025-04-14 23:40:31,236 - transformer_training - INFO - Main loop iteration: 574
+2025-04-14 23:40:34,635 - transformer_training - INFO - Main loop iteration: 575
+2025-04-14 23:40:38,265 - transformer_training - INFO - Main loop iteration: 576
+2025-04-14 23:40:41,829 - transformer_training - INFO - Main loop iteration: 577
+2025-04-14 23:40:45,449 - transformer_training - INFO - Main loop iteration: 578
+2025-04-14 23:40:49,163 - transformer_training - INFO - Main loop iteration: 579
+2025-04-14 23:40:52,786 - transformer_training - INFO - Main loop iteration: 580
+Iter 580: loss 4.2615, lr 0.000087, 19211.77 tokens/sec
+2025-04-14 23:40:56,198 - transformer_training - INFO - Main loop iteration: 581
+2025-04-14 23:40:59,974 - transformer_training - INFO - Main loop iteration: 582
+2025-04-14 23:41:03,374 - transformer_training - INFO - Main loop iteration: 583
+2025-04-14 23:41:07,324 - transformer_training - INFO - Main loop iteration: 584
+2025-04-14 23:41:10,728 - transformer_training - INFO - Main loop iteration: 585
+2025-04-14 23:41:14,350 - transformer_training - INFO - Main loop iteration: 586
+2025-04-14 23:41:17,909 - transformer_training - INFO - Main loop iteration: 587
+2025-04-14 23:41:21,534 - transformer_training - INFO - Main loop iteration: 588
+2025-04-14 23:41:24,936 - transformer_training - INFO - Main loop iteration: 589
+2025-04-14 23:41:28,879 - transformer_training - INFO - Main loop iteration: 590
+Iter 590: loss 4.1654, lr 0.000088, 19282.47 tokens/sec
+2025-04-14 23:41:32,279 - transformer_training - INFO - Main loop iteration: 591
+2025-04-14 23:41:36,060 - transformer_training - INFO - Main loop iteration: 592
+2025-04-14 23:41:39,460 - transformer_training - INFO - Main loop iteration: 593
+2025-04-14 23:41:43,092 - transformer_training - INFO - Main loop iteration: 594
+2025-04-14 23:41:46,819 - transformer_training - INFO - Main loop iteration: 595
+2025-04-14 23:41:50,450 - transformer_training - INFO - Main loop iteration: 596
+2025-04-14 23:41:53,848 - transformer_training - INFO - Main loop iteration: 597
+2025-04-14 23:41:57,640 - transformer_training - INFO - Main loop iteration: 598
+2025-04-14 23:42:01,037 - transformer_training - INFO - Main loop iteration: 599
+2025-04-14 23:42:04,990 - transformer_training - INFO - Main loop iteration: 600
+Iter 600: loss 4.0601, lr 0.000090, 19296.45 tokens/sec
+Iter 600: val loss 6.7138
+New best model saved with val loss: 6.7138
+2025-04-14 23:42:30,096 - transformer_training - INFO - Main loop iteration: 601
+2025-04-14 23:42:33,640 - transformer_training - INFO - Main loop iteration: 602
+2025-04-14 23:42:37,036 - transformer_training - INFO - Main loop iteration: 603
+2025-04-14 23:42:40,992 - transformer_training - INFO - Main loop iteration: 604
+2025-04-14 23:42:44,399 - transformer_training - INFO - Main loop iteration: 605
+2025-04-14 23:42:48,019 - transformer_training - INFO - Main loop iteration: 606
+2025-04-14 23:42:51,585 - transformer_training - INFO - Main loop iteration: 607
+2025-04-14 23:42:55,208 - transformer_training - INFO - Main loop iteration: 608
+2025-04-14 23:42:58,938 - transformer_training - INFO - Main loop iteration: 609
+2025-04-14 23:43:02,556 - transformer_training - INFO - Main loop iteration: 610
+Iter 610: loss 4.1710, lr 0.000091, 19303.20 tokens/sec
+2025-04-14 23:43:05,952 - transformer_training - INFO - Main loop iteration: 611
+2025-04-14 23:43:09,741 - transformer_training - INFO - Main loop iteration: 612
+2025-04-14 23:43:13,136 - transformer_training - INFO - Main loop iteration: 613
+2025-04-14 23:43:16,775 - transformer_training - INFO - Main loop iteration: 614
+2025-04-14 23:43:20,489 - transformer_training - INFO - Main loop iteration: 615
+2025-04-14 23:43:24,110 - transformer_training - INFO - Main loop iteration: 616
+2025-04-14 23:43:27,669 - transformer_training - INFO - Main loop iteration: 617
+2025-04-14 23:43:31,291 - transformer_training - INFO - Main loop iteration: 618
+2025-04-14 23:43:34,686 - transformer_training - INFO - Main loop iteration: 619
+2025-04-14 23:43:38,623 - transformer_training - INFO - Main loop iteration: 620
+Iter 620: loss 4.1345, lr 0.000093, 19308.86 tokens/sec
+2025-04-14 23:43:42,018 - transformer_training - INFO - Main loop iteration: 621
+2025-04-14 23:43:45,650 - transformer_training - INFO - Main loop iteration: 622
+2025-04-14 23:43:49,211 - transformer_training - INFO - Main loop iteration: 623
+2025-04-14 23:43:52,834 - transformer_training - INFO - Main loop iteration: 624
+2025-04-14 23:43:56,560 - transformer_training - INFO - Main loop iteration: 625
+2025-04-14 23:44:00,181 - transformer_training - INFO - Main loop iteration: 626
+2025-04-14 23:44:03,580 - transformer_training - INFO - Main loop iteration: 627
+2025-04-14 23:44:07,361 - transformer_training - INFO - Main loop iteration: 628
+2025-04-14 23:44:10,767 - transformer_training - INFO - Main loop iteration: 629
+2025-04-14 23:44:14,388 - transformer_training - INFO - Main loop iteration: 630
+Iter 630: loss 4.2168, lr 0.000094, 17655.34 tokens/sec
+2025-04-14 23:44:18,101 - transformer_training - INFO - Main loop iteration: 631
+2025-04-14 23:44:21,734 - transformer_training - INFO - Main loop iteration: 632
+2025-04-14 23:44:25,309 - transformer_training - INFO - Main loop iteration: 633
+2025-04-14 23:44:28,948 - transformer_training - INFO - Main loop iteration: 634
+2025-04-14 23:44:32,343 - transformer_training - INFO - Main loop iteration: 635
+2025-04-14 23:44:36,270 - transformer_training - INFO - Main loop iteration: 636
+2025-04-14 23:44:39,667 - transformer_training - INFO - Main loop iteration: 637
+2025-04-14 23:44:43,292 - transformer_training - INFO - Main loop iteration: 638
+2025-04-14 23:44:47,022 - transformer_training - INFO - Main loop iteration: 639
+2025-04-14 23:44:50,642 - transformer_training - INFO - Main loop iteration: 640
+Iter 640: loss 4.1879, lr 0.000096, 18480.99 tokens/sec
+2025-04-14 23:44:54,189 - transformer_training - INFO - Main loop iteration: 641
+2025-04-14 23:44:57,812 - transformer_training - INFO - Main loop iteration: 642
+2025-04-14 23:45:01,213 - transformer_training - INFO - Main loop iteration: 643
+2025-04-14 23:45:05,148 - transformer_training - INFO - Main loop iteration: 644
+2025-04-14 23:45:08,549 - transformer_training - INFO - Main loop iteration: 645
+2025-04-14 23:45:12,330 - transformer_training - INFO - Main loop iteration: 646
+2025-04-14 23:45:15,728 - transformer_training - INFO - Main loop iteration: 647
+2025-04-14 23:45:19,354 - transformer_training - INFO - Main loop iteration: 648
+2025-04-14 23:45:22,978 - transformer_training - INFO - Main loop iteration: 649
+2025-04-14 23:45:26,597 - transformer_training - INFO - Main loop iteration: 650
+Iter 650: loss 4.1005, lr 0.000097, 17902.21 tokens/sec
+2025-04-14 23:45:30,258 - transformer_training - INFO - Main loop iteration: 651
+2025-04-14 23:45:33,887 - transformer_training - INFO - Main loop iteration: 652
+2025-04-14 23:45:37,287 - transformer_training - INFO - Main loop iteration: 653
+2025-04-14 23:45:41,146 - transformer_training - INFO - Main loop iteration: 654
+2025-04-14 23:45:44,544 - transformer_training - INFO - Main loop iteration: 655
+2025-04-14 23:45:48,165 - transformer_training - INFO - Main loop iteration: 656
+2025-04-14 23:45:51,827 - transformer_training - INFO - Main loop iteration: 657
+2025-04-14 23:45:55,449 - transformer_training - INFO - Main loop iteration: 658
+2025-04-14 23:45:58,849 - transformer_training - INFO - Main loop iteration: 659
+2025-04-14 23:46:02,798 - transformer_training - INFO - Main loop iteration: 660
+Iter 660: loss 4.0585, lr 0.000099, 19291.05 tokens/sec
+2025-04-14 23:46:06,196 - transformer_training - INFO - Main loop iteration: 661
+2025-04-14 23:46:09,990 - transformer_training - INFO - Main loop iteration: 662
+2025-04-14 23:46:13,388 - transformer_training - INFO - Main loop iteration: 663
+2025-04-14 23:46:17,012 - transformer_training - INFO - Main loop iteration: 664
+2025-04-14 23:46:20,719 - transformer_training - INFO - Main loop iteration: 665
+2025-04-14 23:46:24,338 - transformer_training - INFO - Main loop iteration: 666
+2025-04-14 23:46:27,736 - transformer_training - INFO - Main loop iteration: 667
+2025-04-14 23:46:31,530 - transformer_training - INFO - Main loop iteration: 668
+2025-04-14 23:46:34,931 - transformer_training - INFO - Main loop iteration: 669
+2025-04-14 23:46:38,893 - transformer_training - INFO - Main loop iteration: 670
+Iter 670: loss 4.0580, lr 0.000101, 19274.65 tokens/sec
+2025-04-14 23:46:42,294 - transformer_training - INFO - Main loop iteration: 671
+2025-04-14 23:46:45,919 - transformer_training - INFO - Main loop iteration: 672
+2025-04-14 23:46:49,481 - transformer_training - INFO - Main loop iteration: 673
+2025-04-14 23:46:53,108 - transformer_training - INFO - Main loop iteration: 674
+2025-04-14 23:46:56,835 - transformer_training - INFO - Main loop iteration: 675
+2025-04-14 23:47:00,461 - transformer_training - INFO - Main loop iteration: 676
+2025-04-14 23:47:03,861 - transformer_training - INFO - Main loop iteration: 677
+2025-04-14 23:47:07,648 - transformer_training - INFO - Main loop iteration: 678
+2025-04-14 23:47:11,049 - transformer_training - INFO - Main loop iteration: 679
+2025-04-14 23:47:14,673 - transformer_training - INFO - Main loop iteration: 680
+Iter 680: loss 4.0424, lr 0.000102, 17695.34 tokens/sec
+2025-04-14 23:47:18,377 - transformer_training - INFO - Main loop iteration: 681
+2025-04-14 23:47:22,002 - transformer_training - INFO - Main loop iteration: 682
+2025-04-14 23:47:25,568 - transformer_training - INFO - Main loop iteration: 683
+2025-04-14 23:47:29,191 - transformer_training - INFO - Main loop iteration: 684
+2025-04-14 23:47:32,591 - transformer_training - INFO - Main loop iteration: 685
+2025-04-14 23:47:36,539 - transformer_training - INFO - Main loop iteration: 686
+2025-04-14 23:47:39,939 - transformer_training - INFO - Main loop iteration: 687
+2025-04-14 23:47:43,563 - transformer_training - INFO - Main loop iteration: 688
+2025-04-14 23:47:47,122 - transformer_training - INFO - Main loop iteration: 689
+2025-04-14 23:47:50,745 - transformer_training - INFO - Main loop iteration: 690
+Iter 690: loss 4.0899, lr 0.000103, 19281.76 tokens/sec
+2025-04-14 23:47:54,144 - transformer_training - INFO - Main loop iteration: 691
+2025-04-14 23:47:58,072 - transformer_training - INFO - Main loop iteration: 692
+2025-04-14 23:48:01,479 - transformer_training - INFO - Main loop iteration: 693
+2025-04-14 23:48:05,270 - transformer_training - INFO - Main loop iteration: 694
+2025-04-14 23:48:08,670 - transformer_training - INFO - Main loop iteration: 695
+2025-04-14 23:48:12,289 - transformer_training - INFO - Main loop iteration: 696
+2025-04-14 23:48:15,999 - transformer_training - INFO - Main loop iteration: 697
+2025-04-14 23:48:19,627 - transformer_training - INFO - Main loop iteration: 698
+2025-04-14 23:48:23,025 - transformer_training - INFO - Main loop iteration: 699
+2025-04-14 23:48:26,964 - transformer_training - INFO - Main loop iteration: 700
+Iter 700: loss 3.9968, lr 0.000105, 19301.67 tokens/sec
+2025-04-14 23:48:30,360 - transformer_training - INFO - Main loop iteration: 701
+2025-04-14 23:48:34,155 - transformer_training - INFO - Main loop iteration: 702
+2025-04-14 23:48:37,571 - transformer_training - INFO - Main loop iteration: 703
+2025-04-14 23:48:41,193 - transformer_training - INFO - Main loop iteration: 704
+2025-04-14 23:48:44,902 - transformer_training - INFO - Main loop iteration: 705
+2025-04-14 23:48:48,523 - transformer_training - INFO - Main loop iteration: 706
+2025-04-14 23:48:52,100 - transformer_training - INFO - Main loop iteration: 707
+2025-04-14 23:48:55,724 - transformer_training - INFO - Main loop iteration: 708
+2025-04-14 23:48:59,131 - transformer_training - INFO - Main loop iteration: 709
+2025-04-14 23:49:03,039 - transformer_training - INFO - Main loop iteration: 710
+Iter 710: loss 3.9994, lr 0.000106, 19266.31 tokens/sec
+2025-04-14 23:49:06,442 - transformer_training - INFO - Main loop iteration: 711
+2025-04-14 23:49:10,066 - transformer_training - INFO - Main loop iteration: 712
+2025-04-14 23:49:13,680 - transformer_training - INFO - Main loop iteration: 713
+2025-04-14 23:49:17,304 - transformer_training - INFO - Main loop iteration: 714
+2025-04-14 23:49:20,941 - transformer_training - INFO - Main loop iteration: 715
+2025-04-14 23:49:24,563 - transformer_training - INFO - Main loop iteration: 716
+2025-04-14 23:49:27,965 - transformer_training - INFO - Main loop iteration: 717
+2025-04-14 23:49:31,851 - transformer_training - INFO - Main loop iteration: 718
+2025-04-14 23:49:35,249 - transformer_training - INFO - Main loop iteration: 719
+2025-04-14 23:49:38,874 - transformer_training - INFO - Main loop iteration: 720
+Iter 720: loss 3.9961, lr 0.000108, 17635.72 tokens/sec
+2025-04-14 23:49:42,591 - transformer_training - INFO - Main loop iteration: 721
+2025-04-14 23:49:46,212 - transformer_training - INFO - Main loop iteration: 722
+2025-04-14 23:49:49,620 - transformer_training - INFO - Main loop iteration: 723
+2025-04-14 23:49:53,412 - transformer_training - INFO - Main loop iteration: 724
+2025-04-14 23:49:56,810 - transformer_training - INFO - Main loop iteration: 725
+2025-04-14 23:50:00,753 - transformer_training - INFO - Main loop iteration: 726
+2025-04-14 23:50:04,153 - transformer_training - INFO - Main loop iteration: 727
+2025-04-14 23:50:07,783 - transformer_training - INFO - Main loop iteration: 728
+2025-04-14 23:50:11,339 - transformer_training - INFO - Main loop iteration: 729
+2025-04-14 23:50:14,964 - transformer_training - INFO - Main loop iteration: 730
+Iter 730: loss 4.0188, lr 0.000109, 19285.62 tokens/sec
+2025-04-14 23:50:18,363 - transformer_training - INFO - Main loop iteration: 731
+2025-04-14 23:50:22,294 - transformer_training - INFO - Main loop iteration: 732
+2025-04-14 23:50:25,696 - transformer_training - INFO - Main loop iteration: 733
+2025-04-14 23:50:29,488 - transformer_training - INFO - Main loop iteration: 734
+2025-04-14 23:50:32,890 - transformer_training - INFO - Main loop iteration: 735
+2025-04-14 23:50:36,514 - transformer_training - INFO - Main loop iteration: 736
+2025-04-14 23:50:40,242 - transformer_training - INFO - Main loop iteration: 737
+2025-04-14 23:50:43,865 - transformer_training - INFO - Main loop iteration: 738
+2025-04-14 23:50:47,441 - transformer_training - INFO - Main loop iteration: 739
+2025-04-14 23:50:51,070 - transformer_training - INFO - Main loop iteration: 740
+Iter 740: loss 3.9736, lr 0.000111, 19278.46 tokens/sec
+2025-04-14 23:50:54,470 - transformer_training - INFO - Main loop iteration: 741
+2025-04-14 23:50:58,419 - transformer_training - INFO - Main loop iteration: 742
+2025-04-14 23:51:01,820 - transformer_training - INFO - Main loop iteration: 743
+2025-04-14 23:51:05,454 - transformer_training - INFO - Main loop iteration: 744
+2025-04-14 23:51:09,012 - transformer_training - INFO - Main loop iteration: 745
+2025-04-14 23:51:12,649 - transformer_training - INFO - Main loop iteration: 746
+2025-04-14 23:51:16,360 - transformer_training - INFO - Main loop iteration: 747
+2025-04-14 23:51:19,996 - transformer_training - INFO - Main loop iteration: 748
+2025-04-14 23:51:23,394 - transformer_training - INFO - Main loop iteration: 749
+2025-04-14 23:51:27,181 - transformer_training - INFO - Main loop iteration: 750
+Iter 750: loss 3.8705, lr 0.000112, 19273.78 tokens/sec
+2025-04-14 23:51:30,582 - transformer_training - INFO - Main loop iteration: 751
+2025-04-14 23:51:34,211 - transformer_training - INFO - Main loop iteration: 752
+2025-04-14 23:51:37,919 - transformer_training - INFO - Main loop iteration: 753
+2025-04-14 23:51:41,547 - transformer_training - INFO - Main loop iteration: 754
+2025-04-14 23:51:44,946 - transformer_training - INFO - Main loop iteration: 755
+2025-04-14 23:51:48,795 - transformer_training - INFO - Main loop iteration: 756
+2025-04-14 23:51:52,194 - transformer_training - INFO - Main loop iteration: 757
+2025-04-14 23:51:56,074 - transformer_training - INFO - Main loop iteration: 758
+2025-04-14 23:51:59,472 - transformer_training - INFO - Main loop iteration: 759
+2025-04-14 23:52:03,096 - transformer_training - INFO - Main loop iteration: 760
+Iter 760: loss 4.0216, lr 0.000114, 18135.39 tokens/sec
+2025-04-14 23:52:06,711 - transformer_training - INFO - Main loop iteration: 761
+2025-04-14 23:52:10,335 - transformer_training - INFO - Main loop iteration: 762
+2025-04-14 23:52:13,733 - transformer_training - INFO - Main loop iteration: 763
+2025-04-14 23:52:17,617 - transformer_training - INFO - Main loop iteration: 764
+2025-04-14 23:52:21,024 - transformer_training - INFO - Main loop iteration: 765
+2025-04-14 23:52:24,879 - transformer_training - INFO - Main loop iteration: 766
+2025-04-14 23:52:28,281 - transformer_training - INFO - Main loop iteration: 767
+2025-04-14 23:52:31,905 - transformer_training - INFO - Main loop iteration: 768
+2025-04-14 23:52:35,567 - transformer_training - INFO - Main loop iteration: 769
+2025-04-14 23:52:39,187 - transformer_training - INFO - Main loop iteration: 770
+Iter 770: loss 3.9312, lr 0.000115, 18030.13 tokens/sec
+2025-04-14 23:52:42,822 - transformer_training - INFO - Main loop iteration: 771
+2025-04-14 23:52:46,444 - transformer_training - INFO - Main loop iteration: 772
+2025-04-14 23:52:49,841 - transformer_training - INFO - Main loop iteration: 773
+2025-04-14 23:52:53,732 - transformer_training - INFO - Main loop iteration: 774
+2025-04-14 23:52:57,132 - transformer_training - INFO - Main loop iteration: 775
+2025-04-14 23:53:00,757 - transformer_training - INFO - Main loop iteration: 776
+2025-04-14 23:53:04,472 - transformer_training - INFO - Main loop iteration: 777
+2025-04-14 23:53:08,093 - transformer_training - INFO - Main loop iteration: 778
+2025-04-14 23:53:11,654 - transformer_training - INFO - Main loop iteration: 779
+2025-04-14 23:53:15,274 - transformer_training - INFO - Main loop iteration: 780
+Iter 780: loss 3.8606, lr 0.000117, 19289.47 tokens/sec
+2025-04-14 23:53:18,672 - transformer_training - INFO - Main loop iteration: 781
+2025-04-14 23:53:22,610 - transformer_training - INFO - Main loop iteration: 782
+2025-04-14 23:53:26,011 - transformer_training - INFO - Main loop iteration: 783
+2025-04-14 23:53:29,634 - transformer_training - INFO - Main loop iteration: 784
+2025-04-14 23:53:33,202 - transformer_training - INFO - Main loop iteration: 785
+2025-04-14 23:53:36,824 - transformer_training - INFO - Main loop iteration: 786
+2025-04-14 23:53:40,221 - transformer_training - INFO - Main loop iteration: 787
+2025-04-14 23:53:44,156 - transformer_training - INFO - Main loop iteration: 788
+2025-04-14 23:53:47,559 - transformer_training - INFO - Main loop iteration: 789
+2025-04-14 23:53:51,353 - transformer_training - INFO - Main loop iteration: 790
+Iter 790: loss 3.9065, lr 0.000118, 19273.78 tokens/sec
+2025-04-14 23:53:54,754 - transformer_training - INFO - Main loop iteration: 791
+2025-04-14 23:53:58,376 - transformer_training - INFO - Main loop iteration: 792
+2025-04-14 23:54:02,102 - transformer_training - INFO - Main loop iteration: 793
+2025-04-14 23:54:05,714 - transformer_training - INFO - Main loop iteration: 794
+2025-04-14 23:54:09,112 - transformer_training - INFO - Main loop iteration: 795
+2025-04-14 23:54:12,898 - transformer_training - INFO - Main loop iteration: 796
+2025-04-14 23:54:16,306 - transformer_training - INFO - Main loop iteration: 797
+2025-04-14 23:54:20,253 - transformer_training - INFO - Main loop iteration: 798
+2025-04-14 23:54:23,653 - transformer_training - INFO - Main loop iteration: 799
+2025-04-14 23:54:27,276 - transformer_training - INFO - Main loop iteration: 800
+Iter 800: loss 3.8805, lr 0.000120, 18379.23 tokens/sec
+Iter 800: val loss 6.5964
+New best model saved with val loss: 6.5964
+2025-04-14 23:54:52,094 - transformer_training - INFO - Main loop iteration: 801
+2025-04-14 23:54:55,947 - transformer_training - INFO - Main loop iteration: 802
+2025-04-14 23:54:59,346 - transformer_training - INFO - Main loop iteration: 803
+2025-04-14 23:55:02,962 - transformer_training - INFO - Main loop iteration: 804
+2025-04-14 23:55:06,530 - transformer_training - INFO - Main loop iteration: 805
+2025-04-14 23:55:10,150 - transformer_training - INFO - Main loop iteration: 806
+2025-04-14 23:55:13,543 - transformer_training - INFO - Main loop iteration: 807
+2025-04-14 23:55:17,487 - transformer_training - INFO - Main loop iteration: 808
+2025-04-14 23:55:20,888 - transformer_training - INFO - Main loop iteration: 809
+2025-04-14 23:55:24,674 - transformer_training - INFO - Main loop iteration: 810
+Iter 810: loss 3.8687, lr 0.000121, 19275.90 tokens/sec
+2025-04-14 23:55:28,074 - transformer_training - INFO - Main loop iteration: 811
+2025-04-14 23:55:31,697 - transformer_training - INFO - Main loop iteration: 812
+2025-04-14 23:55:35,406 - transformer_training - INFO - Main loop iteration: 813
+2025-04-14 23:55:39,028 - transformer_training - INFO - Main loop iteration: 814
+2025-04-14 23:55:42,585 - transformer_training - INFO - Main loop iteration: 815
+2025-04-14 23:55:46,207 - transformer_training - INFO - Main loop iteration: 816
+2025-04-14 23:55:49,608 - transformer_training - INFO - Main loop iteration: 817
+2025-04-14 23:55:53,569 - transformer_training - INFO - Main loop iteration: 818
+2025-04-14 23:55:56,981 - transformer_training - INFO - Main loop iteration: 819
+2025-04-14 23:56:00,626 - transformer_training - INFO - Main loop iteration: 820
+Iter 820: loss 3.8993, lr 0.000123, 18359.39 tokens/sec
+2025-04-14 23:56:04,196 - transformer_training - INFO - Main loop iteration: 821
+2025-04-14 23:56:07,820 - transformer_training - INFO - Main loop iteration: 822
+2025-04-14 23:56:11,553 - transformer_training - INFO - Main loop iteration: 823
+2025-04-14 23:56:15,173 - transformer_training - INFO - Main loop iteration: 824
+2025-04-14 23:56:18,574 - transformer_training - INFO - Main loop iteration: 825
+2025-04-14 23:56:22,360 - transformer_training - INFO - Main loop iteration: 826
+2025-04-14 23:56:25,757 - transformer_training - INFO - Main loop iteration: 827
+2025-04-14 23:56:29,379 - transformer_training - INFO - Main loop iteration: 828
+2025-04-14 23:56:33,096 - transformer_training - INFO - Main loop iteration: 829
+2025-04-14 23:56:36,732 - transformer_training - INFO - Main loop iteration: 830
+Iter 830: loss 3.8706, lr 0.000124, 18307.61 tokens/sec
+2025-04-14 23:56:40,313 - transformer_training - INFO - Main loop iteration: 831
+2025-04-14 23:56:43,935 - transformer_training - INFO - Main loop iteration: 832
+2025-04-14 23:56:47,333 - transformer_training - INFO - Main loop iteration: 833
+2025-04-14 23:56:51,288 - transformer_training - INFO - Main loop iteration: 834
+2025-04-14 23:56:54,698 - transformer_training - INFO - Main loop iteration: 835
+2025-04-14 23:56:58,323 - transformer_training - INFO - Main loop iteration: 836
+2025-04-14 23:57:01,895 - transformer_training - INFO - Main loop iteration: 837
+2025-04-14 23:57:05,517 - transformer_training - INFO - Main loop iteration: 838
+2025-04-14 23:57:09,235 - transformer_training - INFO - Main loop iteration: 839
+2025-04-14 23:57:12,866 - transformer_training - INFO - Main loop iteration: 840
+Iter 840: loss 3.8863, lr 0.000126, 19296.46 tokens/sec
+2025-04-14 23:57:16,263 - transformer_training - INFO - Main loop iteration: 841
+2025-04-14 23:57:20,055 - transformer_training - INFO - Main loop iteration: 842
+2025-04-14 23:57:23,455 - transformer_training - INFO - Main loop iteration: 843
+2025-04-14 23:57:27,394 - transformer_training - INFO - Main loop iteration: 844
+2025-04-14 23:57:30,795 - transformer_training - INFO - Main loop iteration: 845
+2025-04-14 23:57:34,416 - transformer_training - INFO - Main loop iteration: 846
+2025-04-14 23:57:37,994 - transformer_training - INFO - Main loop iteration: 847
+2025-04-14 23:57:41,629 - transformer_training - INFO - Main loop iteration: 848
+2025-04-14 23:57:45,026 - transformer_training - INFO - Main loop iteration: 849
+2025-04-14 23:57:48,959 - transformer_training - INFO - Main loop iteration: 850
+Iter 850: loss 3.8575, lr 0.000127, 19311.06 tokens/sec
+2025-04-14 23:57:52,353 - transformer_training - INFO - Main loop iteration: 851
+2025-04-14 23:57:56,145 - transformer_training - INFO - Main loop iteration: 852
+2025-04-14 23:57:59,544 - transformer_training - INFO - Main loop iteration: 853
+2025-04-14 23:58:03,170 - transformer_training - INFO - Main loop iteration: 854
+2025-04-14 23:58:06,892 - transformer_training - INFO - Main loop iteration: 855
+2025-04-14 23:58:10,516 - transformer_training - INFO - Main loop iteration: 856
+2025-04-14 23:58:13,925 - transformer_training - INFO - Main loop iteration: 857
+2025-04-14 23:58:17,775 - transformer_training - INFO - Main loop iteration: 858
+2025-04-14 23:58:21,175 - transformer_training - INFO - Main loop iteration: 859
+2025-04-14 23:58:25,061 - transformer_training - INFO - Main loop iteration: 860
+Iter 860: loss 3.8746, lr 0.000129, 19291.37 tokens/sec
+2025-04-14 23:58:28,459 - transformer_training - INFO - Main loop iteration: 861
+2025-04-14 23:58:32,083 - transformer_training - INFO - Main loop iteration: 862
+2025-04-14 23:58:35,723 - transformer_training - INFO - Main loop iteration: 863
+2025-04-14 23:58:39,348 - transformer_training - INFO - Main loop iteration: 864
+2025-04-14 23:58:42,748 - transformer_training - INFO - Main loop iteration: 865
+2025-04-14 23:58:46,644 - transformer_training - INFO - Main loop iteration: 866
+2025-04-14 23:58:50,043 - transformer_training - INFO - Main loop iteration: 867
+2025-04-14 23:58:53,893 - transformer_training - INFO - Main loop iteration: 868
+2025-04-14 23:58:57,294 - transformer_training - INFO - Main loop iteration: 869
+2025-04-14 23:59:00,919 - transformer_training - INFO - Main loop iteration: 870
+Iter 870: loss 3.8091, lr 0.000131, 17801.60 tokens/sec
+2025-04-14 23:59:04,602 - transformer_training - INFO - Main loop iteration: 871
+2025-04-14 23:59:08,217 - transformer_training - INFO - Main loop iteration: 872
+2025-04-14 23:59:11,617 - transformer_training - INFO - Main loop iteration: 873
+2025-04-14 23:59:15,549 - transformer_training - INFO - Main loop iteration: 874
+2025-04-14 23:59:18,947 - transformer_training - INFO - Main loop iteration: 875
+2025-04-14 23:59:22,742 - transformer_training - INFO - Main loop iteration: 876
+2025-04-14 23:59:26,139 - transformer_training - INFO - Main loop iteration: 877
+2025-04-14 23:59:29,763 - transformer_training - INFO - Main loop iteration: 878
+2025-04-14 23:59:33,474 - transformer_training - INFO - Main loop iteration: 879
+2025-04-14 23:59:37,098 - transformer_training - INFO - Main loop iteration: 880
+Iter 880: loss 3.8010, lr 0.000132, 18303.13 tokens/sec
+2025-04-14 23:59:40,679 - transformer_training - INFO - Main loop iteration: 881
+2025-04-14 23:59:44,295 - transformer_training - INFO - Main loop iteration: 882
+2025-04-14 23:59:47,697 - transformer_training - INFO - Main loop iteration: 883
+2025-04-14 23:59:51,648 - transformer_training - INFO - Main loop iteration: 884
+2025-04-14 23:59:55,047 - transformer_training - INFO - Main loop iteration: 885
+2025-04-14 23:59:58,670 - transformer_training - INFO - Main loop iteration: 886
+2025-04-15 00:00:02,242 - transformer_training - INFO - Main loop iteration: 887
+2025-04-15 00:00:05,867 - transformer_training - INFO - Main loop iteration: 888
+2025-04-15 00:00:09,606 - transformer_training - INFO - Main loop iteration: 889
+2025-04-15 00:00:13,232 - transformer_training - INFO - Main loop iteration: 890
+Iter 890: loss 3.7522, lr 0.000133, 19261.51 tokens/sec
+2025-04-15 00:00:16,635 - transformer_training - INFO - Main loop iteration: 891
+2025-04-15 00:00:20,409 - transformer_training - INFO - Main loop iteration: 892
+2025-04-15 00:00:23,807 - transformer_training - INFO - Main loop iteration: 893
+2025-04-15 00:00:27,434 - transformer_training - INFO - Main loop iteration: 894
+2025-04-15 00:00:31,138 - transformer_training - INFO - Main loop iteration: 895
+2025-04-15 00:00:34,773 - transformer_training - INFO - Main loop iteration: 896
+2025-04-15 00:00:38,346 - transformer_training - INFO - Main loop iteration: 897
+2025-04-15 00:00:41,972 - transformer_training - INFO - Main loop iteration: 898
+2025-04-15 00:00:45,365 - transformer_training - INFO - Main loop iteration: 899
+2025-04-15 00:00:49,305 - transformer_training - INFO - Main loop iteration: 900
+Iter 900: loss 3.7912, lr 0.000135, 19284.18 tokens/sec
+2025-04-15 00:00:52,704 - transformer_training - INFO - Main loop iteration: 901
+2025-04-15 00:00:56,337 - transformer_training - INFO - Main loop iteration: 902
+2025-04-15 00:00:59,917 - transformer_training - INFO - Main loop iteration: 903
+2025-04-15 00:01:03,541 - transformer_training - INFO - Main loop iteration: 904
+2025-04-15 00:01:07,244 - transformer_training - INFO - Main loop iteration: 905
+2025-04-15 00:01:10,870 - transformer_training - INFO - Main loop iteration: 906
+2025-04-15 00:01:14,269 - transformer_training - INFO - Main loop iteration: 907
+2025-04-15 00:01:18,061 - transformer_training - INFO - Main loop iteration: 908
+2025-04-15 00:01:21,461 - transformer_training - INFO - Main loop iteration: 909
+2025-04-15 00:01:25,417 - transformer_training - INFO - Main loop iteration: 910
+Iter 910: loss 3.7898, lr 0.000136, 19289.03 tokens/sec
+2025-04-15 00:01:28,816 - transformer_training - INFO - Main loop iteration: 911
+2025-04-15 00:01:32,439 - transformer_training - INFO - Main loop iteration: 912
+2025-04-15 00:01:36,005 - transformer_training - INFO - Main loop iteration: 913
+2025-04-15 00:01:39,629 - transformer_training - INFO - Main loop iteration: 914
+2025-04-15 00:01:43,349 - transformer_training - INFO - Main loop iteration: 915
+2025-04-15 00:01:46,969 - transformer_training - INFO - Main loop iteration: 916
+2025-04-15 00:01:50,367 - transformer_training - INFO - Main loop iteration: 917
+2025-04-15 00:01:54,162 - transformer_training - INFO - Main loop iteration: 918
+2025-04-15 00:01:57,565 - transformer_training - INFO - Main loop iteration: 919
+2025-04-15 00:02:01,191 - transformer_training - INFO - Main loop iteration: 920
+Iter 920: loss 3.7232, lr 0.000138, 17598.02 tokens/sec
+2025-04-15 00:02:04,916 - transformer_training - INFO - Main loop iteration: 921
+2025-04-15 00:02:08,548 - transformer_training - INFO - Main loop iteration: 922
+2025-04-15 00:02:11,946 - transformer_training - INFO - Main loop iteration: 923
+2025-04-15 00:02:15,735 - transformer_training - INFO - Main loop iteration: 924
+2025-04-15 00:02:19,136 - transformer_training - INFO - Main loop iteration: 925
+2025-04-15 00:02:23,088 - transformer_training - INFO - Main loop iteration: 926
+2025-04-15 00:02:26,487 - transformer_training - INFO - Main loop iteration: 927
+2025-04-15 00:02:30,108 - transformer_training - INFO - Main loop iteration: 928
+2025-04-15 00:02:33,665 - transformer_training - INFO - Main loop iteration: 929
+2025-04-15 00:02:37,289 - transformer_training - INFO - Main loop iteration: 930
+Iter 930: loss 3.8162, lr 0.000140, 19287.21 tokens/sec
+2025-04-15 00:02:40,688 - transformer_training - INFO - Main loop iteration: 931
+2025-04-15 00:02:44,633 - transformer_training - INFO - Main loop iteration: 932
+2025-04-15 00:02:48,030 - transformer_training - INFO - Main loop iteration: 933
+2025-04-15 00:02:51,827 - transformer_training - INFO - Main loop iteration: 934
+2025-04-15 00:02:55,226 - transformer_training - INFO - Main loop iteration: 935
+2025-04-15 00:02:58,851 - transformer_training - INFO - Main loop iteration: 936
+2025-04-15 00:03:02,576 - transformer_training - INFO - Main loop iteration: 937
+2025-04-15 00:03:06,195 - transformer_training - INFO - Main loop iteration: 938
+2025-04-15 00:03:09,766 - transformer_training - INFO - Main loop iteration: 939
+2025-04-15 00:03:13,393 - transformer_training - INFO - Main loop iteration: 940
+Iter 940: loss 3.7338, lr 0.000141, 19263.16 tokens/sec
+2025-04-15 00:03:16,796 - transformer_training - INFO - Main loop iteration: 941
+2025-04-15 00:03:20,745 - transformer_training - INFO - Main loop iteration: 942
+2025-04-15 00:03:24,146 - transformer_training - INFO - Main loop iteration: 943
+2025-04-15 00:03:27,767 - transformer_training - INFO - Main loop iteration: 944
+2025-04-15 00:03:31,327 - transformer_training - INFO - Main loop iteration: 945
+2025-04-15 00:03:34,966 - transformer_training - INFO - Main loop iteration: 946
+2025-04-15 00:03:38,675 - transformer_training - INFO - Main loop iteration: 947
+2025-04-15 00:03:42,298 - transformer_training - INFO - Main loop iteration: 948
+2025-04-15 00:03:45,698 - transformer_training - INFO - Main loop iteration: 949
+2025-04-15 00:03:49,493 - transformer_training - INFO - Main loop iteration: 950
+Iter 950: loss 3.8034, lr 0.000142, 19250.87 tokens/sec
+2025-04-15 00:03:52,898 - transformer_training - INFO - Main loop iteration: 951
+2025-04-15 00:03:56,520 - transformer_training - INFO - Main loop iteration: 952
+2025-04-15 00:04:00,236 - transformer_training - INFO - Main loop iteration: 953
+2025-04-15 00:04:03,860 - transformer_training - INFO - Main loop iteration: 954
+2025-04-15 00:04:07,260 - transformer_training - INFO - Main loop iteration: 955
+2025-04-15 00:04:11,196 - transformer_training - INFO - Main loop iteration: 956
+2025-04-15 00:04:14,596 - transformer_training - INFO - Main loop iteration: 957
+2025-04-15 00:04:18,380 - transformer_training - INFO - Main loop iteration: 958
+2025-04-15 00:04:21,779 - transformer_training - INFO - Main loop iteration: 959
+2025-04-15 00:04:25,401 - transformer_training - INFO - Main loop iteration: 960
+Iter 960: loss 3.7155, lr 0.000144, 17892.94 tokens/sec
+2025-04-15 00:04:29,064 - transformer_training - INFO - Main loop iteration: 961
+2025-04-15 00:04:32,688 - transformer_training - INFO - Main loop iteration: 962
+2025-04-15 00:04:36,087 - transformer_training - INFO - Main loop iteration: 963
+2025-04-15 00:04:39,923 - transformer_training - INFO - Main loop iteration: 964
+2025-04-15 00:04:43,326 - transformer_training - INFO - Main loop iteration: 965
+2025-04-15 00:04:47,266 - transformer_training - INFO - Main loop iteration: 966
+2025-04-15 00:04:50,665 - transformer_training - INFO - Main loop iteration: 967
+2025-04-15 00:04:54,288 - transformer_training - INFO - Main loop iteration: 968
+2025-04-15 00:04:57,847 - transformer_training - INFO - Main loop iteration: 969
+2025-04-15 00:05:01,471 - transformer_training - INFO - Main loop iteration: 970
+Iter 970: loss 3.7108, lr 0.000145, 17775.30 tokens/sec
+2025-04-15 00:05:05,159 - transformer_training - INFO - Main loop iteration: 971
+2025-04-15 00:05:08,785 - transformer_training - INFO - Main loop iteration: 972
+2025-04-15 00:05:12,186 - transformer_training - INFO - Main loop iteration: 973
+2025-04-15 00:05:16,034 - transformer_training - INFO - Main loop iteration: 974
+2025-04-15 00:05:19,437 - transformer_training - INFO - Main loop iteration: 975
+2025-04-15 00:05:23,064 - transformer_training - INFO - Main loop iteration: 976
+2025-04-15 00:05:26,788 - transformer_training - INFO - Main loop iteration: 977
+2025-04-15 00:05:30,414 - transformer_training - INFO - Main loop iteration: 978
+2025-04-15 00:05:33,976 - transformer_training - INFO - Main loop iteration: 979
+2025-04-15 00:05:37,598 - transformer_training - INFO - Main loop iteration: 980
+Iter 980: loss 3.6571, lr 0.000147, 19289.60 tokens/sec
+2025-04-15 00:05:40,996 - transformer_training - INFO - Main loop iteration: 981
+2025-04-15 00:05:44,938 - transformer_training - INFO - Main loop iteration: 982
+2025-04-15 00:05:48,336 - transformer_training - INFO - Main loop iteration: 983
+2025-04-15 00:05:51,958 - transformer_training - INFO - Main loop iteration: 984
+2025-04-15 00:05:55,527 - transformer_training - INFO - Main loop iteration: 985
+2025-04-15 00:05:59,160 - transformer_training - INFO - Main loop iteration: 986
+2025-04-15 00:06:02,558 - transformer_training - INFO - Main loop iteration: 987
+2025-04-15 00:06:06,499 - transformer_training - INFO - Main loop iteration: 988
+2025-04-15 00:06:09,898 - transformer_training - INFO - Main loop iteration: 989
+2025-04-15 00:06:13,683 - transformer_training - INFO - Main loop iteration: 990
+Iter 990: loss 3.6804, lr 0.000148, 19266.93 tokens/sec
+2025-04-15 00:06:17,086 - transformer_training - INFO - Main loop iteration: 991
+2025-04-15 00:06:20,707 - transformer_training - INFO - Main loop iteration: 992
+2025-04-15 00:06:24,437 - transformer_training - INFO - Main loop iteration: 993
+2025-04-15 00:06:28,057 - transformer_training - INFO - Main loop iteration: 994
+2025-04-15 00:06:31,458 - transformer_training - INFO - Main loop iteration: 995
+2025-04-15 00:06:35,244 - transformer_training - INFO - Main loop iteration: 996
+2025-04-15 00:06:38,653 - transformer_training - INFO - Main loop iteration: 997
+2025-04-15 00:06:42,601 - transformer_training - INFO - Main loop iteration: 998
+2025-04-15 00:06:46,001 - transformer_training - INFO - Main loop iteration: 999
+2025-04-15 00:06:49,621 - transformer_training - INFO - Main loop iteration: 1000
+Iter 1000: loss 3.6691, lr 0.000150, 18375.56 tokens/sec
+Iter 1000: val loss 6.5156
+New best model saved with val loss: 6.5156
+Periodic checkpoint saved at iteration 1000
+2025-04-15 00:07:28,067 - transformer_training - INFO - Main loop iteration: 1001
+2025-04-15 00:07:31,613 - transformer_training - INFO - Main loop iteration: 1002
+2025-04-15 00:07:35,331 - transformer_training - INFO - Main loop iteration: 1003
+2025-04-15 00:07:38,948 - transformer_training - INFO - Main loop iteration: 1004
+2025-04-15 00:07:42,344 - transformer_training - INFO - Main loop iteration: 1005
+2025-04-15 00:07:46,157 - transformer_training - INFO - Main loop iteration: 1006
+2025-04-15 00:07:49,563 - transformer_training - INFO - Main loop iteration: 1007
+2025-04-15 00:07:53,178 - transformer_training - INFO - Main loop iteration: 1008
+2025-04-15 00:07:56,967 - transformer_training - INFO - Main loop iteration: 1009
+2025-04-15 00:08:00,585 - transformer_training - INFO - Main loop iteration: 1010
+Iter 1010: loss 3.6829, lr 0.000151, 18353.45 tokens/sec
+2025-04-15 00:08:04,157 - transformer_training - INFO - Main loop iteration: 1011
+2025-04-15 00:08:07,777 - transformer_training - INFO - Main loop iteration: 1012
+2025-04-15 00:08:11,179 - transformer_training - INFO - Main loop iteration: 1013
+2025-04-15 00:08:15,119 - transformer_training - INFO - Main loop iteration: 1014
+2025-04-15 00:08:18,515 - transformer_training - INFO - Main loop iteration: 1015
+2025-04-15 00:08:22,303 - transformer_training - INFO - Main loop iteration: 1016
+2025-04-15 00:08:25,699 - transformer_training - INFO - Main loop iteration: 1017
+2025-04-15 00:08:29,321 - transformer_training - INFO - Main loop iteration: 1018
+2025-04-15 00:08:33,038 - transformer_training - INFO - Main loop iteration: 1019
+2025-04-15 00:08:36,658 - transformer_training - INFO - Main loop iteration: 1020
+Iter 1020: loss 3.6537, lr 0.000153, 19283.24 tokens/sec
+2025-04-15 00:08:40,057 - transformer_training - INFO - Main loop iteration: 1021
+2025-04-15 00:08:43,845 - transformer_training - INFO - Main loop iteration: 1022
+2025-04-15 00:08:47,250 - transformer_training - INFO - Main loop iteration: 1023
+2025-04-15 00:08:51,228 - transformer_training - INFO - Main loop iteration: 1024
+2025-04-15 00:08:54,628 - transformer_training - INFO - Main loop iteration: 1025
+2025-04-15 00:08:58,251 - transformer_training - INFO - Main loop iteration: 1026
+2025-04-15 00:09:01,818 - transformer_training - INFO - Main loop iteration: 1027
+2025-04-15 00:09:05,440 - transformer_training - INFO - Main loop iteration: 1028
+2025-04-15 00:09:09,179 - transformer_training - INFO - Main loop iteration: 1029
+2025-04-15 00:09:12,802 - transformer_training - INFO - Main loop iteration: 1030
+Iter 1030: loss 3.6448, lr 0.000154, 19224.92 tokens/sec
+2025-04-15 00:09:16,212 - transformer_training - INFO - Main loop iteration: 1031
+2025-04-15 00:09:20,004 - transformer_training - INFO - Main loop iteration: 1032
+2025-04-15 00:09:23,403 - transformer_training - INFO - Main loop iteration: 1033
+2025-04-15 00:09:27,024 - transformer_training - INFO - Main loop iteration: 1034
+2025-04-15 00:09:30,741 - transformer_training - INFO - Main loop iteration: 1035
+2025-04-15 00:09:34,363 - transformer_training - INFO - Main loop iteration: 1036
+2025-04-15 00:09:37,932 - transformer_training - INFO - Main loop iteration: 1037
+2025-04-15 00:09:41,553 - transformer_training - INFO - Main loop iteration: 1038
+2025-04-15 00:09:44,954 - transformer_training - INFO - Main loop iteration: 1039
+2025-04-15 00:09:48,906 - transformer_training - INFO - Main loop iteration: 1040
+Iter 1040: loss 3.6707, lr 0.000156, 19303.63 tokens/sec
+2025-04-15 00:09:52,302 - transformer_training - INFO - Main loop iteration: 1041
+2025-04-15 00:09:55,921 - transformer_training - INFO - Main loop iteration: 1042
+2025-04-15 00:09:59,489 - transformer_training - INFO - Main loop iteration: 1043
+2025-04-15 00:10:03,112 - transformer_training - INFO - Main loop iteration: 1044
+2025-04-15 00:10:06,509 - transformer_training - INFO - Main loop iteration: 1045
+2025-04-15 00:10:10,464 - transformer_training - INFO - Main loop iteration: 1046
+2025-04-15 00:10:13,862 - transformer_training - INFO - Main loop iteration: 1047
+2025-04-15 00:10:17,664 - transformer_training - INFO - Main loop iteration: 1048
+2025-04-15 00:10:21,066 - transformer_training - INFO - Main loop iteration: 1049
+2025-04-15 00:10:24,683 - transformer_training - INFO - Main loop iteration: 1050
+Iter 1050: loss 3.6690, lr 0.000157, 17587.86 tokens/sec
+2025-04-15 00:10:28,410 - transformer_training - INFO - Main loop iteration: 1051
+2025-04-15 00:10:32,032 - transformer_training - INFO - Main loop iteration: 1052
+2025-04-15 00:10:35,430 - transformer_training - INFO - Main loop iteration: 1053
+2025-04-15 00:10:39,374 - transformer_training - INFO - Main loop iteration: 1054
+2025-04-15 00:10:42,772 - transformer_training - INFO - Main loop iteration: 1055
+2025-04-15 00:10:46,575 - transformer_training - INFO - Main loop iteration: 1056
+2025-04-15 00:10:49,980 - transformer_training - INFO - Main loop iteration: 1057
+2025-04-15 00:10:53,602 - transformer_training - INFO - Main loop iteration: 1058
+2025-04-15 00:10:57,325 - transformer_training - INFO - Main loop iteration: 1059
+2025-04-15 00:11:00,942 - transformer_training - INFO - Main loop iteration: 1060
+Iter 1060: loss 3.6447, lr 0.000159, 18374.02 tokens/sec
+2025-04-15 00:11:04,509 - transformer_training - INFO - Main loop iteration: 1061
+2025-04-15 00:11:08,130 - transformer_training - INFO - Main loop iteration: 1062
+2025-04-15 00:11:11,533 - transformer_training - INFO - Main loop iteration: 1063
+2025-04-15 00:11:15,472 - transformer_training - INFO - Main loop iteration: 1064
+2025-04-15 00:11:18,869 - transformer_training - INFO - Main loop iteration: 1065
+2025-04-15 00:11:22,490 - transformer_training - INFO - Main loop iteration: 1066
+2025-04-15 00:11:26,058 - transformer_training - INFO - Main loop iteration: 1067
+2025-04-15 00:11:29,684 - transformer_training - INFO - Main loop iteration: 1068
+2025-04-15 00:11:33,411 - transformer_training - INFO - Main loop iteration: 1069
+2025-04-15 00:11:37,043 - transformer_training - INFO - Main loop iteration: 1070
+Iter 1070: loss 3.6353, lr 0.000160, 19300.65 tokens/sec
+2025-04-15 00:11:40,439 - transformer_training - INFO - Main loop iteration: 1071
+2025-04-15 00:11:44,228 - transformer_training - INFO - Main loop iteration: 1072
+2025-04-15 00:11:47,631 - transformer_training - INFO - Main loop iteration: 1073
+2025-04-15 00:11:51,254 - transformer_training - INFO - Main loop iteration: 1074
+2025-04-15 00:11:54,979 - transformer_training - INFO - Main loop iteration: 1075
+2025-04-15 00:11:58,600 - transformer_training - INFO - Main loop iteration: 1076
+2025-04-15 00:12:02,001 - transformer_training - INFO - Main loop iteration: 1077
+2025-04-15 00:12:05,794 - transformer_training - INFO - Main loop iteration: 1078
+2025-04-15 00:12:09,192 - transformer_training - INFO - Main loop iteration: 1079
+2025-04-15 00:12:13,133 - transformer_training - INFO - Main loop iteration: 1080
+Iter 1080: loss 3.6100, lr 0.000162, 19283.56 tokens/sec
+2025-04-15 00:12:16,532 - transformer_training - INFO - Main loop iteration: 1081
+2025-04-15 00:12:20,153 - transformer_training - INFO - Main loop iteration: 1082
+2025-04-15 00:12:23,714 - transformer_training - INFO - Main loop iteration: 1083
+2025-04-15 00:12:27,340 - transformer_training - INFO - Main loop iteration: 1084
+2025-04-15 00:12:30,741 - transformer_training - INFO - Main loop iteration: 1085
+2025-04-15 00:12:34,683 - transformer_training - INFO - Main loop iteration: 1086
+2025-04-15 00:12:38,080 - transformer_training - INFO - Main loop iteration: 1087
+2025-04-15 00:12:41,873 - transformer_training - INFO - Main loop iteration: 1088
+2025-04-15 00:12:45,271 - transformer_training - INFO - Main loop iteration: 1089
+2025-04-15 00:12:48,894 - transformer_training - INFO - Main loop iteration: 1090
+Iter 1090: loss 3.6205, lr 0.000163, 17650.12 tokens/sec
+2025-04-15 00:12:52,608 - transformer_training - INFO - Main loop iteration: 1091
+2025-04-15 00:12:56,233 - transformer_training - INFO - Main loop iteration: 1092
+2025-04-15 00:12:59,800 - transformer_training - INFO - Main loop iteration: 1093
+2025-04-15 00:13:03,422 - transformer_training - INFO - Main loop iteration: 1094
+2025-04-15 00:13:06,821 - transformer_training - INFO - Main loop iteration: 1095
+2025-04-15 00:13:10,768 - transformer_training - INFO - Main loop iteration: 1096
+2025-04-15 00:13:14,168 - transformer_training - INFO - Main loop iteration: 1097
+2025-04-15 00:13:17,793 - transformer_training - INFO - Main loop iteration: 1098
+2025-04-15 00:13:21,416 - transformer_training - INFO - Main loop iteration: 1099
+2025-04-15 00:13:25,040 - transformer_training - INFO - Main loop iteration: 1100
+Iter 1100: loss 3.5696, lr 0.000165, 17868.07 tokens/sec
+2025-04-15 00:13:28,709 - transformer_training - INFO - Main loop iteration: 1101
+2025-04-15 00:13:32,333 - transformer_training - INFO - Main loop iteration: 1102
+2025-04-15 00:13:35,741 - transformer_training - INFO - Main loop iteration: 1103
+2025-04-15 00:13:39,605 - transformer_training - INFO - Main loop iteration: 1104
+2025-04-15 00:13:43,002 - transformer_training - INFO - Main loop iteration: 1105
+2025-04-15 00:13:46,624 - transformer_training - INFO - Main loop iteration: 1106
+2025-04-15 00:13:50,288 - transformer_training - INFO - Main loop iteration: 1107
+2025-04-15 00:13:53,913 - transformer_training - INFO - Main loop iteration: 1108
+2025-04-15 00:13:57,311 - transformer_training - INFO - Main loop iteration: 1109
+2025-04-15 00:14:01,261 - transformer_training - INFO - Main loop iteration: 1110
+Iter 1110: loss 3.6223, lr 0.000167, 19290.31 tokens/sec
+2025-04-15 00:14:04,659 - transformer_training - INFO - Main loop iteration: 1111
+2025-04-15 00:14:08,462 - transformer_training - INFO - Main loop iteration: 1112
+2025-04-15 00:14:11,865 - transformer_training - INFO - Main loop iteration: 1113
+2025-04-15 00:14:15,483 - transformer_training - INFO - Main loop iteration: 1114
+2025-04-15 00:14:19,214 - transformer_training - INFO - Main loop iteration: 1115
+2025-04-15 00:14:22,838 - transformer_training - INFO - Main loop iteration: 1116
+2025-04-15 00:14:26,238 - transformer_training - INFO - Main loop iteration: 1117
+2025-04-15 00:14:30,027 - transformer_training - INFO - Main loop iteration: 1118
+2025-04-15 00:14:33,427 - transformer_training - INFO - Main loop iteration: 1119
+2025-04-15 00:14:37,361 - transformer_training - INFO - Main loop iteration: 1120
+Iter 1120: loss 3.6251, lr 0.000168, 19233.92 tokens/sec
+2025-04-15 00:14:40,769 - transformer_training - INFO - Main loop iteration: 1121
+2025-04-15 00:14:44,393 - transformer_training - INFO - Main loop iteration: 1122
+2025-04-15 00:14:47,963 - transformer_training - INFO - Main loop iteration: 1123
+2025-04-15 00:14:51,587 - transformer_training - INFO - Main loop iteration: 1124
+2025-04-15 00:14:55,341 - transformer_training - INFO - Main loop iteration: 1125
+2025-04-15 00:14:58,960 - transformer_training - INFO - Main loop iteration: 1126
+2025-04-15 00:15:02,362 - transformer_training - INFO - Main loop iteration: 1127
+2025-04-15 00:15:06,158 - transformer_training - INFO - Main loop iteration: 1128
+2025-04-15 00:15:09,557 - transformer_training - INFO - Main loop iteration: 1129
+2025-04-15 00:15:13,194 - transformer_training - INFO - Main loop iteration: 1130
+Iter 1130: loss 3.6511, lr 0.000169, 17583.32 tokens/sec
+2025-04-15 00:15:16,922 - transformer_training - INFO - Main loop iteration: 1131
+2025-04-15 00:15:20,543 - transformer_training - INFO - Main loop iteration: 1132
+2025-04-15 00:15:24,122 - transformer_training - INFO - Main loop iteration: 1133
+2025-04-15 00:15:27,748 - transformer_training - INFO - Main loop iteration: 1134
+2025-04-15 00:15:31,147 - transformer_training - INFO - Main loop iteration: 1135
+2025-04-15 00:15:35,102 - transformer_training - INFO - Main loop iteration: 1136
+2025-04-15 00:15:38,502 - transformer_training - INFO - Main loop iteration: 1137
+2025-04-15 00:15:42,134 - transformer_training - INFO - Main loop iteration: 1138
+2025-04-15 00:15:45,701 - transformer_training - INFO - Main loop iteration: 1139
+2025-04-15 00:15:49,339 - transformer_training - INFO - Main loop iteration: 1140
+Iter 1140: loss 3.6710, lr 0.000171, 19266.51 tokens/sec
+2025-04-15 00:15:52,741 - transformer_training - INFO - Main loop iteration: 1141
+2025-04-15 00:15:56,684 - transformer_training - INFO - Main loop iteration: 1142
+2025-04-15 00:16:00,082 - transformer_training - INFO - Main loop iteration: 1143
+2025-04-15 00:16:03,872 - transformer_training - INFO - Main loop iteration: 1144
+2025-04-15 00:16:07,272 - transformer_training - INFO - Main loop iteration: 1145
+2025-04-15 00:16:10,896 - transformer_training - INFO - Main loop iteration: 1146
+2025-04-15 00:16:14,620 - transformer_training - INFO - Main loop iteration: 1147
+2025-04-15 00:16:18,244 - transformer_training - INFO - Main loop iteration: 1148
+2025-04-15 00:16:21,646 - transformer_training - INFO - Main loop iteration: 1149
+2025-04-15 00:16:25,492 - transformer_training - INFO - Main loop iteration: 1150
+Iter 1150: loss 3.5270, lr 0.000172, 19279.70 tokens/sec
+2025-04-15 00:16:28,892 - transformer_training - INFO - Main loop iteration: 1151
+2025-04-15 00:16:32,772 - transformer_training - INFO - Main loop iteration: 1152
+2025-04-15 00:16:36,173 - transformer_training - INFO - Main loop iteration: 1153
+2025-04-15 00:16:39,811 - transformer_training - INFO - Main loop iteration: 1154
+2025-04-15 00:16:43,492 - transformer_training - INFO - Main loop iteration: 1155
+2025-04-15 00:16:47,116 - transformer_training - INFO - Main loop iteration: 1156
+2025-04-15 00:16:50,805 - transformer_training - INFO - Main loop iteration: 1157
+2025-04-15 00:16:54,425 - transformer_training - INFO - Main loop iteration: 1158
+2025-04-15 00:16:57,830 - transformer_training - INFO - Main loop iteration: 1159
+2025-04-15 00:17:01,625 - transformer_training - INFO - Main loop iteration: 1160
+Iter 1160: loss 3.5354, lr 0.000174, 19294.01 tokens/sec
+2025-04-15 00:17:05,023 - transformer_training - INFO - Main loop iteration: 1161
+2025-04-15 00:17:08,644 - transformer_training - INFO - Main loop iteration: 1162
+2025-04-15 00:17:12,371 - transformer_training - INFO - Main loop iteration: 1163
+2025-04-15 00:17:15,991 - transformer_training - INFO - Main loop iteration: 1164
+2025-04-15 00:17:19,567 - transformer_training - INFO - Main loop iteration: 1165
+2025-04-15 00:17:23,190 - transformer_training - INFO - Main loop iteration: 1166
+2025-04-15 00:17:26,593 - transformer_training - INFO - Main loop iteration: 1167
+2025-04-15 00:17:30,547 - transformer_training - INFO - Main loop iteration: 1168
+2025-04-15 00:17:33,954 - transformer_training - INFO - Main loop iteration: 1169
+2025-04-15 00:17:37,579 - transformer_training - INFO - Main loop iteration: 1170
+Iter 1170: loss 3.5622, lr 0.000175, 17752.76 tokens/sec
+2025-04-15 00:17:41,271 - transformer_training - INFO - Main loop iteration: 1171
+2025-04-15 00:17:44,893 - transformer_training - INFO - Main loop iteration: 1172
+2025-04-15 00:17:48,291 - transformer_training - INFO - Main loop iteration: 1173
+2025-04-15 00:17:52,104 - transformer_training - INFO - Main loop iteration: 1174
+2025-04-15 00:17:55,503 - transformer_training - INFO - Main loop iteration: 1175
+2025-04-15 00:17:59,407 - transformer_training - INFO - Main loop iteration: 1176
+2025-04-15 00:18:02,805 - transformer_training - INFO - Main loop iteration: 1177
+2025-04-15 00:18:06,440 - transformer_training - INFO - Main loop iteration: 1178
+2025-04-15 00:18:10,043 - transformer_training - INFO - Main loop iteration: 1179
+2025-04-15 00:18:13,667 - transformer_training - INFO - Main loop iteration: 1180
+Iter 1180: loss 3.5999, lr 0.000177, 19293.28 tokens/sec
+2025-04-15 00:18:17,065 - transformer_training - INFO - Main loop iteration: 1181
+2025-04-15 00:18:21,022 - transformer_training - INFO - Main loop iteration: 1182
+2025-04-15 00:18:24,423 - transformer_training - INFO - Main loop iteration: 1183
+2025-04-15 00:18:28,217 - transformer_training - INFO - Main loop iteration: 1184
+2025-04-15 00:18:31,622 - transformer_training - INFO - Main loop iteration: 1185
+2025-04-15 00:18:35,249 - transformer_training - INFO - Main loop iteration: 1186
+2025-04-15 00:18:38,976 - transformer_training - INFO - Main loop iteration: 1187
+2025-04-15 00:18:42,599 - transformer_training - INFO - Main loop iteration: 1188
+2025-04-15 00:18:46,175 - transformer_training - INFO - Main loop iteration: 1189
+2025-04-15 00:18:49,797 - transformer_training - INFO - Main loop iteration: 1190
+Iter 1190: loss 3.5931, lr 0.000178, 19249.81 tokens/sec
+2025-04-15 00:18:53,202 - transformer_training - INFO - Main loop iteration: 1191
+2025-04-15 00:18:57,154 - transformer_training - INFO - Main loop iteration: 1192
+2025-04-15 00:19:00,556 - transformer_training - INFO - Main loop iteration: 1193
+2025-04-15 00:19:04,177 - transformer_training - INFO - Main loop iteration: 1194
+2025-04-15 00:19:07,743 - transformer_training - INFO - Main loop iteration: 1195
+2025-04-15 00:19:11,366 - transformer_training - INFO - Main loop iteration: 1196
+2025-04-15 00:19:15,092 - transformer_training - INFO - Main loop iteration: 1197
+2025-04-15 00:19:18,717 - transformer_training - INFO - Main loop iteration: 1198
+2025-04-15 00:19:22,115 - transformer_training - INFO - Main loop iteration: 1199
+2025-04-15 00:19:25,918 - transformer_training - INFO - Main loop iteration: 1200
+Iter 1200: loss 3.5440, lr 0.000180, 19279.25 tokens/sec
+Iter 1200: val loss 6.3537
+New best model saved with val loss: 6.3537
+2025-04-15 00:19:50,819 - transformer_training - INFO - Main loop iteration: 1201
+2025-04-15 00:19:54,692 - transformer_training - INFO - Main loop iteration: 1202
+2025-04-15 00:19:58,090 - transformer_training - INFO - Main loop iteration: 1203
+2025-04-15 00:20:01,886 - transformer_training - INFO - Main loop iteration: 1204
+2025-04-15 00:20:05,287 - transformer_training - INFO - Main loop iteration: 1205
+2025-04-15 00:20:08,906 - transformer_training - INFO - Main loop iteration: 1206
+2025-04-15 00:20:12,626 - transformer_training - INFO - Main loop iteration: 1207
+2025-04-15 00:20:16,251 - transformer_training - INFO - Main loop iteration: 1208
+2025-04-15 00:20:19,814 - transformer_training - INFO - Main loop iteration: 1209
+2025-04-15 00:20:23,436 - transformer_training - INFO - Main loop iteration: 1210
+Iter 1210: loss 3.5443, lr 0.000181, 19287.91 tokens/sec
+2025-04-15 00:20:26,834 - transformer_training - INFO - Main loop iteration: 1211
+2025-04-15 00:20:30,772 - transformer_training - INFO - Main loop iteration: 1212
+2025-04-15 00:20:34,172 - transformer_training - INFO - Main loop iteration: 1213
+2025-04-15 00:20:37,795 - transformer_training - INFO - Main loop iteration: 1214
+2025-04-15 00:20:41,368 - transformer_training - INFO - Main loop iteration: 1215
+2025-04-15 00:20:44,987 - transformer_training - INFO - Main loop iteration: 1216
+2025-04-15 00:20:48,711 - transformer_training - INFO - Main loop iteration: 1217
+2025-04-15 00:20:52,331 - transformer_training - INFO - Main loop iteration: 1218
+2025-04-15 00:20:55,742 - transformer_training - INFO - Main loop iteration: 1219
+2025-04-15 00:20:59,531 - transformer_training - INFO - Main loop iteration: 1220
+Iter 1220: loss 3.4895, lr 0.000183, 19278.39 tokens/sec
+2025-04-15 00:21:02,931 - transformer_training - INFO - Main loop iteration: 1221
+2025-04-15 00:21:06,551 - transformer_training - INFO - Main loop iteration: 1222
+2025-04-15 00:21:10,263 - transformer_training - INFO - Main loop iteration: 1223
+2025-04-15 00:21:13,897 - transformer_training - INFO - Main loop iteration: 1224
+2025-04-15 00:21:17,465 - transformer_training - INFO - Main loop iteration: 1225
+2025-04-15 00:21:21,088 - transformer_training - INFO - Main loop iteration: 1226
+2025-04-15 00:21:24,492 - transformer_training - INFO - Main loop iteration: 1227
+2025-04-15 00:21:28,446 - transformer_training - INFO - Main loop iteration: 1228
+2025-04-15 00:21:31,843 - transformer_training - INFO - Main loop iteration: 1229
+2025-04-15 00:21:35,644 - transformer_training - INFO - Main loop iteration: 1230
+Iter 1230: loss 3.5703, lr 0.000184, 19281.66 tokens/sec
+2025-04-15 00:21:39,043 - transformer_training - INFO - Main loop iteration: 1231
+2025-04-15 00:21:42,671 - transformer_training - INFO - Main loop iteration: 1232
+2025-04-15 00:21:46,402 - transformer_training - INFO - Main loop iteration: 1233
+2025-04-15 00:21:50,026 - transformer_training - INFO - Main loop iteration: 1234
+2025-04-15 00:21:53,425 - transformer_training - INFO - Main loop iteration: 1235
+2025-04-15 00:21:57,214 - transformer_training - INFO - Main loop iteration: 1236
+2025-04-15 00:22:00,616 - transformer_training - INFO - Main loop iteration: 1237
+2025-04-15 00:22:04,569 - transformer_training - INFO - Main loop iteration: 1238
+2025-04-15 00:22:07,965 - transformer_training - INFO - Main loop iteration: 1239
+2025-04-15 00:22:11,588 - transformer_training - INFO - Main loop iteration: 1240
+Iter 1240: loss 3.4891, lr 0.000186, 18323.12 tokens/sec
+2025-04-15 00:22:15,166 - transformer_training - INFO - Main loop iteration: 1241
+2025-04-15 00:22:18,786 - transformer_training - INFO - Main loop iteration: 1242
+2025-04-15 00:22:22,185 - transformer_training - INFO - Main loop iteration: 1243
+2025-04-15 00:22:26,137 - transformer_training - INFO - Main loop iteration: 1244
+2025-04-15 00:22:29,537 - transformer_training - INFO - Main loop iteration: 1245
+2025-04-15 00:22:33,338 - transformer_training - INFO - Main loop iteration: 1246
+2025-04-15 00:22:36,739 - transformer_training - INFO - Main loop iteration: 1247
+2025-04-15 00:22:40,359 - transformer_training - INFO - Main loop iteration: 1248
+2025-04-15 00:22:44,106 - transformer_training - INFO - Main loop iteration: 1249
+2025-04-15 00:22:47,733 - transformer_training - INFO - Main loop iteration: 1250
+Iter 1250: loss 3.5472, lr 0.000187, 19214.25 tokens/sec
+2025-04-15 00:22:51,145 - transformer_training - INFO - Main loop iteration: 1251
+2025-04-15 00:22:54,931 - transformer_training - INFO - Main loop iteration: 1252
+2025-04-15 00:22:58,335 - transformer_training - INFO - Main loop iteration: 1253
+2025-04-15 00:23:02,293 - transformer_training - INFO - Main loop iteration: 1254
+2025-04-15 00:23:05,693 - transformer_training - INFO - Main loop iteration: 1255
+2025-04-15 00:23:09,317 - transformer_training - INFO - Main loop iteration: 1256
+2025-04-15 00:23:12,885 - transformer_training - INFO - Main loop iteration: 1257
+2025-04-15 00:23:16,508 - transformer_training - INFO - Main loop iteration: 1258
+2025-04-15 00:23:19,907 - transformer_training - INFO - Main loop iteration: 1259
+2025-04-15 00:23:23,834 - transformer_training - INFO - Main loop iteration: 1260
+Iter 1260: loss 3.5049, lr 0.000189, 19278.99 tokens/sec
+2025-04-15 00:23:27,234 - transformer_training - INFO - Main loop iteration: 1261
+2025-04-15 00:23:31,023 - transformer_training - INFO - Main loop iteration: 1262
+2025-04-15 00:23:34,427 - transformer_training - INFO - Main loop iteration: 1263
+2025-04-15 00:23:38,049 - transformer_training - INFO - Main loop iteration: 1264
+2025-04-15 00:23:41,757 - transformer_training - INFO - Main loop iteration: 1265
+2025-04-15 00:23:45,381 - transformer_training - INFO - Main loop iteration: 1266
+2025-04-15 00:23:48,962 - transformer_training - INFO - Main loop iteration: 1267
+2025-04-15 00:23:52,587 - transformer_training - INFO - Main loop iteration: 1268
+2025-04-15 00:23:55,987 - transformer_training - INFO - Main loop iteration: 1269
+2025-04-15 00:23:59,935 - transformer_training - INFO - Main loop iteration: 1270
+Iter 1270: loss 3.5607, lr 0.000190, 19268.96 tokens/sec
+2025-04-15 00:24:03,337 - transformer_training - INFO - Main loop iteration: 1271
+2025-04-15 00:24:06,960 - transformer_training - INFO - Main loop iteration: 1272
+2025-04-15 00:24:10,534 - transformer_training - INFO - Main loop iteration: 1273
+2025-04-15 00:24:14,162 - transformer_training - INFO - Main loop iteration: 1274
+2025-04-15 00:24:17,884 - transformer_training - INFO - Main loop iteration: 1275
+2025-04-15 00:24:21,517 - transformer_training - INFO - Main loop iteration: 1276
+2025-04-15 00:24:24,915 - transformer_training - INFO - Main loop iteration: 1277
+2025-04-15 00:24:28,703 - transformer_training - INFO - Main loop iteration: 1278
+2025-04-15 00:24:32,105 - transformer_training - INFO - Main loop iteration: 1279
+2025-04-15 00:24:35,727 - transformer_training - INFO - Main loop iteration: 1280
+Iter 1280: loss 3.4428, lr 0.000192, 17590.36 tokens/sec
+2025-04-15 00:24:39,454 - transformer_training - INFO - Main loop iteration: 1281
+2025-04-15 00:24:43,078 - transformer_training - INFO - Main loop iteration: 1282
+2025-04-15 00:24:46,655 - transformer_training - INFO - Main loop iteration: 1283
+2025-04-15 00:24:50,278 - transformer_training - INFO - Main loop iteration: 1284
+2025-04-15 00:24:53,677 - transformer_training - INFO - Main loop iteration: 1285
+2025-04-15 00:24:57,642 - transformer_training - INFO - Main loop iteration: 1286
+2025-04-15 00:25:01,044 - transformer_training - INFO - Main loop iteration: 1287
+2025-04-15 00:25:04,670 - transformer_training - INFO - Main loop iteration: 1288
+2025-04-15 00:25:08,249 - transformer_training - INFO - Main loop iteration: 1289
+2025-04-15 00:25:11,882 - transformer_training - INFO - Main loop iteration: 1290
+Iter 1290: loss 3.4309, lr 0.000193, 17642.69 tokens/sec
+2025-04-15 00:25:15,597 - transformer_training - INFO - Main loop iteration: 1291
+2025-04-15 00:25:19,222 - transformer_training - INFO - Main loop iteration: 1292
+2025-04-15 00:25:22,636 - transformer_training - INFO - Main loop iteration: 1293
+2025-04-15 00:25:26,439 - transformer_training - INFO - Main loop iteration: 1294
+2025-04-15 00:25:29,837 - transformer_training - INFO - Main loop iteration: 1295
+2025-04-15 00:25:33,790 - transformer_training - INFO - Main loop iteration: 1296
+2025-04-15 00:25:37,204 - transformer_training - INFO - Main loop iteration: 1297
+2025-04-15 00:25:40,825 - transformer_training - INFO - Main loop iteration: 1298
+2025-04-15 00:25:44,401 - transformer_training - INFO - Main loop iteration: 1299
+2025-04-15 00:25:48,023 - transformer_training - INFO - Main loop iteration: 1300
+Iter 1300: loss 3.5135, lr 0.000195, 17566.08 tokens/sec
+2025-04-15 00:25:51,754 - transformer_training - INFO - Main loop iteration: 1301
+2025-04-15 00:25:55,376 - transformer_training - INFO - Main loop iteration: 1302
+2025-04-15 00:25:58,776 - transformer_training - INFO - Main loop iteration: 1303
+2025-04-15 00:26:02,573 - transformer_training - INFO - Main loop iteration: 1304
+2025-04-15 00:26:05,976 - transformer_training - INFO - Main loop iteration: 1305
+2025-04-15 00:26:09,599 - transformer_training - INFO - Main loop iteration: 1306
+2025-04-15 00:26:13,318 - transformer_training - INFO - Main loop iteration: 1307
+2025-04-15 00:26:16,953 - transformer_training - INFO - Main loop iteration: 1308
+2025-04-15 00:26:20,356 - transformer_training - INFO - Main loop iteration: 1309
+2025-04-15 00:26:24,160 - transformer_training - INFO - Main loop iteration: 1310
+Iter 1310: loss 3.5204, lr 0.000196, 19291.44 tokens/sec
+2025-04-15 00:26:27,558 - transformer_training - INFO - Main loop iteration: 1311
+2025-04-15 00:26:31,497 - transformer_training - INFO - Main loop iteration: 1312
+2025-04-15 00:26:34,899 - transformer_training - INFO - Main loop iteration: 1313
+2025-04-15 00:26:38,522 - transformer_training - INFO - Main loop iteration: 1314
+2025-04-15 00:26:42,082 - transformer_training - INFO - Main loop iteration: 1315
+2025-04-15 00:26:45,718 - transformer_training - INFO - Main loop iteration: 1316
+2025-04-15 00:26:49,120 - transformer_training - INFO - Main loop iteration: 1317
+2025-04-15 00:26:53,056 - transformer_training - INFO - Main loop iteration: 1318
+2025-04-15 00:26:56,456 - transformer_training - INFO - Main loop iteration: 1319
+2025-04-15 00:27:00,263 - transformer_training - INFO - Main loop iteration: 1320
+Iter 1320: loss 3.4689, lr 0.000198, 19273.84 tokens/sec
+2025-04-15 00:27:03,664 - transformer_training - INFO - Main loop iteration: 1321
+2025-04-15 00:27:07,289 - transformer_training - INFO - Main loop iteration: 1322
+2025-04-15 00:27:10,999 - transformer_training - INFO - Main loop iteration: 1323
+2025-04-15 00:27:14,622 - transformer_training - INFO - Main loop iteration: 1324
+2025-04-15 00:27:18,200 - transformer_training - INFO - Main loop iteration: 1325
+2025-04-15 00:27:21,825 - transformer_training - INFO - Main loop iteration: 1326
+2025-04-15 00:27:25,225 - transformer_training - INFO - Main loop iteration: 1327
+2025-04-15 00:27:29,177 - transformer_training - INFO - Main loop iteration: 1328
+2025-04-15 00:27:32,577 - transformer_training - INFO - Main loop iteration: 1329
+2025-04-15 00:27:36,200 - transformer_training - INFO - Main loop iteration: 1330
+Iter 1330: loss 3.4420, lr 0.000199, 18077.55 tokens/sec
+2025-04-15 00:27:39,826 - transformer_training - INFO - Main loop iteration: 1331
+2025-04-15 00:27:43,450 - transformer_training - INFO - Main loop iteration: 1332
+2025-04-15 00:27:47,105 - transformer_training - INFO - Main loop iteration: 1333
+2025-04-15 00:27:50,732 - transformer_training - INFO - Main loop iteration: 1334
+2025-04-15 00:27:54,130 - transformer_training - INFO - Main loop iteration: 1335
+2025-04-15 00:27:57,984 - transformer_training - INFO - Main loop iteration: 1336
+2025-04-15 00:28:01,387 - transformer_training - INFO - Main loop iteration: 1337
+2025-04-15 00:28:05,010 - transformer_training - INFO - Main loop iteration: 1338
+2025-04-15 00:28:08,677 - transformer_training - INFO - Main loop iteration: 1339
+2025-04-15 00:28:12,299 - transformer_training - INFO - Main loop iteration: 1340
+Iter 1340: loss 3.4013, lr 0.000201, 19280.17 tokens/sec
+2025-04-15 00:28:15,699 - transformer_training - INFO - Main loop iteration: 1341
+2025-04-15 00:28:19,651 - transformer_training - INFO - Main loop iteration: 1342
+2025-04-15 00:28:23,050 - transformer_training - INFO - Main loop iteration: 1343
+2025-04-15 00:28:26,851 - transformer_training - INFO - Main loop iteration: 1344
+2025-04-15 00:28:30,249 - transformer_training - INFO - Main loop iteration: 1345
+2025-04-15 00:28:33,872 - transformer_training - INFO - Main loop iteration: 1346
+2025-04-15 00:28:37,577 - transformer_training - INFO - Main loop iteration: 1347
+2025-04-15 00:28:41,212 - transformer_training - INFO - Main loop iteration: 1348
+2025-04-15 00:28:44,609 - transformer_training - INFO - Main loop iteration: 1349
+2025-04-15 00:28:48,404 - transformer_training - INFO - Main loop iteration: 1350
+Iter 1350: loss 3.3250, lr 0.000202, 19272.84 tokens/sec
+2025-04-15 00:28:51,805 - transformer_training - INFO - Main loop iteration: 1351
+2025-04-15 00:28:55,762 - transformer_training - INFO - Main loop iteration: 1352
+2025-04-15 00:28:59,159 - transformer_training - INFO - Main loop iteration: 1353
+2025-04-15 00:29:02,780 - transformer_training - INFO - Main loop iteration: 1354
+2025-04-15 00:29:06,350 - transformer_training - INFO - Main loop iteration: 1355
+2025-04-15 00:29:09,973 - transformer_training - INFO - Main loop iteration: 1356
+2025-04-15 00:29:13,699 - transformer_training - INFO - Main loop iteration: 1357
+2025-04-15 00:29:17,323 - transformer_training - INFO - Main loop iteration: 1358
+2025-04-15 00:29:20,723 - transformer_training - INFO - Main loop iteration: 1359
+2025-04-15 00:29:24,512 - transformer_training - INFO - Main loop iteration: 1360
+Iter 1360: loss 3.3487, lr 0.000204, 19256.34 tokens/sec
+2025-04-15 00:29:27,921 - transformer_training - INFO - Main loop iteration: 1361
+2025-04-15 00:29:31,547 - transformer_training - INFO - Main loop iteration: 1362
+2025-04-15 00:29:35,257 - transformer_training - INFO - Main loop iteration: 1363
+2025-04-15 00:29:38,882 - transformer_training - INFO - Main loop iteration: 1364
+2025-04-15 00:29:42,455 - transformer_training - INFO - Main loop iteration: 1365
+2025-04-15 00:29:46,079 - transformer_training - INFO - Main loop iteration: 1366
+2025-04-15 00:29:49,480 - transformer_training - INFO - Main loop iteration: 1367
+2025-04-15 00:29:53,447 - transformer_training - INFO - Main loop iteration: 1368
+2025-04-15 00:29:56,848 - transformer_training - INFO - Main loop iteration: 1369
+2025-04-15 00:30:00,470 - transformer_training - INFO - Main loop iteration: 1370
+Iter 1370: loss 3.4000, lr 0.000206, 18318.29 tokens/sec
+2025-04-15 00:30:04,049 - transformer_training - INFO - Main loop iteration: 1371
+2025-04-15 00:30:07,670 - transformer_training - INFO - Main loop iteration: 1372
+2025-04-15 00:30:11,071 - transformer_training - INFO - Main loop iteration: 1373
+2025-04-15 00:30:15,016 - transformer_training - INFO - Main loop iteration: 1374
+2025-04-15 00:30:18,418 - transformer_training - INFO - Main loop iteration: 1375
+2025-04-15 00:30:22,212 - transformer_training - INFO - Main loop iteration: 1376
+2025-04-15 00:30:25,617 - transformer_training - INFO - Main loop iteration: 1377
+2025-04-15 00:30:29,242 - transformer_training - INFO - Main loop iteration: 1378
+2025-04-15 00:30:32,967 - transformer_training - INFO - Main loop iteration: 1379
+2025-04-15 00:30:36,590 - transformer_training - INFO - Main loop iteration: 1380
+Iter 1380: loss 3.2549, lr 0.000207, 19230.23 tokens/sec
+2025-04-15 00:30:39,998 - transformer_training - INFO - Main loop iteration: 1381
+2025-04-15 00:30:43,786 - transformer_training - INFO - Main loop iteration: 1382
+2025-04-15 00:30:47,192 - transformer_training - INFO - Main loop iteration: 1383
+2025-04-15 00:30:51,140 - transformer_training - INFO - Main loop iteration: 1384
+2025-04-15 00:30:54,538 - transformer_training - INFO - Main loop iteration: 1385
+2025-04-15 00:30:58,163 - transformer_training - INFO - Main loop iteration: 1386
+2025-04-15 00:31:01,732 - transformer_training - INFO - Main loop iteration: 1387
+2025-04-15 00:31:05,355 - transformer_training - INFO - Main loop iteration: 1388
+2025-04-15 00:31:09,088 - transformer_training - INFO - Main loop iteration: 1389
+2025-04-15 00:31:12,713 - transformer_training - INFO - Main loop iteration: 1390
+Iter 1390: loss 3.2997, lr 0.000208, 19295.83 tokens/sec
+2025-04-15 00:31:16,110 - transformer_training - INFO - Main loop iteration: 1391
+2025-04-15 00:31:19,908 - transformer_training - INFO - Main loop iteration: 1392
+2025-04-15 00:31:23,309 - transformer_training - INFO - Main loop iteration: 1393
+2025-04-15 00:31:26,932 - transformer_training - INFO - Main loop iteration: 1394
+2025-04-15 00:31:30,657 - transformer_training - INFO - Main loop iteration: 1395
+2025-04-15 00:31:34,281 - transformer_training - INFO - Main loop iteration: 1396
+2025-04-15 00:31:37,851 - transformer_training - INFO - Main loop iteration: 1397
+2025-04-15 00:31:41,486 - transformer_training - INFO - Main loop iteration: 1398
+2025-04-15 00:31:44,886 - transformer_training - INFO - Main loop iteration: 1399
+2025-04-15 00:31:48,844 - transformer_training - INFO - Main loop iteration: 1400
+Iter 1400: loss 3.3161, lr 0.000210, 19281.48 tokens/sec
+Iter 1400: val loss 6.2007
+New best model saved with val loss: 6.2007
+2025-04-15 00:32:14,211 - transformer_training - INFO - Main loop iteration: 1401
+2025-04-15 00:32:18,053 - transformer_training - INFO - Main loop iteration: 1402
+2025-04-15 00:32:21,447 - transformer_training - INFO - Main loop iteration: 1403
+2025-04-15 00:32:25,397 - transformer_training - INFO - Main loop iteration: 1404
+2025-04-15 00:32:28,789 - transformer_training - INFO - Main loop iteration: 1405
+2025-04-15 00:32:32,407 - transformer_training - INFO - Main loop iteration: 1406
+2025-04-15 00:32:35,978 - transformer_training - INFO - Main loop iteration: 1407
+2025-04-15 00:32:39,610 - transformer_training - INFO - Main loop iteration: 1408
+2025-04-15 00:32:43,336 - transformer_training - INFO - Main loop iteration: 1409
+2025-04-15 00:32:46,954 - transformer_training - INFO - Main loop iteration: 1410
+Iter 1410: loss 3.1650, lr 0.000211, 19301.12 tokens/sec
+2025-04-15 00:32:50,350 - transformer_training - INFO - Main loop iteration: 1411
+2025-04-15 00:32:54,148 - transformer_training - INFO - Main loop iteration: 1412
+2025-04-15 00:32:57,546 - transformer_training - INFO - Main loop iteration: 1413
+2025-04-15 00:33:01,168 - transformer_training - INFO - Main loop iteration: 1414
+2025-04-15 00:33:04,888 - transformer_training - INFO - Main loop iteration: 1415
+2025-04-15 00:33:08,510 - transformer_training - INFO - Main loop iteration: 1416
+2025-04-15 00:33:12,079 - transformer_training - INFO - Main loop iteration: 1417
+2025-04-15 00:33:15,699 - transformer_training - INFO - Main loop iteration: 1418
+2025-04-15 00:33:19,097 - transformer_training - INFO - Main loop iteration: 1419
+2025-04-15 00:33:23,036 - transformer_training - INFO - Main loop iteration: 1420
+Iter 1420: loss 3.1853, lr 0.000213, 19271.53 tokens/sec
+2025-04-15 00:33:26,437 - transformer_training - INFO - Main loop iteration: 1421
+2025-04-15 00:33:30,060 - transformer_training - INFO - Main loop iteration: 1422
+2025-04-15 00:33:33,729 - transformer_training - INFO - Main loop iteration: 1423
+2025-04-15 00:33:37,349 - transformer_training - INFO - Main loop iteration: 1424
+2025-04-15 00:33:40,962 - transformer_training - INFO - Main loop iteration: 1425
+2025-04-15 00:33:44,585 - transformer_training - INFO - Main loop iteration: 1426
+2025-04-15 00:33:47,987 - transformer_training - INFO - Main loop iteration: 1427
+2025-04-15 00:33:51,841 - transformer_training - INFO - Main loop iteration: 1428
+2025-04-15 00:33:55,240 - transformer_training - INFO - Main loop iteration: 1429
+2025-04-15 00:33:59,131 - transformer_training - INFO - Main loop iteration: 1430
+Iter 1430: loss 3.2117, lr 0.000214, 19294.94 tokens/sec
+2025-04-15 00:34:02,529 - transformer_training - INFO - Main loop iteration: 1431
+2025-04-15 00:34:06,152 - transformer_training - INFO - Main loop iteration: 1432
+2025-04-15 00:34:09,776 - transformer_training - INFO - Main loop iteration: 1433
+2025-04-15 00:34:13,400 - transformer_training - INFO - Main loop iteration: 1434
+2025-04-15 00:34:16,803 - transformer_training - INFO - Main loop iteration: 1435
+2025-04-15 00:34:20,697 - transformer_training - INFO - Main loop iteration: 1436
+2025-04-15 00:34:24,099 - transformer_training - INFO - Main loop iteration: 1437
+2025-04-15 00:34:27,941 - transformer_training - INFO - Main loop iteration: 1438
+2025-04-15 00:34:31,342 - transformer_training - INFO - Main loop iteration: 1439
+2025-04-15 00:34:34,965 - transformer_training - INFO - Main loop iteration: 1440
+Iter 1440: loss 3.1181, lr 0.000216, 17788.48 tokens/sec
+2025-04-15 00:34:38,650 - transformer_training - INFO - Main loop iteration: 1441
+2025-04-15 00:34:42,275 - transformer_training - INFO - Main loop iteration: 1442
+2025-04-15 00:34:45,675 - transformer_training - INFO - Main loop iteration: 1443
+2025-04-15 00:34:49,627 - transformer_training - INFO - Main loop iteration: 1444
+2025-04-15 00:34:53,025 - transformer_training - INFO - Main loop iteration: 1445
+2025-04-15 00:34:56,823 - transformer_training - INFO - Main loop iteration: 1446
+2025-04-15 00:35:00,222 - transformer_training - INFO - Main loop iteration: 1447
+2025-04-15 00:35:03,848 - transformer_training - INFO - Main loop iteration: 1448
+2025-04-15 00:35:07,573 - transformer_training - INFO - Main loop iteration: 1449
+2025-04-15 00:35:11,197 - transformer_training - INFO - Main loop iteration: 1450
+Iter 1450: loss 3.1880, lr 0.000217, 19212.79 tokens/sec
+2025-04-15 00:35:14,609 - transformer_training - INFO - Main loop iteration: 1451
+2025-04-15 00:35:18,393 - transformer_training - INFO - Main loop iteration: 1452
+2025-04-15 00:35:21,794 - transformer_training - INFO - Main loop iteration: 1453
+2025-04-15 00:35:25,741 - transformer_training - INFO - Main loop iteration: 1454
+2025-04-15 00:35:29,140 - transformer_training - INFO - Main loop iteration: 1455
+2025-04-15 00:35:32,764 - transformer_training - INFO - Main loop iteration: 1456
+2025-04-15 00:35:36,329 - transformer_training - INFO - Main loop iteration: 1457
+2025-04-15 00:35:39,953 - transformer_training - INFO - Main loop iteration: 1458
+2025-04-15 00:35:43,365 - transformer_training - INFO - Main loop iteration: 1459
+2025-04-15 00:35:47,294 - transformer_training - INFO - Main loop iteration: 1460
+Iter 1460: loss 3.0306, lr 0.000219, 19237.71 tokens/sec
+2025-04-15 00:35:50,702 - transformer_training - INFO - Main loop iteration: 1461
+2025-04-15 00:35:54,499 - transformer_training - INFO - Main loop iteration: 1462
+2025-04-15 00:35:57,903 - transformer_training - INFO - Main loop iteration: 1463
+2025-04-15 00:36:01,529 - transformer_training - INFO - Main loop iteration: 1464
+2025-04-15 00:36:05,255 - transformer_training - INFO - Main loop iteration: 1465
+2025-04-15 00:36:08,876 - transformer_training - INFO - Main loop iteration: 1466
+2025-04-15 00:36:12,449 - transformer_training - INFO - Main loop iteration: 1467
+2025-04-15 00:36:16,071 - transformer_training - INFO - Main loop iteration: 1468
+2025-04-15 00:36:19,470 - transformer_training - INFO - Main loop iteration: 1469
+2025-04-15 00:36:23,400 - transformer_training - INFO - Main loop iteration: 1470
+Iter 1470: loss 3.0425, lr 0.000220, 19272.98 tokens/sec
+2025-04-15 00:36:26,801 - transformer_training - INFO - Main loop iteration: 1471
+2025-04-15 00:36:30,425 - transformer_training - INFO - Main loop iteration: 1472
+2025-04-15 00:36:33,994 - transformer_training - INFO - Main loop iteration: 1473
+2025-04-15 00:36:37,623 - transformer_training - INFO - Main loop iteration: 1474
+2025-04-15 00:36:41,359 - transformer_training - INFO - Main loop iteration: 1475
+2025-04-15 00:36:44,982 - transformer_training - INFO - Main loop iteration: 1476
+2025-04-15 00:36:48,379 - transformer_training - INFO - Main loop iteration: 1477
+2025-04-15 00:36:52,153 - transformer_training - INFO - Main loop iteration: 1478
+2025-04-15 00:36:55,551 - transformer_training - INFO - Main loop iteration: 1479
+2025-04-15 00:36:59,175 - transformer_training - INFO - Main loop iteration: 1480
+Iter 1480: loss 2.8758, lr 0.000222, 17637.97 tokens/sec
+2025-04-15 00:37:02,891 - transformer_training - INFO - Main loop iteration: 1481
+2025-04-15 00:37:06,523 - transformer_training - INFO - Main loop iteration: 1482
+2025-04-15 00:37:10,082 - transformer_training - INFO - Main loop iteration: 1483
+2025-04-15 00:37:13,706 - transformer_training - INFO - Main loop iteration: 1484
+2025-04-15 00:37:17,110 - transformer_training - INFO - Main loop iteration: 1485
+2025-04-15 00:37:21,070 - transformer_training - INFO - Main loop iteration: 1486
+2025-04-15 00:37:24,469 - transformer_training - INFO - Main loop iteration: 1487
+2025-04-15 00:37:28,092 - transformer_training - INFO - Main loop iteration: 1488
+2025-04-15 00:37:31,672 - transformer_training - INFO - Main loop iteration: 1489
+2025-04-15 00:37:35,298 - transformer_training - INFO - Main loop iteration: 1490
+Iter 1490: loss 2.9224, lr 0.000223, 17637.57 tokens/sec
+2025-04-15 00:37:39,014 - transformer_training - INFO - Main loop iteration: 1491
+2025-04-15 00:37:42,648 - transformer_training - INFO - Main loop iteration: 1492
+2025-04-15 00:37:46,050 - transformer_training - INFO - Main loop iteration: 1493
+2025-04-15 00:37:49,841 - transformer_training - INFO - Main loop iteration: 1494
+2025-04-15 00:37:53,239 - transformer_training - INFO - Main loop iteration: 1495
+2025-04-15 00:37:57,203 - transformer_training - INFO - Main loop iteration: 1496
+2025-04-15 00:38:00,603 - transformer_training - INFO - Main loop iteration: 1497
+2025-04-15 00:38:04,224 - transformer_training - INFO - Main loop iteration: 1498
+2025-04-15 00:38:07,790 - transformer_training - INFO - Main loop iteration: 1499
+2025-04-15 00:38:11,415 - transformer_training - INFO - Main loop iteration: 1500
+Iter 1500: loss 2.8060, lr 0.000225, 17604.34 tokens/sec
+2025-04-15 00:38:15,139 - transformer_training - INFO - Main loop iteration: 1501
+2025-04-15 00:38:18,762 - transformer_training - INFO - Main loop iteration: 1502
+2025-04-15 00:38:22,178 - transformer_training - INFO - Main loop iteration: 1503
+2025-04-15 00:38:25,971 - transformer_training - INFO - Main loop iteration: 1504
+2025-04-15 00:38:29,370 - transformer_training - INFO - Main loop iteration: 1505
+2025-04-15 00:38:33,005 - transformer_training - INFO - Main loop iteration: 1506
+2025-04-15 00:38:36,729 - transformer_training - INFO - Main loop iteration: 1507
+2025-04-15 00:38:40,353 - transformer_training - INFO - Main loop iteration: 1508
+2025-04-15 00:38:43,750 - transformer_training - INFO - Main loop iteration: 1509
+2025-04-15 00:38:47,541 - transformer_training - INFO - Main loop iteration: 1510
+Iter 1510: loss 2.7200, lr 0.000226, 19283.85 tokens/sec
+2025-04-15 00:38:50,940 - transformer_training - INFO - Main loop iteration: 1511
+2025-04-15 00:38:54,890 - transformer_training - INFO - Main loop iteration: 1512
+2025-04-15 00:38:58,291 - transformer_training - INFO - Main loop iteration: 1513
+2025-04-15 00:39:01,912 - transformer_training - INFO - Main loop iteration: 1514
+2025-04-15 00:39:05,471 - transformer_training - INFO - Main loop iteration: 1515
+2025-04-15 00:39:09,094 - transformer_training - INFO - Main loop iteration: 1516
+2025-04-15 00:39:12,493 - transformer_training - INFO - Main loop iteration: 1517
+2025-04-15 00:39:16,446 - transformer_training - INFO - Main loop iteration: 1518
+2025-04-15 00:39:19,844 - transformer_training - INFO - Main loop iteration: 1519
+2025-04-15 00:39:23,631 - transformer_training - INFO - Main loop iteration: 1520
+Iter 1520: loss 2.6256, lr 0.000228, 19277.44 tokens/sec
+2025-04-15 00:39:27,032 - transformer_training - INFO - Main loop iteration: 1521
+2025-04-15 00:39:30,666 - transformer_training - INFO - Main loop iteration: 1522
+2025-04-15 00:39:34,374 - transformer_training - INFO - Main loop iteration: 1523
+2025-04-15 00:39:37,992 - transformer_training - INFO - Main loop iteration: 1524
+2025-04-15 00:39:41,570 - transformer_training - INFO - Main loop iteration: 1525
+2025-04-15 00:39:45,198 - transformer_training - INFO - Main loop iteration: 1526
+2025-04-15 00:39:48,595 - transformer_training - INFO - Main loop iteration: 1527
+2025-04-15 00:39:52,545 - transformer_training - INFO - Main loop iteration: 1528
+2025-04-15 00:39:55,944 - transformer_training - INFO - Main loop iteration: 1529
+2025-04-15 00:39:59,568 - transformer_training - INFO - Main loop iteration: 1530
+Iter 1530: loss 2.5565, lr 0.000229, 18364.47 tokens/sec
+2025-04-15 00:40:03,137 - transformer_training - INFO - Main loop iteration: 1531
+2025-04-15 00:40:06,772 - transformer_training - INFO - Main loop iteration: 1532
+2025-04-15 00:40:10,491 - transformer_training - INFO - Main loop iteration: 1533
+2025-04-15 00:40:14,113 - transformer_training - INFO - Main loop iteration: 1534
+2025-04-15 00:40:17,511 - transformer_training - INFO - Main loop iteration: 1535
+2025-04-15 00:40:21,311 - transformer_training - INFO - Main loop iteration: 1536
+2025-04-15 00:40:24,713 - transformer_training - INFO - Main loop iteration: 1537
+2025-04-15 00:40:28,334 - transformer_training - INFO - Main loop iteration: 1538
+2025-04-15 00:40:32,060 - transformer_training - INFO - Main loop iteration: 1539
+2025-04-15 00:40:35,688 - transformer_training - INFO - Main loop iteration: 1540
+Iter 1540: loss 2.4572, lr 0.000231, 19257.47 tokens/sec
+2025-04-15 00:40:39,092 - transformer_training - INFO - Main loop iteration: 1541
+2025-04-15 00:40:43,027 - transformer_training - INFO - Main loop iteration: 1542
+2025-04-15 00:40:46,424 - transformer_training - INFO - Main loop iteration: 1543
+2025-04-15 00:40:50,216 - transformer_training - INFO - Main loop iteration: 1544
+2025-04-15 00:40:53,613 - transformer_training - INFO - Main loop iteration: 1545
+2025-04-15 00:40:57,236 - transformer_training - INFO - Main loop iteration: 1546
+2025-04-15 00:41:00,855 - transformer_training - INFO - Main loop iteration: 1547
+2025-04-15 00:41:04,489 - transformer_training - INFO - Main loop iteration: 1548
+2025-04-15 00:41:07,893 - transformer_training - INFO - Main loop iteration: 1549
+2025-04-15 00:41:11,777 - transformer_training - INFO - Main loop iteration: 1550
+Iter 1550: loss 2.3229, lr 0.000232, 19265.33 tokens/sec
+2025-04-15 00:41:15,180 - transformer_training - INFO - Main loop iteration: 1551
+2025-04-15 00:41:19,034 - transformer_training - INFO - Main loop iteration: 1552
+2025-04-15 00:41:22,436 - transformer_training - INFO - Main loop iteration: 1553
+2025-04-15 00:41:26,056 - transformer_training - INFO - Main loop iteration: 1554
+2025-04-15 00:41:29,704 - transformer_training - INFO - Main loop iteration: 1555
+2025-04-15 00:41:33,329 - transformer_training - INFO - Main loop iteration: 1556
+2025-04-15 00:41:36,964 - transformer_training - INFO - Main loop iteration: 1557
+2025-04-15 00:41:40,588 - transformer_training - INFO - Main loop iteration: 1558
+2025-04-15 00:41:43,984 - transformer_training - INFO - Main loop iteration: 1559
+2025-04-15 00:41:47,886 - transformer_training - INFO - Main loop iteration: 1560
+Iter 1560: loss 2.2144, lr 0.000234, 19283.03 tokens/sec
+2025-04-15 00:41:51,285 - transformer_training - INFO - Main loop iteration: 1561
+2025-04-15 00:41:54,909 - transformer_training - INFO - Main loop iteration: 1562
+2025-04-15 00:41:58,622 - transformer_training - INFO - Main loop iteration: 1563
+2025-04-15 00:42:02,246 - transformer_training - INFO - Main loop iteration: 1564
+2025-04-15 00:42:05,823 - transformer_training - INFO - Main loop iteration: 1565
+2025-04-15 00:42:09,444 - transformer_training - INFO - Main loop iteration: 1566
+2025-04-15 00:42:12,846 - transformer_training - INFO - Main loop iteration: 1567
+2025-04-15 00:42:16,786 - transformer_training - INFO - Main loop iteration: 1568
+2025-04-15 00:42:20,181 - transformer_training - INFO - Main loop iteration: 1569
+2025-04-15 00:42:23,804 - transformer_training - INFO - Main loop iteration: 1570
+Iter 1570: loss 2.1248, lr 0.000235, 18368.58 tokens/sec
+2025-04-15 00:42:27,372 - transformer_training - INFO - Main loop iteration: 1571
+2025-04-15 00:42:30,996 - transformer_training - INFO - Main loop iteration: 1572
+2025-04-15 00:42:34,394 - transformer_training - INFO - Main loop iteration: 1573
+2025-04-15 00:42:38,364 - transformer_training - INFO - Main loop iteration: 1574
+2025-04-15 00:42:41,763 - transformer_training - INFO - Main loop iteration: 1575
+2025-04-15 00:42:45,554 - transformer_training - INFO - Main loop iteration: 1576
+2025-04-15 00:42:48,952 - transformer_training - INFO - Main loop iteration: 1577
+2025-04-15 00:42:52,576 - transformer_training - INFO - Main loop iteration: 1578
+2025-04-15 00:42:56,293 - transformer_training - INFO - Main loop iteration: 1579
+2025-04-15 00:42:59,916 - transformer_training - INFO - Main loop iteration: 1580
+Iter 1580: loss 2.0521, lr 0.000237, 19294.01 tokens/sec
+2025-04-15 00:43:03,313 - transformer_training - INFO - Main loop iteration: 1581
+2025-04-15 00:43:07,111 - transformer_training - INFO - Main loop iteration: 1582
+2025-04-15 00:43:10,512 - transformer_training - INFO - Main loop iteration: 1583
+2025-04-15 00:43:14,453 - transformer_training - INFO - Main loop iteration: 1584
+2025-04-15 00:43:17,852 - transformer_training - INFO - Main loop iteration: 1585
+2025-04-15 00:43:21,479 - transformer_training - INFO - Main loop iteration: 1586
+2025-04-15 00:43:25,065 - transformer_training - INFO - Main loop iteration: 1587
+2025-04-15 00:43:28,685 - transformer_training - INFO - Main loop iteration: 1588
+2025-04-15 00:43:32,416 - transformer_training - INFO - Main loop iteration: 1589
+2025-04-15 00:43:36,046 - transformer_training - INFO - Main loop iteration: 1590
+Iter 1590: loss 1.9596, lr 0.000238, 19248.57 tokens/sec
+2025-04-15 00:43:39,451 - transformer_training - INFO - Main loop iteration: 1591
+2025-04-15 00:43:43,237 - transformer_training - INFO - Main loop iteration: 1592
+2025-04-15 00:43:46,635 - transformer_training - INFO - Main loop iteration: 1593
+2025-04-15 00:43:50,273 - transformer_training - INFO - Main loop iteration: 1594
+2025-04-15 00:43:53,993 - transformer_training - INFO - Main loop iteration: 1595
+2025-04-15 00:43:57,622 - transformer_training - INFO - Main loop iteration: 1596
+2025-04-15 00:44:01,193 - transformer_training - INFO - Main loop iteration: 1597
+2025-04-15 00:44:04,815 - transformer_training - INFO - Main loop iteration: 1598
+2025-04-15 00:44:08,213 - transformer_training - INFO - Main loop iteration: 1599
+2025-04-15 00:44:12,164 - transformer_training - INFO - Main loop iteration: 1600
+Iter 1600: loss 1.8212, lr 0.000240, 19279.02 tokens/sec
+Iter 1600: val loss 4.6461
+New best model saved with val loss: 4.6461
+2025-04-15 00:44:37,004 - transformer_training - INFO - Main loop iteration: 1601
+2025-04-15 00:44:40,856 - transformer_training - INFO - Main loop iteration: 1602
+2025-04-15 00:44:44,251 - transformer_training - INFO - Main loop iteration: 1603
+2025-04-15 00:44:48,192 - transformer_training - INFO - Main loop iteration: 1604
+2025-04-15 00:44:51,582 - transformer_training - INFO - Main loop iteration: 1605
+2025-04-15 00:44:55,201 - transformer_training - INFO - Main loop iteration: 1606
+2025-04-15 00:44:58,757 - transformer_training - INFO - Main loop iteration: 1607
+2025-04-15 00:45:02,371 - transformer_training - INFO - Main loop iteration: 1608
+2025-04-15 00:45:06,096 - transformer_training - INFO - Main loop iteration: 1609
+2025-04-15 00:45:09,711 - transformer_training - INFO - Main loop iteration: 1610
+Iter 1610: loss 1.7660, lr 0.000241, 19320.76 tokens/sec
+2025-04-15 00:45:13,103 - transformer_training - INFO - Main loop iteration: 1611
+2025-04-15 00:45:16,894 - transformer_training - INFO - Main loop iteration: 1612
+2025-04-15 00:45:20,295 - transformer_training - INFO - Main loop iteration: 1613
+2025-04-15 00:45:23,918 - transformer_training - INFO - Main loop iteration: 1614
+2025-04-15 00:45:27,673 - transformer_training - INFO - Main loop iteration: 1615
+2025-04-15 00:45:31,291 - transformer_training - INFO - Main loop iteration: 1616
+2025-04-15 00:45:34,853 - transformer_training - INFO - Main loop iteration: 1617
+2025-04-15 00:45:38,475 - transformer_training - INFO - Main loop iteration: 1618
+2025-04-15 00:45:41,872 - transformer_training - INFO - Main loop iteration: 1619
+2025-04-15 00:45:45,811 - transformer_training - INFO - Main loop iteration: 1620
+Iter 1620: loss 1.6740, lr 0.000243, 19301.18 tokens/sec
+2025-04-15 00:45:49,207 - transformer_training - INFO - Main loop iteration: 1621
+2025-04-15 00:45:52,827 - transformer_training - INFO - Main loop iteration: 1622
+2025-04-15 00:45:56,436 - transformer_training - INFO - Main loop iteration: 1623
+2025-04-15 00:46:00,052 - transformer_training - INFO - Main loop iteration: 1624
+2025-04-15 00:46:03,718 - transformer_training - INFO - Main loop iteration: 1625
+2025-04-15 00:46:07,337 - transformer_training - INFO - Main loop iteration: 1626
+2025-04-15 00:46:10,732 - transformer_training - INFO - Main loop iteration: 1627
+2025-04-15 00:46:14,516 - transformer_training - INFO - Main loop iteration: 1628
+2025-04-15 00:46:17,914 - transformer_training - INFO - Main loop iteration: 1629
+2025-04-15 00:46:21,866 - transformer_training - INFO - Main loop iteration: 1630
+Iter 1630: loss 1.5799, lr 0.000244, 19282.98 tokens/sec
+2025-04-15 00:46:25,265 - transformer_training - INFO - Main loop iteration: 1631
+2025-04-15 00:46:28,885 - transformer_training - INFO - Main loop iteration: 1632
+2025-04-15 00:46:32,455 - transformer_training - INFO - Main loop iteration: 1633
+2025-04-15 00:46:36,089 - transformer_training - INFO - Main loop iteration: 1634
+2025-04-15 00:46:39,491 - transformer_training - INFO - Main loop iteration: 1635
+2025-04-15 00:46:43,418 - transformer_training - INFO - Main loop iteration: 1636
+2025-04-15 00:46:46,824 - transformer_training - INFO - Main loop iteration: 1637
+2025-04-15 00:46:50,614 - transformer_training - INFO - Main loop iteration: 1638
+2025-04-15 00:46:54,012 - transformer_training - INFO - Main loop iteration: 1639
+2025-04-15 00:46:57,632 - transformer_training - INFO - Main loop iteration: 1640
+Iter 1640: loss 1.5797, lr 0.000246, 17465.79 tokens/sec
+2025-04-15 00:47:01,385 - transformer_training - INFO - Main loop iteration: 1641
+2025-04-15 00:47:05,005 - transformer_training - INFO - Main loop iteration: 1642
+2025-04-15 00:47:08,406 - transformer_training - INFO - Main loop iteration: 1643
+2025-04-15 00:47:12,342 - transformer_training - INFO - Main loop iteration: 1644
+2025-04-15 00:47:15,736 - transformer_training - INFO - Main loop iteration: 1645
+2025-04-15 00:47:19,542 - transformer_training - INFO - Main loop iteration: 1646
+2025-04-15 00:47:22,943 - transformer_training - INFO - Main loop iteration: 1647
+2025-04-15 00:47:26,561 - transformer_training - INFO - Main loop iteration: 1648
+2025-04-15 00:47:30,188 - transformer_training - INFO - Main loop iteration: 1649
+2025-04-15 00:47:33,805 - transformer_training - INFO - Main loop iteration: 1650
+Iter 1650: loss 1.4705, lr 0.000247, 19298.23 tokens/sec
+2025-04-15 00:47:37,202 - transformer_training - INFO - Main loop iteration: 1651
+2025-04-15 00:47:41,068 - transformer_training - INFO - Main loop iteration: 1652
+2025-04-15 00:47:44,463 - transformer_training - INFO - Main loop iteration: 1653
+2025-04-15 00:47:48,314 - transformer_training - INFO - Main loop iteration: 1654
+2025-04-15 00:47:51,723 - transformer_training - INFO - Main loop iteration: 1655
+2025-04-15 00:47:55,343 - transformer_training - INFO - Main loop iteration: 1656
+2025-04-15 00:47:58,986 - transformer_training - INFO - Main loop iteration: 1657
+2025-04-15 00:48:02,608 - transformer_training - INFO - Main loop iteration: 1658
+2025-04-15 00:48:06,004 - transformer_training - INFO - Main loop iteration: 1659
+2025-04-15 00:48:09,931 - transformer_training - INFO - Main loop iteration: 1660
+Iter 1660: loss 1.2768, lr 0.000249, 19309.04 tokens/sec
+2025-04-15 00:48:13,326 - transformer_training - INFO - Main loop iteration: 1661
+2025-04-15 00:48:17,105 - transformer_training - INFO - Main loop iteration: 1662
+2025-04-15 00:48:20,503 - transformer_training - INFO - Main loop iteration: 1663
+2025-04-15 00:48:24,123 - transformer_training - INFO - Main loop iteration: 1664
+2025-04-15 00:48:27,833 - transformer_training - INFO - Main loop iteration: 1665
+2025-04-15 00:48:31,456 - transformer_training - INFO - Main loop iteration: 1666
+2025-04-15 00:48:35,026 - transformer_training - INFO - Main loop iteration: 1667
+2025-04-15 00:48:38,650 - transformer_training - INFO - Main loop iteration: 1668
+2025-04-15 00:48:42,043 - transformer_training - INFO - Main loop iteration: 1669
+2025-04-15 00:48:45,986 - transformer_training - INFO - Main loop iteration: 1670
+Iter 1670: loss 1.2376, lr 0.000250, 19294.10 tokens/sec
+2025-04-15 00:48:49,383 - transformer_training - INFO - Main loop iteration: 1671
+2025-04-15 00:48:53,001 - transformer_training - INFO - Main loop iteration: 1672
+2025-04-15 00:48:56,554 - transformer_training - INFO - Main loop iteration: 1673
+2025-04-15 00:49:00,174 - transformer_training - INFO - Main loop iteration: 1674
+2025-04-15 00:49:03,896 - transformer_training - INFO - Main loop iteration: 1675
+2025-04-15 00:49:07,511 - transformer_training - INFO - Main loop iteration: 1676
+2025-04-15 00:49:10,906 - transformer_training - INFO - Main loop iteration: 1677
+2025-04-15 00:49:14,673 - transformer_training - INFO - Main loop iteration: 1678
+2025-04-15 00:49:18,068 - transformer_training - INFO - Main loop iteration: 1679
+2025-04-15 00:49:21,689 - transformer_training - INFO - Main loop iteration: 1680
+Iter 1680: loss 1.2302, lr 0.000252, 17661.93 tokens/sec
+2025-04-15 00:49:25,400 - transformer_training - INFO - Main loop iteration: 1681
+2025-04-15 00:49:29,018 - transformer_training - INFO - Main loop iteration: 1682
+2025-04-15 00:49:32,588 - transformer_training - INFO - Main loop iteration: 1683
+2025-04-15 00:49:36,208 - transformer_training - INFO - Main loop iteration: 1684
+2025-04-15 00:49:39,603 - transformer_training - INFO - Main loop iteration: 1685
+2025-04-15 00:49:43,556 - transformer_training - INFO - Main loop iteration: 1686
+2025-04-15 00:49:46,962 - transformer_training - INFO - Main loop iteration: 1687
+2025-04-15 00:49:50,580 - transformer_training - INFO - Main loop iteration: 1688
+2025-04-15 00:49:54,149 - transformer_training - INFO - Main loop iteration: 1689
+2025-04-15 00:49:57,768 - transformer_training - INFO - Main loop iteration: 1690
+Iter 1690: loss 1.1292, lr 0.000253, 17685.66 tokens/sec
+2025-04-15 00:50:01,474 - transformer_training - INFO - Main loop iteration: 1691
+2025-04-15 00:50:05,094 - transformer_training - INFO - Main loop iteration: 1692
+2025-04-15 00:50:08,494 - transformer_training - INFO - Main loop iteration: 1693
+2025-04-15 00:50:12,277 - transformer_training - INFO - Main loop iteration: 1694
+2025-04-15 00:50:15,677 - transformer_training - INFO - Main loop iteration: 1695
+2025-04-15 00:50:19,629 - transformer_training - INFO - Main loop iteration: 1696
+2025-04-15 00:50:23,025 - transformer_training - INFO - Main loop iteration: 1697
+2025-04-15 00:50:26,645 - transformer_training - INFO - Main loop iteration: 1698
+2025-04-15 00:50:30,199 - transformer_training - INFO - Main loop iteration: 1699
+2025-04-15 00:50:33,818 - transformer_training - INFO - Main loop iteration: 1700
+Iter 1700: loss 1.1105, lr 0.000255, 17652.31 tokens/sec
+2025-04-15 00:50:37,531 - transformer_training - INFO - Main loop iteration: 1701
+2025-04-15 00:50:41,150 - transformer_training - INFO - Main loop iteration: 1702
+2025-04-15 00:50:44,557 - transformer_training - INFO - Main loop iteration: 1703
+2025-04-15 00:50:48,342 - transformer_training - INFO - Main loop iteration: 1704
+2025-04-15 00:50:51,735 - transformer_training - INFO - Main loop iteration: 1705
+2025-04-15 00:50:55,368 - transformer_training - INFO - Main loop iteration: 1706
+2025-04-15 00:50:59,108 - transformer_training - INFO - Main loop iteration: 1707
+2025-04-15 00:51:02,728 - transformer_training - INFO - Main loop iteration: 1708
+2025-04-15 00:51:06,126 - transformer_training - INFO - Main loop iteration: 1709
+2025-04-15 00:51:09,914 - transformer_training - INFO - Main loop iteration: 1710
+Iter 1710: loss 1.1961, lr 0.000256, 19278.87 tokens/sec
+2025-04-15 00:51:13,315 - transformer_training - INFO - Main loop iteration: 1711
+2025-04-15 00:51:17,267 - transformer_training - INFO - Main loop iteration: 1712
+2025-04-15 00:51:20,664 - transformer_training - INFO - Main loop iteration: 1713
+2025-04-15 00:51:24,283 - transformer_training - INFO - Main loop iteration: 1714
+2025-04-15 00:51:27,831 - transformer_training - INFO - Main loop iteration: 1715
+2025-04-15 00:51:31,449 - transformer_training - INFO - Main loop iteration: 1716
+2025-04-15 00:51:34,845 - transformer_training - INFO - Main loop iteration: 1717
+2025-04-15 00:51:38,784 - transformer_training - INFO - Main loop iteration: 1718
+2025-04-15 00:51:42,180 - transformer_training - INFO - Main loop iteration: 1719
+2025-04-15 00:51:45,962 - transformer_training - INFO - Main loop iteration: 1720
+Iter 1720: loss 1.0704, lr 0.000258, 19299.97 tokens/sec
+2025-04-15 00:51:49,358 - transformer_training - INFO - Main loop iteration: 1721
+2025-04-15 00:51:52,976 - transformer_training - INFO - Main loop iteration: 1722
+2025-04-15 00:51:56,693 - transformer_training - INFO - Main loop iteration: 1723
+2025-04-15 00:52:00,313 - transformer_training - INFO - Main loop iteration: 1724
+2025-04-15 00:52:03,884 - transformer_training - INFO - Main loop iteration: 1725
+2025-04-15 00:52:07,505 - transformer_training - INFO - Main loop iteration: 1726
+2025-04-15 00:52:10,905 - transformer_training - INFO - Main loop iteration: 1727
+2025-04-15 00:52:14,849 - transformer_training - INFO - Main loop iteration: 1728
+2025-04-15 00:52:18,244 - transformer_training - INFO - Main loop iteration: 1729
+2025-04-15 00:52:21,863 - transformer_training - INFO - Main loop iteration: 1730
+Iter 1730: loss 1.0800, lr 0.000259, 18332.62 tokens/sec
+2025-04-15 00:52:25,439 - transformer_training - INFO - Main loop iteration: 1731
+2025-04-15 00:52:29,059 - transformer_training - INFO - Main loop iteration: 1732
+2025-04-15 00:52:32,776 - transformer_training - INFO - Main loop iteration: 1733
+2025-04-15 00:52:36,393 - transformer_training - INFO - Main loop iteration: 1734
+2025-04-15 00:52:39,787 - transformer_training - INFO - Main loop iteration: 1735
+2025-04-15 00:52:43,580 - transformer_training - INFO - Main loop iteration: 1736
+2025-04-15 00:52:46,974 - transformer_training - INFO - Main loop iteration: 1737
+2025-04-15 00:52:50,593 - transformer_training - INFO - Main loop iteration: 1738
+2025-04-15 00:52:54,325 - transformer_training - INFO - Main loop iteration: 1739
+2025-04-15 00:52:57,944 - transformer_training - INFO - Main loop iteration: 1740
+Iter 1740: loss 1.0725, lr 0.000261, 19308.06 tokens/sec
+2025-04-15 00:53:01,339 - transformer_training - INFO - Main loop iteration: 1741
+2025-04-15 00:53:05,271 - transformer_training - INFO - Main loop iteration: 1742
+2025-04-15 00:53:08,664 - transformer_training - INFO - Main loop iteration: 1743
+2025-04-15 00:53:12,448 - transformer_training - INFO - Main loop iteration: 1744
+2025-04-15 00:53:15,845 - transformer_training - INFO - Main loop iteration: 1745
+2025-04-15 00:53:19,464 - transformer_training - INFO - Main loop iteration: 1746
+2025-04-15 00:53:23,168 - transformer_training - INFO - Main loop iteration: 1747
+2025-04-15 00:53:26,783 - transformer_training - INFO - Main loop iteration: 1748
+2025-04-15 00:53:30,176 - transformer_training - INFO - Main loop iteration: 1749
+2025-04-15 00:53:33,968 - transformer_training - INFO - Main loop iteration: 1750
+Iter 1750: loss 0.9687, lr 0.000262, 19285.92 tokens/sec
+2025-04-15 00:53:37,367 - transformer_training - INFO - Main loop iteration: 1751
+2025-04-15 00:53:41,308 - transformer_training - INFO - Main loop iteration: 1752
+2025-04-15 00:53:44,704 - transformer_training - INFO - Main loop iteration: 1753
+2025-04-15 00:53:48,319 - transformer_training - INFO - Main loop iteration: 1754
+2025-04-15 00:53:51,881 - transformer_training - INFO - Main loop iteration: 1755
+2025-04-15 00:53:55,503 - transformer_training - INFO - Main loop iteration: 1756
+2025-04-15 00:53:59,220 - transformer_training - INFO - Main loop iteration: 1757
+2025-04-15 00:54:02,837 - transformer_training - INFO - Main loop iteration: 1758
+2025-04-15 00:54:06,236 - transformer_training - INFO - Main loop iteration: 1759
+2025-04-15 00:54:10,026 - transformer_training - INFO - Main loop iteration: 1760
+Iter 1760: loss 0.9156, lr 0.000264, 19307.70 tokens/sec
+2025-04-15 00:54:13,421 - transformer_training - INFO - Main loop iteration: 1761
+2025-04-15 00:54:17,037 - transformer_training - INFO - Main loop iteration: 1762
+2025-04-15 00:54:20,736 - transformer_training - INFO - Main loop iteration: 1763
+2025-04-15 00:54:24,355 - transformer_training - INFO - Main loop iteration: 1764
+2025-04-15 00:54:27,926 - transformer_training - INFO - Main loop iteration: 1765
+2025-04-15 00:54:31,545 - transformer_training - INFO - Main loop iteration: 1766
+2025-04-15 00:54:34,940 - transformer_training - INFO - Main loop iteration: 1767
+2025-04-15 00:54:38,880 - transformer_training - INFO - Main loop iteration: 1768
+2025-04-15 00:54:42,276 - transformer_training - INFO - Main loop iteration: 1769
+2025-04-15 00:54:45,892 - transformer_training - INFO - Main loop iteration: 1770
+Iter 1770: loss 0.9039, lr 0.000266, 18397.97 tokens/sec
+2025-04-15 00:54:49,455 - transformer_training - INFO - Main loop iteration: 1771
+2025-04-15 00:54:53,079 - transformer_training - INFO - Main loop iteration: 1772
+2025-04-15 00:54:56,474 - transformer_training - INFO - Main loop iteration: 1773
+2025-04-15 00:55:00,413 - transformer_training - INFO - Main loop iteration: 1774
+2025-04-15 00:55:03,809 - transformer_training - INFO - Main loop iteration: 1775
+2025-04-15 00:55:07,593 - transformer_training - INFO - Main loop iteration: 1776
+2025-04-15 00:55:10,990 - transformer_training - INFO - Main loop iteration: 1777
+2025-04-15 00:55:14,609 - transformer_training - INFO - Main loop iteration: 1778
+2025-04-15 00:55:18,315 - transformer_training - INFO - Main loop iteration: 1779
+2025-04-15 00:55:21,933 - transformer_training - INFO - Main loop iteration: 1780
+Iter 1780: loss 0.9046, lr 0.000267, 19312.29 tokens/sec
+2025-04-15 00:55:25,327 - transformer_training - INFO - Main loop iteration: 1781
+2025-04-15 00:55:29,108 - transformer_training - INFO - Main loop iteration: 1782
+2025-04-15 00:55:32,504 - transformer_training - INFO - Main loop iteration: 1783
+2025-04-15 00:55:36,455 - transformer_training - INFO - Main loop iteration: 1784
+2025-04-15 00:55:39,846 - transformer_training - INFO - Main loop iteration: 1785
+2025-04-15 00:55:43,472 - transformer_training - INFO - Main loop iteration: 1786
+2025-04-15 00:55:47,037 - transformer_training - INFO - Main loop iteration: 1787
+2025-04-15 00:55:50,653 - transformer_training - INFO - Main loop iteration: 1788
+2025-04-15 00:55:54,365 - transformer_training - INFO - Main loop iteration: 1789
+2025-04-15 00:55:57,981 - transformer_training - INFO - Main loop iteration: 1790
+Iter 1790: loss 0.8698, lr 0.000268, 19306.51 tokens/sec
+2025-04-15 00:56:01,376 - transformer_training - INFO - Main loop iteration: 1791
+2025-04-15 00:56:05,157 - transformer_training - INFO - Main loop iteration: 1792
+2025-04-15 00:56:08,550 - transformer_training - INFO - Main loop iteration: 1793
+2025-04-15 00:56:12,168 - transformer_training - INFO - Main loop iteration: 1794
+2025-04-15 00:56:15,883 - transformer_training - INFO - Main loop iteration: 1795
+2025-04-15 00:56:19,509 - transformer_training - INFO - Main loop iteration: 1796
+2025-04-15 00:56:23,066 - transformer_training - INFO - Main loop iteration: 1797
+2025-04-15 00:56:26,690 - transformer_training - INFO - Main loop iteration: 1798
+2025-04-15 00:56:30,084 - transformer_training - INFO - Main loop iteration: 1799
+2025-04-15 00:56:34,027 - transformer_training - INFO - Main loop iteration: 1800
+Iter 1800: loss 0.7408, lr 0.000270, 19307.35 tokens/sec
+Iter 1800: val loss 3.1011
+New best model saved with val loss: 3.1011
+2025-04-15 00:56:58,704 - transformer_training - INFO - Main loop iteration: 1801
+2025-04-15 00:57:02,558 - transformer_training - INFO - Main loop iteration: 1802
+2025-04-15 00:57:05,945 - transformer_training - INFO - Main loop iteration: 1803
+2025-04-15 00:57:09,884 - transformer_training - INFO - Main loop iteration: 1804
+2025-04-15 00:57:13,275 - transformer_training - INFO - Main loop iteration: 1805
+2025-04-15 00:57:16,891 - transformer_training - INFO - Main loop iteration: 1806
+2025-04-15 00:57:20,451 - transformer_training - INFO - Main loop iteration: 1807
+2025-04-15 00:57:24,066 - transformer_training - INFO - Main loop iteration: 1808
+2025-04-15 00:57:27,775 - transformer_training - INFO - Main loop iteration: 1809
+2025-04-15 00:57:31,385 - transformer_training - INFO - Main loop iteration: 1810
+Iter 1810: loss 0.7543, lr 0.000271, 19336.70 tokens/sec
+2025-04-15 00:57:34,775 - transformer_training - INFO - Main loop iteration: 1811
+2025-04-15 00:57:38,564 - transformer_training - INFO - Main loop iteration: 1812
+2025-04-15 00:57:41,958 - transformer_training - INFO - Main loop iteration: 1813
+2025-04-15 00:57:45,574 - transformer_training - INFO - Main loop iteration: 1814
+2025-04-15 00:57:49,288 - transformer_training - INFO - Main loop iteration: 1815
+2025-04-15 00:57:52,905 - transformer_training - INFO - Main loop iteration: 1816
+2025-04-15 00:57:56,462 - transformer_training - INFO - Main loop iteration: 1817
+2025-04-15 00:58:00,078 - transformer_training - INFO - Main loop iteration: 1818
+2025-04-15 00:58:03,478 - transformer_training - INFO - Main loop iteration: 1819
+2025-04-15 00:58:07,414 - transformer_training - INFO - Main loop iteration: 1820
+Iter 1820: loss 0.7297, lr 0.000273, 19308.61 tokens/sec
+2025-04-15 00:58:10,809 - transformer_training - INFO - Main loop iteration: 1821
+2025-04-15 00:58:14,420 - transformer_training - INFO - Main loop iteration: 1822
+2025-04-15 00:58:17,969 - transformer_training - INFO - Main loop iteration: 1823
+2025-04-15 00:58:21,595 - transformer_training - INFO - Main loop iteration: 1824
+2025-04-15 00:58:25,305 - transformer_training - INFO - Main loop iteration: 1825
+2025-04-15 00:58:28,921 - transformer_training - INFO - Main loop iteration: 1826
+2025-04-15 00:58:32,312 - transformer_training - INFO - Main loop iteration: 1827
+2025-04-15 00:58:36,093 - transformer_training - INFO - Main loop iteration: 1828
+2025-04-15 00:58:39,488 - transformer_training - INFO - Main loop iteration: 1829
+2025-04-15 00:58:43,418 - transformer_training - INFO - Main loop iteration: 1830
+Iter 1830: loss 0.7469, lr 0.000275, 19326.05 tokens/sec
+2025-04-15 00:58:46,810 - transformer_training - INFO - Main loop iteration: 1831
+2025-04-15 00:58:50,424 - transformer_training - INFO - Main loop iteration: 1832
+2025-04-15 00:58:53,985 - transformer_training - INFO - Main loop iteration: 1833
+2025-04-15 00:58:57,598 - transformer_training - INFO - Main loop iteration: 1834
+2025-04-15 00:59:01,000 - transformer_training - INFO - Main loop iteration: 1835
+2025-04-15 00:59:04,930 - transformer_training - INFO - Main loop iteration: 1836
+2025-04-15 00:59:08,326 - transformer_training - INFO - Main loop iteration: 1837
+2025-04-15 00:59:12,109 - transformer_training - INFO - Main loop iteration: 1838
+2025-04-15 00:59:15,509 - transformer_training - INFO - Main loop iteration: 1839
+2025-04-15 00:59:19,126 - transformer_training - INFO - Main loop iteration: 1840
+Iter 1840: loss 0.7056, lr 0.000276, 17588.71 tokens/sec
+2025-04-15 00:59:22,853 - transformer_training - INFO - Main loop iteration: 1841
+2025-04-15 00:59:26,456 - transformer_training - INFO - Main loop iteration: 1842
+2025-04-15 00:59:29,845 - transformer_training - INFO - Main loop iteration: 1843
+2025-04-15 00:59:33,637 - transformer_training - INFO - Main loop iteration: 1844
+2025-04-15 00:59:37,032 - transformer_training - INFO - Main loop iteration: 1845
+2025-04-15 00:59:40,986 - transformer_training - INFO - Main loop iteration: 1846
+2025-04-15 00:59:44,380 - transformer_training - INFO - Main loop iteration: 1847
+2025-04-15 00:59:47,996 - transformer_training - INFO - Main loop iteration: 1848
+2025-04-15 00:59:51,557 - transformer_training - INFO - Main loop iteration: 1849
+2025-04-15 00:59:55,189 - transformer_training - INFO - Main loop iteration: 1850
+Iter 1850: loss 0.7284, lr 0.000277, 19324.53 tokens/sec
+2025-04-15 00:59:58,581 - transformer_training - INFO - Main loop iteration: 1851
+2025-04-15 01:00:02,505 - transformer_training - INFO - Main loop iteration: 1852
+2025-04-15 01:00:05,897 - transformer_training - INFO - Main loop iteration: 1853
+2025-04-15 01:00:09,687 - transformer_training - INFO - Main loop iteration: 1854
+2025-04-15 01:00:13,077 - transformer_training - INFO - Main loop iteration: 1855
+2025-04-15 01:00:16,691 - transformer_training - INFO - Main loop iteration: 1856
+2025-04-15 01:00:20,405 - transformer_training - INFO - Main loop iteration: 1857
+2025-04-15 01:00:24,018 - transformer_training - INFO - Main loop iteration: 1858
+2025-04-15 01:00:27,411 - transformer_training - INFO - Main loop iteration: 1859
+2025-04-15 01:00:31,335 - transformer_training - INFO - Main loop iteration: 1860
+Iter 1860: loss 0.6834, lr 0.000279, 19325.90 tokens/sec
+2025-04-15 01:00:34,726 - transformer_training - INFO - Main loop iteration: 1861
+2025-04-15 01:00:38,516 - transformer_training - INFO - Main loop iteration: 1862
+2025-04-15 01:00:41,910 - transformer_training - INFO - Main loop iteration: 1863
+2025-04-15 01:00:45,527 - transformer_training - INFO - Main loop iteration: 1864
+2025-04-15 01:00:49,234 - transformer_training - INFO - Main loop iteration: 1865
+2025-04-15 01:00:52,853 - transformer_training - INFO - Main loop iteration: 1866
+2025-04-15 01:00:56,439 - transformer_training - INFO - Main loop iteration: 1867
+2025-04-15 01:01:00,056 - transformer_training - INFO - Main loop iteration: 1868
+2025-04-15 01:01:03,449 - transformer_training - INFO - Main loop iteration: 1869
+2025-04-15 01:01:07,377 - transformer_training - INFO - Main loop iteration: 1870
+Iter 1870: loss 0.6094, lr 0.000280, 19254.13 tokens/sec
+2025-04-15 01:01:10,781 - transformer_training - INFO - Main loop iteration: 1871
+2025-04-15 01:01:14,397 - transformer_training - INFO - Main loop iteration: 1872
+2025-04-15 01:01:17,958 - transformer_training - INFO - Main loop iteration: 1873
+2025-04-15 01:01:21,571 - transformer_training - INFO - Main loop iteration: 1874
+2025-04-15 01:01:25,289 - transformer_training - INFO - Main loop iteration: 1875
+2025-04-15 01:01:28,914 - transformer_training - INFO - Main loop iteration: 1876
+2025-04-15 01:01:32,307 - transformer_training - INFO - Main loop iteration: 1877
+2025-04-15 01:01:36,088 - transformer_training - INFO - Main loop iteration: 1878
+2025-04-15 01:01:39,479 - transformer_training - INFO - Main loop iteration: 1879
+2025-04-15 01:01:43,098 - transformer_training - INFO - Main loop iteration: 1880
+Iter 1880: loss 0.5493, lr 0.000282, 17723.42 tokens/sec
+2025-04-15 01:01:46,797 - transformer_training - INFO - Main loop iteration: 1881
+2025-04-15 01:01:50,410 - transformer_training - INFO - Main loop iteration: 1882
+2025-04-15 01:01:53,960 - transformer_training - INFO - Main loop iteration: 1883
+2025-04-15 01:01:57,576 - transformer_training - INFO - Main loop iteration: 1884
+2025-04-15 01:02:00,968 - transformer_training - INFO - Main loop iteration: 1885
+2025-04-15 01:02:04,906 - transformer_training - INFO - Main loop iteration: 1886
+2025-04-15 01:02:08,298 - transformer_training - INFO - Main loop iteration: 1887
+2025-04-15 01:02:11,914 - transformer_training - INFO - Main loop iteration: 1888
+2025-04-15 01:02:15,486 - transformer_training - INFO - Main loop iteration: 1889
+2025-04-15 01:02:19,104 - transformer_training - INFO - Main loop iteration: 1890
+Iter 1890: loss 0.5462, lr 0.000283, 17723.72 tokens/sec
+2025-04-15 01:02:22,807 - transformer_training - INFO - Main loop iteration: 1891
+2025-04-15 01:02:26,422 - transformer_training - INFO - Main loop iteration: 1892
+2025-04-15 01:02:29,815 - transformer_training - INFO - Main loop iteration: 1893
+2025-04-15 01:02:33,598 - transformer_training - INFO - Main loop iteration: 1894
+2025-04-15 01:02:36,988 - transformer_training - INFO - Main loop iteration: 1895
+2025-04-15 01:02:40,945 - transformer_training - INFO - Main loop iteration: 1896
+2025-04-15 01:02:44,337 - transformer_training - INFO - Main loop iteration: 1897
+2025-04-15 01:02:47,952 - transformer_training - INFO - Main loop iteration: 1898
+2025-04-15 01:02:51,509 - transformer_training - INFO - Main loop iteration: 1899
+2025-04-15 01:02:55,125 - transformer_training - INFO - Main loop iteration: 1900
+Iter 1900: loss 0.4250, lr 0.000285, 17685.60 tokens/sec
+2025-04-15 01:02:58,831 - transformer_training - INFO - Main loop iteration: 1901
+2025-04-15 01:03:02,447 - transformer_training - INFO - Main loop iteration: 1902
+2025-04-15 01:03:05,836 - transformer_training - INFO - Main loop iteration: 1903
+2025-04-15 01:03:09,625 - transformer_training - INFO - Main loop iteration: 1904
+2025-04-15 01:03:13,021 - transformer_training - INFO - Main loop iteration: 1905
+2025-04-15 01:03:16,649 - transformer_training - INFO - Main loop iteration: 1906
+2025-04-15 01:03:20,370 - transformer_training - INFO - Main loop iteration: 1907
+2025-04-15 01:03:23,998 - transformer_training - INFO - Main loop iteration: 1908
+2025-04-15 01:03:27,388 - transformer_training - INFO - Main loop iteration: 1909
+2025-04-15 01:03:31,174 - transformer_training - INFO - Main loop iteration: 1910
+Iter 1910: loss 0.4463, lr 0.000286, 19300.48 tokens/sec
+2025-04-15 01:03:34,570 - transformer_training - INFO - Main loop iteration: 1911
+2025-04-15 01:03:38,510 - transformer_training - INFO - Main loop iteration: 1912
+2025-04-15 01:03:41,902 - transformer_training - INFO - Main loop iteration: 1913
+2025-04-15 01:03:45,516 - transformer_training - INFO - Main loop iteration: 1914
+2025-04-15 01:03:49,061 - transformer_training - INFO - Main loop iteration: 1915
+2025-04-15 01:03:52,682 - transformer_training - INFO - Main loop iteration: 1916
+2025-04-15 01:03:56,077 - transformer_training - INFO - Main loop iteration: 1917
+2025-04-15 01:03:59,999 - transformer_training - INFO - Main loop iteration: 1918
+2025-04-15 01:04:03,393 - transformer_training - INFO - Main loop iteration: 1919
+2025-04-15 01:04:07,167 - transformer_training - INFO - Main loop iteration: 1920
+Iter 1920: loss 0.4274, lr 0.000288, 19335.36 tokens/sec
+2025-04-15 01:04:10,557 - transformer_training - INFO - Main loop iteration: 1921
+2025-04-15 01:04:14,174 - transformer_training - INFO - Main loop iteration: 1922
+2025-04-15 01:04:17,889 - transformer_training - INFO - Main loop iteration: 1923
+2025-04-15 01:04:21,501 - transformer_training - INFO - Main loop iteration: 1924
+2025-04-15 01:04:25,070 - transformer_training - INFO - Main loop iteration: 1925
+2025-04-15 01:04:28,685 - transformer_training - INFO - Main loop iteration: 1926
+2025-04-15 01:04:32,076 - transformer_training - INFO - Main loop iteration: 1927
+2025-04-15 01:04:36,018 - transformer_training - INFO - Main loop iteration: 1928
+2025-04-15 01:04:39,409 - transformer_training - INFO - Main loop iteration: 1929
+2025-04-15 01:04:43,030 - transformer_training - INFO - Main loop iteration: 1930
+Iter 1930: loss 0.3783, lr 0.000289, 18409.58 tokens/sec
+2025-04-15 01:04:46,591 - transformer_training - INFO - Main loop iteration: 1931
+2025-04-15 01:04:50,206 - transformer_training - INFO - Main loop iteration: 1932
+2025-04-15 01:04:53,911 - transformer_training - INFO - Main loop iteration: 1933
+2025-04-15 01:04:57,524 - transformer_training - INFO - Main loop iteration: 1934
+2025-04-15 01:05:00,924 - transformer_training - INFO - Main loop iteration: 1935
+2025-04-15 01:05:04,712 - transformer_training - INFO - Main loop iteration: 1936
+2025-04-15 01:05:08,109 - transformer_training - INFO - Main loop iteration: 1937
+2025-04-15 01:05:11,721 - transformer_training - INFO - Main loop iteration: 1938
+2025-04-15 01:05:15,434 - transformer_training - INFO - Main loop iteration: 1939
+2025-04-15 01:05:19,049 - transformer_training - INFO - Main loop iteration: 1940
+Iter 1940: loss 0.3611, lr 0.000291, 19319.65 tokens/sec
+2025-04-15 01:05:22,442 - transformer_training - INFO - Main loop iteration: 1941
+2025-04-15 01:05:26,372 - transformer_training - INFO - Main loop iteration: 1942
+2025-04-15 01:05:29,764 - transformer_training - INFO - Main loop iteration: 1943
+2025-04-15 01:05:33,541 - transformer_training - INFO - Main loop iteration: 1944
+2025-04-15 01:05:36,932 - transformer_training - INFO - Main loop iteration: 1945
+2025-04-15 01:05:40,545 - transformer_training - INFO - Main loop iteration: 1946
+2025-04-15 01:05:44,158 - transformer_training - INFO - Main loop iteration: 1947
+2025-04-15 01:05:47,777 - transformer_training - INFO - Main loop iteration: 1948
+2025-04-15 01:05:51,169 - transformer_training - INFO - Main loop iteration: 1949
+2025-04-15 01:05:55,040 - transformer_training - INFO - Main loop iteration: 1950
+Iter 1950: loss 0.4686, lr 0.000292, 19336.28 tokens/sec
+2025-04-15 01:05:58,430 - transformer_training - INFO - Main loop iteration: 1951
+2025-04-15 01:06:02,275 - transformer_training - INFO - Main loop iteration: 1952
+2025-04-15 01:06:05,668 - transformer_training - INFO - Main loop iteration: 1953
+2025-04-15 01:06:09,290 - transformer_training - INFO - Main loop iteration: 1954
+2025-04-15 01:06:12,946 - transformer_training - INFO - Main loop iteration: 1955
+2025-04-15 01:06:16,560 - transformer_training - INFO - Main loop iteration: 1956
+2025-04-15 01:06:20,209 - transformer_training - INFO - Main loop iteration: 1957
+2025-04-15 01:06:23,821 - transformer_training - INFO - Main loop iteration: 1958
+2025-04-15 01:06:27,209 - transformer_training - INFO - Main loop iteration: 1959
+2025-04-15 01:06:31,080 - transformer_training - INFO - Main loop iteration: 1960
+Iter 1960: loss 0.3513, lr 0.000294, 19330.94 tokens/sec
+2025-04-15 01:06:34,471 - transformer_training - INFO - Main loop iteration: 1961
+2025-04-15 01:06:38,093 - transformer_training - INFO - Main loop iteration: 1962
+2025-04-15 01:06:41,814 - transformer_training - INFO - Main loop iteration: 1963
+2025-04-15 01:06:45,398 - transformer_training - INFO - Main loop iteration: 1964
+2025-04-15 01:06:48,961 - transformer_training - INFO - Main loop iteration: 1965
+2025-04-15 01:06:52,570 - transformer_training - INFO - Main loop iteration: 1966
+2025-04-15 01:06:55,961 - transformer_training - INFO - Main loop iteration: 1967
+2025-04-15 01:06:59,888 - transformer_training - INFO - Main loop iteration: 1968
+2025-04-15 01:07:03,291 - transformer_training - INFO - Main loop iteration: 1969
+2025-04-15 01:07:06,906 - transformer_training - INFO - Main loop iteration: 1970
+Iter 1970: loss 0.4257, lr 0.000295, 18384.82 tokens/sec
+2025-04-15 01:07:10,471 - transformer_training - INFO - Main loop iteration: 1971
+2025-04-15 01:07:14,087 - transformer_training - INFO - Main loop iteration: 1972
+2025-04-15 01:07:17,814 - transformer_training - INFO - Main loop iteration: 1973
+2025-04-15 01:07:21,422 - transformer_training - INFO - Main loop iteration: 1974
+2025-04-15 01:07:24,810 - transformer_training - INFO - Main loop iteration: 1975
+2025-04-15 01:07:28,591 - transformer_training - INFO - Main loop iteration: 1976
+2025-04-15 01:07:31,982 - transformer_training - INFO - Main loop iteration: 1977
+2025-04-15 01:07:35,930 - transformer_training - INFO - Main loop iteration: 1978
+2025-04-15 01:07:39,332 - transformer_training - INFO - Main loop iteration: 1979
+2025-04-15 01:07:42,946 - transformer_training - INFO - Main loop iteration: 1980
+Iter 1980: loss 0.4689, lr 0.000297, 18448.75 tokens/sec
+2025-04-15 01:07:46,499 - transformer_training - INFO - Main loop iteration: 1981
+2025-04-15 01:07:50,116 - transformer_training - INFO - Main loop iteration: 1982
+2025-04-15 01:07:53,508 - transformer_training - INFO - Main loop iteration: 1983
+2025-04-15 01:07:57,437 - transformer_training - INFO - Main loop iteration: 1984
+2025-04-15 01:08:00,831 - transformer_training - INFO - Main loop iteration: 1985
+2025-04-15 01:08:04,617 - transformer_training - INFO - Main loop iteration: 1986
+2025-04-15 01:08:08,010 - transformer_training - INFO - Main loop iteration: 1987
+2025-04-15 01:08:11,622 - transformer_training - INFO - Main loop iteration: 1988
+2025-04-15 01:08:15,326 - transformer_training - INFO - Main loop iteration: 1989
+2025-04-15 01:08:18,937 - transformer_training - INFO - Main loop iteration: 1990
+Iter 1990: loss 0.3936, lr 0.000298, 18374.57 tokens/sec
+2025-04-15 01:08:22,504 - transformer_training - INFO - Main loop iteration: 1991
+2025-04-15 01:08:26,112 - transformer_training - INFO - Main loop iteration: 1992
+2025-04-15 01:08:29,503 - transformer_training - INFO - Main loop iteration: 1993
+2025-04-15 01:08:33,431 - transformer_training - INFO - Main loop iteration: 1994
+2025-04-15 01:08:36,819 - transformer_training - INFO - Main loop iteration: 1995
+2025-04-15 01:08:40,440 - transformer_training - INFO - Main loop iteration: 1996
+2025-04-15 01:08:43,998 - transformer_training - INFO - Main loop iteration: 1997
+2025-04-15 01:08:47,611 - transformer_training - INFO - Main loop iteration: 1998
+2025-04-15 01:08:51,343 - transformer_training - INFO - Main loop iteration: 1999
+2025-04-15 01:08:54,952 - transformer_training - INFO - Main loop iteration: 2000
+Iter 2000: loss 0.3992, lr 0.000300, 19332.91 tokens/sec
+Iter 2000: val loss 2.2375
+New best model saved with val loss: 2.2375
+Periodic checkpoint saved at iteration 2000
+2025-04-15 01:09:33,434 - transformer_training - INFO - Main loop iteration: 2001
+2025-04-15 01:09:37,306 - transformer_training - INFO - Main loop iteration: 2002
+2025-04-15 01:09:40,691 - transformer_training - INFO - Main loop iteration: 2003
+2025-04-15 01:09:44,599 - transformer_training - INFO - Main loop iteration: 2004
+2025-04-15 01:09:47,984 - transformer_training - INFO - Main loop iteration: 2005
+2025-04-15 01:09:51,591 - transformer_training - INFO - Main loop iteration: 2006
+2025-04-15 01:09:55,246 - transformer_training - INFO - Main loop iteration: 2007
+2025-04-15 01:09:58,850 - transformer_training - INFO - Main loop iteration: 2008
+2025-04-15 01:10:02,235 - transformer_training - INFO - Main loop iteration: 2009
+2025-04-15 01:10:06,057 - transformer_training - INFO - Main loop iteration: 2010
+Iter 2010: loss 0.3182, lr 0.000300, 19336.04 tokens/sec
+2025-04-15 01:10:09,447 - transformer_training - INFO - Main loop iteration: 2011
+2025-04-15 01:10:13,329 - transformer_training - INFO - Main loop iteration: 2012
+2025-04-15 01:10:16,720 - transformer_training - INFO - Main loop iteration: 2013
+2025-04-15 01:10:20,327 - transformer_training - INFO - Main loop iteration: 2014
+2025-04-15 01:10:23,942 - transformer_training - INFO - Main loop iteration: 2015
+2025-04-15 01:10:27,552 - transformer_training - INFO - Main loop iteration: 2016
+2025-04-15 01:10:30,939 - transformer_training - INFO - Main loop iteration: 2017
+2025-04-15 01:10:34,801 - transformer_training - INFO - Main loop iteration: 2018
+2025-04-15 01:10:38,190 - transformer_training - INFO - Main loop iteration: 2019
+2025-04-15 01:10:42,027 - transformer_training - INFO - Main loop iteration: 2020
+Iter 2020: loss 0.3058, lr 0.000300, 19344.32 tokens/sec
+2025-04-15 01:10:45,415 - transformer_training - INFO - Main loop iteration: 2021
+2025-04-15 01:10:49,026 - transformer_training - INFO - Main loop iteration: 2022
+2025-04-15 01:10:52,688 - transformer_training - INFO - Main loop iteration: 2023
+2025-04-15 01:10:56,299 - transformer_training - INFO - Main loop iteration: 2024
+2025-04-15 01:10:59,698 - transformer_training - INFO - Main loop iteration: 2025
+2025-04-15 01:11:03,622 - transformer_training - INFO - Main loop iteration: 2026
+2025-04-15 01:11:07,011 - transformer_training - INFO - Main loop iteration: 2027
+2025-04-15 01:11:10,798 - transformer_training - INFO - Main loop iteration: 2028
+2025-04-15 01:11:14,183 - transformer_training - INFO - Main loop iteration: 2029
+2025-04-15 01:11:17,792 - transformer_training - INFO - Main loop iteration: 2030
+Iter 2030: loss 0.2739, lr 0.000300, 17652.86 tokens/sec
+2025-04-15 01:11:21,506 - transformer_training - INFO - Main loop iteration: 2031
+2025-04-15 01:11:25,117 - transformer_training - INFO - Main loop iteration: 2032
+2025-04-15 01:11:28,505 - transformer_training - INFO - Main loop iteration: 2033
+2025-04-15 01:11:32,275 - transformer_training - INFO - Main loop iteration: 2034
+2025-04-15 01:11:35,665 - transformer_training - INFO - Main loop iteration: 2035
+2025-04-15 01:11:39,591 - transformer_training - INFO - Main loop iteration: 2036
+2025-04-15 01:11:42,979 - transformer_training - INFO - Main loop iteration: 2037
+2025-04-15 01:11:46,588 - transformer_training - INFO - Main loop iteration: 2038
