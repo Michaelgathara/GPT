@@ -33,7 +33,7 @@ logging.basicConfig(
     ]
 )
 logger = logging.getLogger("FineWebPretraining")
-workers = 10
+workers = 4
 
 # --- Helper Classes ---
 # move to utils later
