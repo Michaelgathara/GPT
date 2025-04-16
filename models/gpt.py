@@ -8,7 +8,7 @@ from tqdm import tqdm
 
 import torch
 import torch.nn as nn
-from torch.utils.data import Dataset, DataLoader # We will need a custom IterableDataset
+from torch.utils.data import IterableDataset, Dataset, DataLoader # We will need a custom IterableDataset
 
 base_folder = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.append(base_folder)
