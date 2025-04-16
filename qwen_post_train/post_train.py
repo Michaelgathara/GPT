@@ -105,7 +105,7 @@ def prepare_nemotron_dataset(config: TrainingConfig):
     logger.info("Loading Nemotron dataset...")
     
     def get_llama_nemotron_data():
-        dataset = load_dataset("nvidia/Llama-Nemotron-Post-Training-Dataset-v1", split=['code', 'science'])
+        dataset = load_dataset("nvidia/Llama-Nemotron-Post-Training-Dataset", "SFT", split=["code", "science"])
         return dataset
     
     dataset = get_llama_nemotron_data()
