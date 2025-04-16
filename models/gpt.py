@@ -33,7 +33,7 @@ logging.basicConfig(
     ]
 )
 logger = logging.getLogger("FineWebPretraining")
-workers = max(1, multiprocessing.cpu_count()) // 2
+workers = 10
 
 # --- Helper Classes ---
 # move to utils later
