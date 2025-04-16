@@ -34,7 +34,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-workers = 20
+workers = 30
 
 def set_random_seed(seed=42):
     random.seed(seed)
