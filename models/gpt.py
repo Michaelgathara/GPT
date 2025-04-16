@@ -33,7 +33,7 @@ logging.basicConfig(
     ]
 )
 logger = logging.getLogger("FineWebPretraining")
-workers = 4
+workers = 1
 
 # --- Helper Classes ---
 # move to utils later
@@ -67,44 +67,79 @@ class CosineWarmupScheduler:
     def get_lr(self):
         return self.optimizer.param_groups[0]['lr'] if self.optimizer.param_groups else 0.0
 
-# Placeholder for data processing - requires streaming implementation
 class FineWebDataset(IterableDataset):
-    def __init__(self, dataset_iterable, tokenizer, block_size, seed=None):
+    def __init__(self, dataset_iterable, tokenizer, block_size, 
+                 cache_size=10000, seed=1337, shuffle_buffer=1000):
         self.iterable = dataset_iterable
         self.tokenizer = tokenizer
         self.block_size = block_size
-        self.seed = seed 
-        # Assuming tokenizer post-processor does not add BOS/EOS to each doc/sequence
+        self.cache_size = cache_size
+        self.seed = seed
+        self.shuffle_buffer = shuffle_buffer
+        # Token IDs cache to avoid re-encoding common texts
+        self.token_cache = {}
         self.bos_token_id = tokenizer.token_to_id("[BOS]")
         self.eos_token_id = tokenizer.token_to_id("[EOS]")
-
+        
     def __iter__(self):
         buffer = []
-        # Note: This simple iterator concatenates all text streams.
-        # It doesn't explicitly handle document boundaries within chunks,
-        # which is common in large-scale pre-training. Adding EOS/BOS tokens
-        # between documents during tokenization could help if desired.
+        shuffle_buffer = []
+        rng = random.Random(self.seed)
+        
         for example in self.iterable:
-            if example and 'text' in example and isinstance(example['text'], str) and example['text']:
-                try:
-                    # Encode the text. Assumes tokenizer handles BOS/EOS if configured.
-                    token_ids = self.tokenizer.encode(example['text']).ids
-                    if token_ids: # Ensure encoding produced output
-                        buffer.extend(token_ids)
-                        # Yield blocks whenever the buffer is large enough
-                        # We need block_size + 1 tokens to create x and y
-                        while len(buffer) >= self.block_size + 1:
-                            chunk = buffer[:self.block_size + 1]
-                            x = torch.tensor(chunk[:-1], dtype=torch.long)
-                            y = torch.tensor(chunk[1:], dtype=torch.long)
-                            yield x, y
-                            # Remove the processed block (keep overlap for next target)
-                            buffer = buffer[self.block_size:]
-                except Exception as e:
-                    logger.warning(f"Skipping example due to tokenization error: {e} - Text snippet: {example['text'][:100]}...")
-            # else: Silently skip empty or invalid examples
-
-        logger.info("Finished iterating through the dataset stream.")
+            if not example or 'text' not in example or not isinstance(example['text'], str):
+                continue
+                
+            try:
+                # Check cache first to avoid redundant tokenization
+                text = example['text']
+                cache_key = hash(text[:100] + text[-100:] if len(text) > 200 else text)
+                
+                if cache_key in self.token_cache:
+                    token_ids = self.token_cache[cache_key]
+                else:
+                    token_ids = self.tokenizer.encode(text).ids
+                    # Limit cache size to prevent memory issues
+                    if len(self.token_cache) < self.cache_size:
+                        self.token_cache[cache_key] = token_ids
+                
+                if not token_ids:
+                    continue
+                    
+                buffer.extend(token_ids)
+                
+                # Generate examples once buffer is large enough
+                while len(buffer) >= self.block_size + 1:
+                    # If shuffle_buffer enabled, add to shuffle buffer
+                    if self.shuffle_buffer > 0:
+                        chunk = buffer[:self.block_size + 1]
+                        shuffle_buffer.append((chunk[:-1], chunk[1:]))
+                        buffer = buffer[self.block_size:]
+                        
+                        # When shuffle buffer is full, yield a random example
+                        if len(shuffle_buffer) >= self.shuffle_buffer:
+                            idx = rng.randint(0, len(shuffle_buffer) - 1)
+                            x, y = shuffle_buffer[idx]
+                            shuffle_buffer[idx] = shuffle_buffer[-1]
+                            shuffle_buffer.pop()
+                            yield torch.tensor(x, dtype=torch.long), torch.tensor(y, dtype=torch.long)
+                    else:
+                        # Direct yield without shuffling
+                        chunk = buffer[:self.block_size + 1]
+                        yield (torch.tensor(chunk[:-1], dtype=torch.long), 
+                               torch.tensor(chunk[1:], dtype=torch.long))
+                        buffer = buffer[self.block_size:]
+                        
+            except Exception as e:
+                logging.warning(f"Skipping example: {e}")
+                
+        # Drain shuffle buffer
+        while shuffle_buffer:
+            idx = rng.randint(0, len(shuffle_buffer) - 1)
+            x, y = shuffle_buffer[idx]
+            shuffle_buffer[idx] = shuffle_buffer[-1]
+            shuffle_buffer.pop()
+            yield torch.tensor(x, dtype=torch.long), torch.tensor(y, dtype=torch.long)
 
 @torch.no_grad()
 def estimate_loss(model, val_dataloader, eval_iters, device):
