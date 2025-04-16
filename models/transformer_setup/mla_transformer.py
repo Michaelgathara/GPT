@@ -3,6 +3,13 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import math
+HAS_FLASH_ATTN = False
+try:
+    from flash_attn import flash_attn_func
+    HAS_FLASH_ATTN = True
+    print("Flash Attention is available and will be used")
+except ImportError:
+    print("Flash Attention not available, falling back to standard attention")
 
 class LatentAttentionHead(nn.Module):
     def __init__(self, embed_dim, head_dim, max_seq_len, dropout_prob, latent_dim, n_latent_vec):
@@ -16,14 +23,7 @@ class LatentAttentionHead(nn.Module):
         self.dropout = nn.Dropout(dropout_prob)
         self.clear_cache()
         # Check if flash attention is available
-        self.has_flash_attn = False
-        try:
-            from flash_attn import flash_attn_unpadded
-            self.flash_attn_unpadded = flash_attn_unpadded
-            self.has_flash_attn = True
-            print("Flash Attention is available and will be used")
-        except ImportError:
-            print("Flash Attention not available, falling back to standard attention")
+        self.has_flash_attn = HAS_FLASH_ATTN
 
     def forward(self, input_tensor, latent=None, use_cache=False):
         batch_size, seq_len, _ = input_tensor.shape
@@ -72,7 +72,7 @@ class LatentAttentionHead(nn.Module):
             
             # Call flash attention - note that it's non-causal for latent attention
             dropout_p = self.dropout.p if self.training else 0.0
-            output = self.flash_attn_unpadded(
+            output = flash_attn_func(
                 Q, K, V,
                 Q_lengths=Q_lengths,
                 K_lengths=K_lengths,
