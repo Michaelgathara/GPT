@@ -1,1 +1,0 @@
-nohup python3 -u gpt_a100.py > a100_train.log 2>&1 &
