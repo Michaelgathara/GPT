@@ -32,6 +32,7 @@ logging.basicConfig(
     ]
 )
 logger = logging.getLogger("FineWebPretraining")
+workers = max(1, multiprocessing.cpu_count()) // 2
 
 # --- Helper Classes ---
 # move to utils later
@@ -224,14 +225,18 @@ def main():
         train_loader = DataLoader(
             train_dataset,
             batch_size=config.batch_size,
-            num_workers=0, # Start with 0 for IterableDataset stability
-            pin_memory=False
+            num_workers=workers, # Start with 0 for IterableDataset stability
+            pin_memory=True,
+            prefetch_factor=2,
+            persistent_workers=True
         )
         val_loader = DataLoader(
             val_dataset,
             batch_size=config.batch_size, # Use same batch size for evaluation consistency
-            num_workers=0,
-            pin_memory=False
+            num_workers=workers,
+            pin_memory=True,
+            prefetch_factor=2,
+            persistent_workers=True
         )
         logger.info("DataLoaders created.")
 
@@ -317,7 +322,7 @@ def main():
 
             x, y = x.to(device, non_blocking=True), y.to(device, non_blocking=True)
 
-            with torch.amp.autocast(device_type=device.type, enabled=scaler.is_enabled()):
+            with torch.amp.autocast(device_type=device.type, enabled=scaler.is_enabled(), dtype=torch.bfloat16):
                 logits, loss = model(x, targets=y)
                 if loss.ndim > 0: loss = loss.mean()
                 loss = loss / config.accumulation_steps
