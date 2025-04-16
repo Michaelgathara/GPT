@@ -1,7 +1,7 @@
 import os, sys
 import multiprocessing
 
-BASE_FOLDER = os.path.abspath("../..")
+BASE_FOLDER = os.path.abspath("../")
 sys.path.append(BASE_FOLDER)
 
 DATA_PATH = f"{BASE_FOLDER}/tokenization/fineweb_tokenizer.txt"
