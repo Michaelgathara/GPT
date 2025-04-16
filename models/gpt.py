@@ -15,8 +15,8 @@ sys.path.append(base_folder)
 
 from data.fineweb_data import get_fineweb_data
 from tokenization.utils import load_fineweb_tokenizer
-from transformer import ModelConfig
-from transformer import TransformerModel as MLATransformerModel
+from transformer_setup import ModelConfig
+from transformer_setup import TransformerModel as MLATransformerModel
 
 log_dir = os.path.join(os.path.dirname(__file__), 'logs_fineweb')
 checkpoint_dir = os.path.join(os.path.dirname(__file__), 'checkpoints_fineweb')
