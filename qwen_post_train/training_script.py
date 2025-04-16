@@ -102,114 +102,75 @@ class TrainingConfig:
         return self.__dict__
 
 def prepare_nemotron_dataset(config: TrainingConfig):
-    logger.info("Loading Nemotron dataset...")
-    
-    def get_llama_nemotron_data():
-        dataset = load_dataset("nvidia/Llama-Nemotron-Post-Training-Dataset", "SFT", split=["code", "science"])
-        return dataset
-    
-    dataset = get_llama_nemotron_data()
-    
-    logger.info(f"Dataset structure: {dataset}")
-    for split in dataset:
-        logger.info(f"Split: {split}, Features: {dataset[split].features}, Size: {len(dataset[split])}")
+    logger.info("Loading preprocessed datasets...")
     
     tokenizer = AutoTokenizer.from_pretrained(config.model_name)
     tokenizer.pad_token = tokenizer.eos_token
     
-    def process_nemotron_example(example):
-        input_text = example["input"] if example["input"] else ""
-        output_text = example["output"] if example["output"] else ""
+    data_path = config.data_path
+    
+    train_dataset = None
+    val_dataset = None
+    
+    try:
+        train_path = os.path.join(data_path, "train")
+        val_path = os.path.join(data_path, "validation")
         
-        if example.get("reasoning") and example["reasoning"]:
-            messages = [
-                {"role": "system", "content": "You are a helpful assistant."},
-                {"role": "user", "content": input_text},
-                {"role": "assistant", "content": output_text}
-            ]
+        if os.path.exists(train_path):
+            train_dataset = load_from_disk(train_path)
+            logger.info(f"Loaded preprocessed train dataset: {len(train_dataset)} examples")
         else:
-            messages = [
-                {"role": "system", "content": "You are a helpful assistant."},
-                {"role": "user", "content": input_text},
-                {"role": "assistant", "content": output_text}
-            ]
-        
-        formatted_chat = tokenizer.apply_chat_template(
-            messages,
-            tokenize=False,
-            add_generation_prompt=False
-        )
-        
-        quality_score = 2 if example.get("reasoning") and example["reasoning"] else 1
-        
-        return {
-            "formatted_chat": formatted_chat,
-            "quality_score": quality_score,
-            "category": example.get("category", "unknown")
-        }
+            logger.warning(f"Preprocessed train dataset not found at {train_path}")
+            
+        if os.path.exists(val_path):
+            val_dataset = load_from_disk(val_path)
+            logger.info(f"Loaded preprocessed validation dataset: {len(val_dataset)} examples")
+        else:
+            logger.warning(f"Preprocessed validation dataset not found at {val_path}")
     
-    processed_datasets = {}
+    except Exception as e:
+        logger.error(f"Error loading preprocessed datasets: {e}")
+        raise
     
-    for split_name, split_dataset in zip(['code', 'science'], dataset):
-        # Sample if max_samples specified
-        if config.max_samples_per_dataset is not None:
-            split_dataset = split_dataset.shuffle(seed=config.seed).select(
-                range(min(len(split_dataset), config.max_samples_per_dataset))
+    if train_dataset is None:
+        logger.error("No training dataset found! Make sure to run data_preprocessing.py first.")
+        raise ValueError("No training dataset found")
+    
+    if "input_ids" not in train_dataset.features:
+        logger.info("Tokenizing train dataset...")
+        
+        def tokenize_function(examples):
+            return tokenizer(
+                examples["formatted_chat"],
+                padding="max_length",
+                truncation=True,
+                max_length=config.max_seq_length,
+                return_tensors="pt"
             )
         
-        processed_split = split_dataset.map(
-            process_nemotron_example,
-            remove_columns=split_dataset.column_names,
-            desc=f"Processing {split_name} split",
-            num_proc=workers 
+        train_dataset = train_dataset.map(
+            tokenize_function,
+            batched=True,
+            remove_columns=["formatted_chat"] if "formatted_chat" in train_dataset.features else None,
+            desc="Tokenizing train dataset",
+            num_proc=8
         )
         
-        processed_datasets[split_name] = processed_split
+        if val_dataset is not None and "input_ids" not in val_dataset.features:
+            logger.info("Tokenizing validation dataset...")
+            val_dataset = val_dataset.map(
+                tokenize_function,
+                batched=True,
+                remove_columns=["formatted_chat"] if "formatted_chat" in val_dataset.features else None,
+                desc="Tokenizing validation dataset",
+                num_proc=8
+            )
     
-    # Combine datasets
-    combined_dataset = concatenate_datasets(
-        [processed_datasets["code"], processed_datasets["science"]]
-    )
+    logger.info(f"Final train dataset size: {len(train_dataset)}")
+    if val_dataset:
+        logger.info(f"Final validation dataset size: {len(val_dataset)}")
     
-    combined_dataset = combined_dataset.shuffle(seed=config.seed)
-    
-    train_val_split = combined_dataset.train_test_split(test_size=0.1, seed=config.seed)
-    train_dataset = train_val_split["train"]
-    val_dataset = train_val_split["test"]
-    
-    if config.use_curriculum:
-        logger.info("Implementing curriculum learning...")
-        train_dataset = implement_curriculum(train_dataset)
-    
-    def tokenize_function(examples):
-        return tokenizer(
-            examples["formatted_chat"],
-            padding="max_length",
-            truncation=True,
-            max_length=config.max_seq_length,
-            return_tensors="pt"
-        )
-    
-    tokenized_train_dataset = train_dataset.map(
-        tokenize_function,
-        batched=True,
-        remove_columns=["formatted_chat", "quality_score", "category"],
-        desc="Tokenizing train dataset",
-        num_proc=workers
-    )
-    
-    tokenized_val_dataset = val_dataset.map(
-        tokenize_function,
-        batched=True,
-        remove_columns=["formatted_chat", "quality_score", "category"],
-        desc="Tokenizing validation dataset",
-        num_proc=workers
-    )
-    
-    logger.info(f"Processed train dataset size: {len(tokenized_train_dataset)}")
-    logger.info(f"Processed validation dataset size: {len(tokenized_val_dataset)}")
-    
-    return tokenized_train_dataset, tokenized_val_dataset, tokenizer
+    return train_dataset, val_dataset, tokenizer
 
 def implement_curriculum(dataset):
     def get_complexity(example):
