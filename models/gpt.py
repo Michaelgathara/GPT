@@ -253,6 +253,7 @@ def main():
          use_gradient_checkpoint=config.gradient_checkpointing
          # Pass use_flash_attn if your model constructor accepts it
     )
+    model = torch.compile(model, backend="inductor")
     model.to(device)
     try:
         num_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
