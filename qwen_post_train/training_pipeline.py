@@ -209,14 +209,14 @@ def main():
     accelerator = Accelerator()
     
     # Initialize wandb if enabled
-    if args.use_wandb and accelerator.is_main_process:
-        run_name = f"qwen2-0.5b-nemotron-{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M')}"
-        wandb.init(
-            project="qwen2-nemotron-finetuning",
-            name=run_name,
-            config=vars(args)
-        )
-        logger.info(f"Initialized wandb with run name: {run_name}")
+    # if args.use_wandb and accelerator.is_main_process:
+    #     run_name = f"qwen2-0.5b-nemotron-{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M')}"
+    #     wandb.init(
+    #         project="qwen2-nemotron-finetuning",
+    #         name=run_name,
+    #         config=vars(args)
+    #     )
+    #     logger.info(f"Initialized wandb with run name: {run_name}")
     
     if accelerator.is_main_process:
         tb_writer = SummaryWriter(log_dir=os.path.join(args.output_dir, "tensorboard"))
@@ -338,8 +338,8 @@ def main():
                     
                     if args.report_to == "tensorboard":
                         tb_writer.add_scalar("performance/tokens_per_second", tokens_per_second, state.global_step)
-                    elif args.report_to == "wandb" and wandb.run is not None:
-                        wandb.log({"performance/tokens_per_second": tokens_per_second}, step=state.global_step)
+                    # elif args.report_to == "wandb" and wandb.run is not None:
+                    #     wandb.log({"performance/tokens_per_second": tokens_per_second}, step=state.global_step)
                     
                     # Reset counters
                     self.step_start_time = time.time()
@@ -354,11 +354,11 @@ def main():
                 if args.report_to == "tensorboard":
                     tb_writer.add_scalar("performance/avg_tokens_per_second", avg_tokens_per_second, state.global_step)
                     tb_writer.add_scalar("performance/total_training_time", total_time, state.global_step)
-                elif args.report_to == "wandb" and wandb.run is not None:
-                    wandb.log({
-                        "performance/avg_tokens_per_second": avg_tokens_per_second,
-                        "performance/total_training_time": total_time
-                    }, step=state.global_step)
+                # elif args.report_to == "wandb" and wandb.run is not None:
+                #     wandb.log({
+                #         "performance/avg_tokens_per_second": avg_tokens_per_second,
+                #         "performance/total_training_time": total_time
+                #     }, step=state.global_step)
         
         trainer.callback_handler = PerformanceMonitorCallback(
             trainer.callback_handler.callbacks,
@@ -383,8 +383,8 @@ def main():
         trainer.log_metrics("eval", eval_results)
         trainer.save_metrics("eval", eval_results)
     
-    if args.use_wandb and accelerator.is_main_process:
-        wandb.finish()
+    # if args.use_wandb and accelerator.is_main_process:
+    #     wandb.finish()
     
     if accelerator.is_main_process:
         tb_writer.close()
