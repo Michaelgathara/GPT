@@ -62,7 +62,7 @@ class LatentAttentionHead(nn.Module):
             
             # Call flash attention
             dropout_p = self.dropout.p if self.training else 0.0
-            output = self.flash_attn_func(
+            output = flash_attn_func(
                 q, k, v,
                 dropout_p=dropout_p,
                 causal=False,
