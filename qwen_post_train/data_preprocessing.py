@@ -75,24 +75,23 @@ class NemotronPreprocessor:
         
         return datasets_dict
 
-    def ensure_string(text):
-        if text is None:
-            return ""
-        elif isinstance(text, list):
-            return " ".join(str(item) for item in text)
-        elif isinstance(text, (int, float, bool)):
-            return str(text)
-        elif isinstance(text, dict):
-            import json
-            return json.dumps(text)
-        else:
-            return str(text)
-
     def format_for_qwen2(self, datasets_dict: Dict[str, Dataset]) -> Dict[str, Dataset]:
         """Format the dataset for Qwen2's expected chat format"""
         logger.info("Formatting dataset for Qwen2...")
         
         formatted_datasets = {}
+        def ensure_string(text):
+            if text is None:
+                return ""
+            elif isinstance(text, list):
+                return " ".join(str(item) for item in text)
+            elif isinstance(text, (int, float, bool)):
+                return str(text)
+            elif isinstance(text, dict):
+                import json
+                return json.dumps(text)
+            else:
+                return str(text)
         
         for split_name, dataset in datasets_dict.items():
             logger.info(f"Formatting '{split_name}' split...")
