@@ -27,9 +27,15 @@ There have been several models trained under this repo. The model that is curren
 We have created models upto 1 billion parameters
 
 ## Requirements
+1. Install `uv` from (here)[https://docs.astral.sh/uv/getting-started/installation/]
+
+2. Sync libraries, 
+```bash
+uv sync
+```
 
 ```bash
-# Core dependencies
+# Core dependencies, if they did not sync
 uv pip install torch
 uv sync --no-build-isolation  # Optional, for hardware that supports it
 
