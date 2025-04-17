@@ -17,8 +17,8 @@ class LatentAttentionHead(nn.Module):
         self.max_seq_len = max_seq_len
         self.head_dim = head_dim # Store head_dim
 
-        # Latent tokens (learnable parameter)
-        self.latents = nn.Parameter(torch.randn(n_latent_vec, latent_dim))
+        # Latent tokens (learnable parameter), *0.02 to be consistent with other weights
+        self.latents = nn.Parameter(torch.randn(n_latent_vec, latent_dim) * 0.02)
 
         # Linear transformation of input tokens to K/V space
         self.key_in = nn.Linear(embed_dim, head_dim, bias=False)
