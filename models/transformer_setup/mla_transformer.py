@@ -401,9 +401,9 @@ class TransformerModel(nn.Module):
         # pos_embeddings = self.position_embedding(positions) # (seq_len, embed_dim)
 
         if use_cache:
-            pos_ids = torch.arrange(seq_len, device=idx.device) + (idx.shape[1] - seq_len)
+            pos_ids = torch.arange(seq_len, device=idx.device) + (idx.shape[1] - seq_len)
         else:
-            pos_ids = torch.arrange(seq_len, device=idx.device)
+            pos_ids = torch.arange(seq_len, device=idx.device)
         
         pos_embeddings = self.position_embedding(pos_ids)
 
