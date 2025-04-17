@@ -3,6 +3,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
+import math
 # # Removed unused distributed/dataloader imports from this specific file
 # import torch.distributed as dist
 # import torch.multiprocessing as mp
@@ -244,9 +245,8 @@ class Block(nn.Module):
         # processed latent information projected back, the projection needs careful thought.
         # A simple projection might be nn.Linear(n_latent_vec, max_seq_len) but applied differently.
 
-        # Alternative: Project embed_dim of latents back to embed_dim of sequence?
-        # Let's stick closer to the original intent for now, but acknowledge this is complex.
-        # self.latent_to_seq_proj = nn.Linear(n_latent_vec, max_seq_len) # Keep similar structure for now
+        # Initialize projection layer
+        self.latent_to_seq_proj = nn.Linear(n_latent_vec, max_seq_len, bias=True) # Try this compared to before
 
         # FeedForward part
         self.norm2 = nn.LayerNorm(embed_dim)
@@ -290,15 +290,19 @@ class Block(nn.Module):
         # Transpose: (batch, embed_dim, n_latent_vec)
         project_input = normed_attn_output.transpose(1, 2)
 
-        # Dynamically create or resize the projection layer if seq_len changes (unlikely during generation)
-        # Input features: n_latent_vec, Output features: seq_len
-        if not hasattr(self, 'latent_to_seq_proj') or self.latent_to_seq_proj.out_features != seq_len:
-             # Use config's n_latent_vec for input size, current seq_len for output size
-             n_latent_vec = self.self_attention.heads[0].latents.shape[0] # Get n_latent_vec from head
-             self.latent_to_seq_proj = nn.Linear(n_latent_vec, seq_len, bias=False).to(project_input.device, project_input.dtype)
+        # NOTE: Testing different implementation where projection layer is initialized in __init__
+        # # Dynamically create or resize the projection layer if seq_len changes (unlikely during generation)
+        # # Input features: n_latent_vec, Output features: seq_len
+        # if not hasattr(self, 'latent_to_seq_proj') or self.latent_to_seq_proj.out_features != seq_len:
+        #      # Use config's n_latent_vec for input size, current seq_len for output size
+        #      n_latent_vec = self.self_attention.heads[0].latents.shape[0] # Get n_latent_vec from head
+        #      self.latent_to_seq_proj = nn.Linear(n_latent_vec, seq_len, bias=True).to(project_input.device, project_input.dtype)
 
         # Apply projection: output (batch, embed_dim, seq_len)
         projected_latents = self.latent_to_seq_proj(project_input)
+
+        # Take only necessary latents
+        projected_latents = projected_latents[:, :, :seq_len]
 
         # Transpose back: output (batch, seq_len, embed_dim)
         projected_output = projected_latents.transpose(1, 2)
@@ -346,7 +350,7 @@ class TransformerModel(nn.Module):
         self.lm_head = nn.Linear(embed_dim, vocab_size, bias=False) # Often no bias in final LM head
 
         # Weight tying (optional but common)
-        # self.token_embedding.weight = self.lm_head.weight
+        self.token_embedding.weight = self.lm_head.weight
 
         # apply gradient checkpointing to all blocks if enabled
         if use_gradient_checkpoint:
@@ -365,7 +369,7 @@ class TransformerModel(nn.Module):
     def _init_weights(self, module):
         # Initialization strategy (e.g., from GPT-2)
         if isinstance(module, nn.Linear):
-            torch.nn.init.normal_(module.weight, mean=0.0, std=0.02 / math.sqrt(2 * len(self.blocks))) # Scale std dev by num layers
+            torch.nn.init.normal_(module.weight, mean=0.0, std=0.02 / math.sqrt(len(self.blocks))) # Scale std dev by num layers
             if module.bias is not None:
                 torch.nn.init.zeros_(module.bias)
         elif isinstance(module, nn.Embedding):
@@ -382,15 +386,26 @@ class TransformerModel(nn.Module):
         if seq_len > self.max_seq_len:
              # This case should ideally be handled by truncation *before* forward pass
              # Or position embedding needs to be larger / handle extrapolation
-             raise ValueError(f"Input sequence length ({seq_len}) exceeds model's max_seq_len ({self.max_seq_len})")
+             idx = idx[:, -self.max_seq_len:] # Keep last max_seq_len tokens
+             seq_len = self.max_seq_len
+             if targets is not None:
+                 targets = targets[:, -self.max_seq_len:] # Truncate targets too
 
 
         # token embeddings
         token_embeddings = self.token_embedding(idx) # (batch, seq_len, embed_dim)
 
-        # positional embeddings
-        positions = torch.arange(seq_len, device=idx.device) # (seq_len)
-        pos_embeddings = self.position_embedding(positions) # (seq_len, embed_dim)
+        # NOTE: comment out to modify position embedding handling to account for if cache is being used
+        # # positional embeddings
+        # positions = torch.arange(seq_len, device=idx.device) # (seq_len)
+        # pos_embeddings = self.position_embedding(positions) # (seq_len, embed_dim)
+
+        if use_cache:
+            pos_ids = torch.arrange(seq_len, device=idx.device) + (idx.shape[1] - seq_len)
+        else:
+            pos_ids = torch.arrange(seq_len, device=idx.device)
+        
+        pos_embeddings = self.position_embedding(pos_ids)
 
         # combine token and positional embeddings (broadcasting pos_embeddings)
         x = token_embeddings + pos_embeddings # (batch, seq_len, embed_dim)
