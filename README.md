@@ -17,12 +17,14 @@ A PyTorch implementation of a GPT-style transformer language model trained from 
 - **Flexible Training**: Supports dataset options including WikiText-103 and FineWeb-Edu
 
 ## Model Architecture
-
+There have been several models trained under this repo. The model that is currently live on Huggingface has the following characteristics.
 - Embedding dimension: 768
 - Number of attention heads: 12
 - Number of transformer layers: 12
 - Context size: 512 tokens
 - Total parameters: ~152M
+
+We have created models upto 1 billion parameters
 
 ## Requirements
 
