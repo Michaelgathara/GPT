@@ -8,7 +8,7 @@ model = AutoModelForCausalLM.from_pretrained(
 )
 tokenizer = AutoTokenizer.from_pretrained("Qwen/Qwen2-0.5B-Instruct")
 
-prompt = "Give me a short introduction to large language model."
+prompt = input("Prompt: ")
 messages = [
     {"role": "system", "content": "You are a helpful assistant."},
     {"role": "user", "content": prompt}
