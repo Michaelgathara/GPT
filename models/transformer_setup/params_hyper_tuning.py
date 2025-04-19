@@ -3,7 +3,6 @@ Hyperparameter Tuning Plan
 
 Values to be used for hyperparameter testing
 
-
 '''
 
 # Suggested Hyperparameter values for tuning
