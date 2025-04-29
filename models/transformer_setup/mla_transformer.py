@@ -29,7 +29,7 @@ class LatentAttentionHead(nn.Module):
 
         self.dropout = nn.Dropout(dropout_prob)
 
-        # --- KV Cache Attributes ---
+        #  KV Cache Attributes 
         self.k_cache = None
         self.v_cache = None
         self.query_cache = None # Keep existing query cache
@@ -48,7 +48,7 @@ class LatentAttentionHead(nn.Module):
         """
         batch_size, seq_len, _ = input_tensor.shape
 
-        # --- Query Computation ---
+        #  Query Computation 
         # Expand latent to match batch size if latent is not passed as an argument
         if latent is None:
             latent = self.latents.unsqueeze(0).expand(batch_size, -1, -1)
@@ -62,7 +62,7 @@ class LatentAttentionHead(nn.Module):
             if use_cache:
                 self.query_cache = queries
 
-        # --- Key/Value Computation and Caching ---
+        #  Key/Value Computation and Caching 
         if use_cache:
             # Generation phase: Compute K/V only for the new tokens
             # Assuming input_tensor contains only the *new* token(s) after the first step
@@ -78,7 +78,7 @@ class LatentAttentionHead(nn.Module):
                 keys = torch.cat([cached_keys, new_keys], dim=1)
                 values = torch.cat([cached_values, new_values], dim=1)
 
-                # --- Crucial: Enforce max_seq_len on the cache ---
+                #  Crucial: Enforce max_seq_len on the cache 
                 # If cache exceeds max length, truncate the oldest tokens (from the start)
                 current_cache_len = keys.shape[1]
                 if current_cache_len > self.max_seq_len:
@@ -113,7 +113,7 @@ class LatentAttentionHead(nn.Module):
             # Clear cache during non-cached passes
             self.clear_cache()
 
-        # --- Attention Calculation ---
+        #  Attention Calculation 
         # Queries attend to the full sequence keys
         # queries shape: (batch_size, n_latent_vec, head_dim)
         # keys shape:    (batch_size, effective_seq_len, head_dim)
@@ -224,7 +224,7 @@ class Block(nn.Module):
         # Layer norm before the projection layer
         self.norm_latent = nn.LayerNorm(embed_dim)
 
-        # --- Modified Projection Logic ---
+        #  Modified Projection Logic 
         # This layer projects the attended latent vectors back to the sequence space.
         # Input: (batch, n_latent_vec, embed_dim)
         # Output: (batch, seq_len, embed_dim)
@@ -273,14 +273,14 @@ class Block(nn.Module):
         """
         batch_size, seq_len, embed_dim = input_tensor.shape
 
-        # --- Attention Path ---
+        #  Attention Path 
         # Apply LayerNorm before attention (Pre-LN)
         normed_input = self.norm1(input_tensor)
         # Get attended latent vectors
         # attn_output shape: (batch_size, n_latent_vec, embed_dim)
         attn_output = self.self_attention(normed_input, latent, use_cache)
 
-        # --- Projection back to Sequence ---
+        #  Projection back to Sequence 
         # Apply LayerNorm to the attended latent vectors
         normed_attn_output = self.norm_latent(attn_output)
 
@@ -310,7 +310,7 @@ class Block(nn.Module):
         # First residual connection: Add projected latent info to original input
         residual1 = input_tensor + self.dropout(projected_output)
 
-        # --- FeedForward Path ---
+        #  FeedForward Path 
         # Apply LayerNorm before FeedForward (Pre-LN)
         normed_residual1 = self.norm2(residual1)
         ff_output = self.feed_forward(normed_residual1)
@@ -452,7 +452,7 @@ class TransformerModel(nn.Module):
                   block.self_attention.clear_cache()
 
         for _ in range(max_new_tokens):
-            # --- Context Handling ---
+            #  Context Handling 
             # Crop context to max_seq_len for the forward pass K/V cache size limit
             # The actual input 'idx' to self() might just be the last token if KV cache is full
             # idx_cond = idx if idx.size(1) <= max_seq_len else idx[:, -max_seq_len:]
@@ -475,14 +475,14 @@ class TransformerModel(nn.Module):
             idx_input = idx_input[:, -max_seq_len:]
 
 
-            # --- Forward Pass ---
+            #  Forward Pass 
             # Use autocast for potential speedup/memory saving
             with torch.amp.autocast(device_type=self.token_embedding.weight.device.type):
                  # Pass use_cache=True to enable KV caching
                  logits, _ = self(idx_input, use_cache=True) # Pass only the necessary input
 
 
-            # --- Logit Processing ---
+            #  Logit Processing 
             # Focus on the logits for the very last token generated
             logits = logits[:, -1, :] # Shape: (batch_size, vocab_size)
 
@@ -490,7 +490,7 @@ class TransformerModel(nn.Module):
             if temperature != 1.0:
                  logits = logits / temperature
 
-            # --- Top-K / Top-P Sampling ---
+            #  Top-K / Top-P Sampling 
             if top_k is not None:
                  v, _ = torch.topk(logits, min(top_k, logits.size(-1)))
                  # Set logits below the k-th threshold to -inf
@@ -511,13 +511,13 @@ class TransformerModel(nn.Module):
                  logits[indices_to_remove] = -float('Inf')
 
 
-            # --- Sampling ---
+            #  Sampling 
             # Convert logits to probabilities
             probs = F.softmax(logits, dim=-1)
             # Sample the next token index
             idx_next = torch.multinomial(probs, num_samples=1) # Shape: (batch_size, 1)
 
-            # --- Append and Loop ---
+            #  Append and Loop 
             # Append the sampled token index to the running sequence
             idx = torch.cat((idx, idx_next), dim=1)
 
