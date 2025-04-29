@@ -11,7 +11,7 @@ sys.path.append(base_folder)
 from transformers import AutoTokenizer, PreTrainedTokenizerFast
 from transformers import PreTrainedModel, PretrainedConfig
 
-from transformer_setup import ModelConfig, TransformerModel
+from transformer_setup import TransformerModel
 from inference import load_trained_model
 
 class CustomTransformerConfig(PretrainedConfig):
