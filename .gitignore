@@ -178,3 +178,5 @@ venv
 *.pt
 /tokenization/custom_tokenizer.json
 /tokenization/wikitext-103-train.txt
+financial.md
+module9n10.pdf
