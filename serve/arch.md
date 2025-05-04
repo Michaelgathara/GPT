@@ -1,2 +1,2 @@
 # Architecture
-![Architecture Image](images/arch.svg)
+![](images/arch.png)
