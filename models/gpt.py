@@ -1,10 +1,8 @@
 import sys
 import os
-import json
 import time
 import logging
 import math
-import multiprocessing # Keep for num_cores for data loading, but not for training spawn
 import numpy as np
 
 # torch imports
@@ -16,6 +14,7 @@ import torch.nn.functional as F
 # import torch.multiprocessing as mp
 # from torch.nn.parallel import DistributedDataParallel as DDP
 
+# TODO: Implement typing and tqdm
 from tqdm import tqdm
 from functools import partial
 from typing import Optional
@@ -209,6 +208,8 @@ def train_single_gpu(config, vocab_size, tokenizer, train_stream, val_stream=Non
     model = model.to(device)
     logger.info(f"Model initialized with {model.get_num_params():,} parameters.")
     
+    # Had a ton of trouble with using compile here, but according to the docs (https://docs.pytorch.org/tutorials/intermediate/torch_compile_tutorial.html) it should make the model just a bit faster
+    # # TODO: read more on torch.compile
     # try:
     #     model = torch.compile(model)
     #     print("Model compiled successfully for training.")
@@ -237,7 +238,7 @@ def train_single_gpu(config, vocab_size, tokenizer, train_stream, val_stream=Non
         try:
             # Load checkpoint dictionary, mapping storage to the training device
             with torch.serialization.safe_globals([np.core.multiarray.scalar]):
-                checkpoint = torch.load(checkpoint_path, map_location=device, weights_only=False)
+                checkpoint = torch.load(checkpoint_path, map_location=device, weights_only=False) # weights_only being false here is pretty important if you want to resume training
 
             # checkpoint = torch.load(checkpoint_path, map_location=device)
 

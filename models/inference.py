@@ -163,6 +163,7 @@ def generate_text(model, tokenizer, config, prompt, device, max_new_tokens, temp
     """Generates text using the loaded model."""
     model.eval() # Ensure model is in eval mode
 
+    # TODO: Look into how system prompting is implemented, might need post-training because this does not work 
     # Encode the prompt
     # user_prompt = prompt
     # system_prompt = "You are a knowledgeable and helpful AI assistant. Your primary strength lies in explaining concepts clearly and providing accurate, well-structured information. Aim for clarity, neutrality, and helpfulness in your responses. "
