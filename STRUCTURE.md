@@ -15,15 +15,6 @@ gpt/
 │   ├── train_gpt.py
 │   ├── train_diffusion.py
 │   └── ...
-├── scripts/
-│   ├── download_data.py
-│   ├── run_training.py
-│   └── ...
-├── tests/ (TBD)
-│   ├── test_data.py
-│   ├── test_models.py
-│   ├── test_training.py
-│   └── ...
 ├── .gitignore
 ├── LICENSE
 ├── pyproject.toml
