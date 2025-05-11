@@ -34,7 +34,3 @@ class ModelConfig:
         self.checkpoint_dir = 'checkpoints_1B' # Use a different dir for new model size
         self.log_dir = 'logs_1B'               # Use a different dir for new model size
         self.seed = 1337                    # Random seed
-
-        # MLA parameters (unused by current model)
-        self.latent_dim = 64
-        self.n_latent_vec = 128
