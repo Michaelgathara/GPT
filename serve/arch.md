@@ -1,2 +1,0 @@
-# Architecture
-![](images/arch.png)

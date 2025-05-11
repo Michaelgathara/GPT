@@ -34,7 +34,7 @@ uv sync
 ```bash
 # Core dependencies, if they did not sync
 uv pip install torch
-uv pip install flash-attn --no-build-isolation  
+uv pip install flash-attn --no-build-isolation  # this might fails, but the error will tell you exactly how to fix it
 
 # Hugging Face access (for datasets)
 huggingface-cli login

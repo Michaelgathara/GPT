@@ -10,8 +10,3 @@
 
 6. DeepSeek-V3 Explained 1: Multi-head Latent Attention - https://medium.com/data-science/deepseek-v3-explained-1-multi-head-latent-attention-ed6bee2a67c4
 
-7. Deepseek prompts:
-    * "can you explain what q_lora_rank is for your application of MLA on transformers"
-    * "is it the query vector or the kv vectors that use latent_dim for multi-headed latent attention"
-    * "what does pre-norm attention do?"
-    * "how is my original implementation considered post-norm" - Given additional context by adding code from the Block class found in the transformer.py file found under transformer_setup
