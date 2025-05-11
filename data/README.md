@@ -43,3 +43,4 @@ pip install -U "huggingface_hub[cli]"
 2. Login to Hugging Face (required for FineWeb-Edu access):
 ```bash
 huggingface-cli login
+```
