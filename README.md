@@ -24,64 +24,75 @@ The main model trained under this repo has the following parameters:
 - Total parameters: ~1.1B
 
 ## Documentation
+This project is structured to guide you from the foundational concepts of Large Language Models (LLMs) to training, evaluating, and using your own GPT-style model from scratch. We recommend navigating through the documentation modules in the following order:
+
 1.  **[Foundational Concepts & Further Reading](./PAPERS.md)**: (Optional) Understand the key research behind LLMs.
 2.  **[Setting Up Your Data](./data/README.md)**: Learn how to acquire and prepare the datasets.
-3.  **[Understanding Tokenization](./tokenization/README.md)**: Discover how text is converted into a format models can understand and how to train your tokenizer.
-4.  **[The Model Architecture](./models/README.md)**: Dive into the components of our Transformer model.
-5.  **[Training the Model](./training/README.md)**: Step-by-step guide to train your LLM. *(Note: Training scripts are currently in `models/` but will be documented as if in `training/` as per the new structure)*
-6.  **[Using Your Trained Model - Inference](./models/README.md#inference)**: Generate text with your trained model. *(This might be a subsection of the models README or a separate scripts README later)*
+3.  **[Understanding Tokenization](./tokenization/README.md)**: Discover how text is converted into a format models can understand and how to train/use a tokenizer.
+4.  **[The Model Architecture](./models/README.md)**: Dive into the components of our Transformer model (defined in `models/transformer_setup/`).
+5.  **[Training the Model](./models/README.md#training-the-model)**: Step-by-step guide to train your LLM (using `models/gpt.py`).
+6.  **[Using Your Trained Model - Inference](./models/README.md#inference)**: Generate text with your trained model (using `models/inference.py`).
 7.  **[Evaluating Model Performance](./evaluation/README.md)**: Assess the quality of your trained LLM.
 8.  **[Working with Hugging Face](./hugging_face/README.md)**: Make your model compatible with and share it on the Hugging Face Hub.
-9.  **[Utility Scripts](./scripts/README.md)**: Explore helper scripts for various tasks.
-10. **[Testing Your Code](./tests/README.md)**: (Future) Learn about the testing setup.
 
+Each linked `README.md` file (or section) within the respective directories serves as a chapter, explaining the purpose and usage of the code within that module.
 
 ## Requirements
-1. Install `uv` from (here)[https://docs.astral.sh/uv/getting-started/installation/]
 
-2. Sync libraries, 
-```bash
-uv sync
-```
+1.  Install `uv` from [here](https://docs.astral.sh/uv/getting-started/installation/).
+2.  Create a virtual environment and sync dependencies:
+    ```bash
+    uv venv # Create .venv
+    # Activate the environment
+    # On Linux/macOS:
+    source .venv/bin/activate
+    # On Windows (PowerShell):
+    # .\.venv\Scripts\Activate.ps1
+    # On Windows (CMD):
+    # .\.venv\Scripts\activate.bat
+    uv sync
+    ```
+3.  If `flash-attn` did not install correctly via `uv sync` (common on some platforms), you might need to install it separately. Ensure you have the compatible NVIDIA CUDA toolkit installed and that your GPU supports FlashAttention (Ampere architecture or newer).
+    ```bash
+    # Example, adjust for your PyTorch and CUDA version if necessary
+    uv pip install flash-attn --no-build-isolation
+    ```
+4.  Login to Hugging Face CLI (required for downloading some datasets like FineWeb-Edu and for uploading models):
+    ```bash
+    huggingface-cli login
+    ```
 
-```bash
-# Core dependencies, if they did not sync
-uv pip install torch
-uv pip install flash-attn --no-build-isolation  # this might fails, but the error will tell you exactly how to fix it
+## Project Structure Overview
 
-# Hugging Face access (for datasets)
-huggingface-cli login
-```
+This project is organized into several key directories:
 
-## Project Structure
+-   **[`data/`](./data/README.md)**: Modules for acquiring, preprocessing, and loading datasets.
+    -   `preprocessing/`: Scripts for cleaning text data.
+-   **[`tokenization/`](./tokenization/README.md)**: BPE tokenizer implementation, training scripts (for a fully custom tokenizer), and configuration.
+-   **[`models/`](./models/README.md)**: Core model architecture (`transformer_setup/`), main training script (`gpt_training.py`), and inference script (`inference.py`).
+-   **[`evaluation/`](./evaluation/README.md)**: Scripts for evaluating trained models.
+-   **[`hugging_face/`](./hugging_face/README.md)**: Modules for Hugging Face Hub integration.
+-   **[`PAPERS.md`](./PAPERS.md)**: Curated list of influential research papers.
+-   `.gitignore`, `LICENSE`, `pyproject.toml`, `requirements.txt`, `STRUCTURE.md`: Standard project and configuration files.
 
-- **transformer_setup/**: Core transformer model implementation
-  - `params.py`: Model configuration
-  - `transformer.py`: Transformer model classes including attention mechanisms
-- **tokenization/**: Tokenizer training and utilities
-  - `custom_tokenizer/`: BPE tokenizer implementation
-- **data/**: Dataset loading and preprocessing
-  - `wikitext_data.py`: Load and process WikiText-103
-  - `fineweb_data.py`: Load and process FineWeb datasets
-  - `clean_text.py`: Text cleaning utilities
-- **models/**: Training and inference scripts
-  - `gpt.py`: Main training script
-  - `inference.py`: Text generation script for trained models
-- **evaluation/**: Testing and evaluation scripts
-  - `eval_perplexity.py`: Calculate perplexity score for saved model
 
-## Usage
+## Quick Usage
+Check out the READMEs above to get a detailed usage reference 
 
 ### Training
 
 To train the model from scratch:
 
 ```bash
-source .venv/bin/activate
 cd models/
-python3 gpt.py
-# to run in the background and out prints/logs to a file
-nohup python3 -u gpt.py > train.log 2>&1 &
+# For background training and logging:
+nohup python3 -u gpt_training.py > train.log 2>&1 &
+# For foreground training:
+python3 gpt_training.py
+# In a separate terminal:
+tail -f train.log
+# Or use the provided script from the project root:
+./print_res.sh
 ```
 
 This will:
