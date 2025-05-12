@@ -4,6 +4,8 @@ A PyTorch implementation of a GPT-style transformer language model trained from 
 
 [![Open In Hugging Face](https://img.shields.io/badge/Hugging%20Face-Model-yellow)](https://huggingface.co/purelyunfunctionalai/gibberishgpt)
 
+This model/repo is initially developed from [michaelgathara/gpt_f](https://michaelgathara.com/git/gpt_f). This repo hosts a cleaner version that is ready to go. GPT_F holds various different models and experiments.
+
 ## Features
 
 - **Modern Transformer Architecture**: Implementation based on the GPT architecture with SwiGLU activation functions
