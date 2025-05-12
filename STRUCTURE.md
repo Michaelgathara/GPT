@@ -23,7 +23,7 @@ gpt/
 └── requirements.txt
 ```
 
-Proposed structure, including some testing scripts and some running scripts baked in
+Proposed structure, including some testing scripts and some running scripts baked in, TODO later
 ```
 gpt/
 ├── data/

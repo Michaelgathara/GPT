@@ -23,6 +23,19 @@ The main model trained under this repo has the following parameters:
 - Context size: 1024 tokens
 - Total parameters: ~1.1B
 
+## Documentation
+1.  **[Foundational Concepts & Further Reading](./PAPERS.md)**: (Optional) Understand the key research behind LLMs.
+2.  **[Setting Up Your Data](./data/README.md)**: Learn how to acquire and prepare the datasets.
+3.  **[Understanding Tokenization](./tokenization/README.md)**: Discover how text is converted into a format models can understand and how to train your tokenizer.
+4.  **[The Model Architecture](./models/README.md)**: Dive into the components of our Transformer model.
+5.  **[Training the Model](./training/README.md)**: Step-by-step guide to train your LLM. *(Note: Training scripts are currently in `models/` but will be documented as if in `training/` as per the new structure)*
+6.  **[Using Your Trained Model - Inference](./models/README.md#inference)**: Generate text with your trained model. *(This might be a subsection of the models README or a separate scripts README later)*
+7.  **[Evaluating Model Performance](./evaluation/README.md)**: Assess the quality of your trained LLM.
+8.  **[Working with Hugging Face](./hugging_face/README.md)**: Make your model compatible with and share it on the Hugging Face Hub.
+9.  **[Utility Scripts](./scripts/README.md)**: Explore helper scripts for various tasks.
+10. **[Testing Your Code](./tests/README.md)**: (Future) Learn about the testing setup.
+
+
 ## Requirements
 1. Install `uv` from (here)[https://docs.astral.sh/uv/getting-started/installation/]
 
