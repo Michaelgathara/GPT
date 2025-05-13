@@ -32,7 +32,7 @@ This project is structured to guide you from the foundational concepts of Large 
 2.  **[Setting Up Your Data](./data/README.md)**: Learn how to acquire and prepare the datasets.
 3.  **[Understanding Tokenization](./tokenization/README.md)**: Discover how text is converted into a format models can understand and how to train/use a tokenizer.
 4.  **[The Model Architecture](./models/README.md)**: Dive into the components of our Transformer model (defined in `models/transformer_setup/`).
-5.  **[Training the Model](./models/README.md#training-the-model)**: Step-by-step guide to train your LLM (using `models/gpt.py`).
+5.  **[Training the Model](./models/README.md#2-training-the-model-gpt_trainingpy)**: Step-by-step guide to train your LLM (using `models/gpt.py`).
 6.  **[Using Your Trained Model - Inference](./models/README.md#inference)**: Generate text with your trained model (using `models/inference.py`).
 7.  **[Evaluating Model Performance](./evaluation/README.md)**: Assess the quality of your trained LLM.
 8.  **[Working with Hugging Face](./hugging_face/README.md)**: Make your model compatible with and share it on the Hugging Face Hub.
