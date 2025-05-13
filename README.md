@@ -15,7 +15,7 @@ This model/repo is initially developed from [michaelgathara/gpt_f](https://micha
   - Gradient checkpointing (optional)
 - **Custom BPE Tokenization**: Uses the GPT2 tokenizer with a 52k vocab size
 - **Performance Monitoring**: TensorBoard integration for tracking training metrics (deprecated for now)
-- **Dataset**: Supports dataset options like (FineWeb-Edu)[https://huggingface.co/datasets/HuggingFaceFW/fineweb-edu]
+- **Dataset**: Supports dataset options like [FineWeb-Edu](https://huggingface.co/datasets/HuggingFaceFW/fineweb-edu)
 
 ## Model Architecture
 The main model trained under this repo has the following parameters:
