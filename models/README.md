@@ -64,3 +64,163 @@ python3 models/model_summary.py
 # From this directory
 python3 model_summary.py
 ```
+This script uses `torchinfo` to print the summary. Ensure `torchinfo` is installed (uv pip install `torchinfo`).
+
+## 2. Training the Model (`gpt_training.py`)
+The primary script for training the Transformer model from scratch is `models/gpt_training.py`.
+
+### Overview of the Training Process
+The goal of training is to adjust the model's parameters (weights) so that it becomes proficient at predicting the next token in a sequence. This is achieved by feeding it large amounts of text data and minimizing a loss function (Cross-Entropy) that measures the difference between the model's predictions and the actual next tokens.
+
+## **The gpt_training.py Script Details**
+
+### Setup
+
+- **Device Selection**: Automatically uses CUDA (GPU) if available, otherwise falls back to CPU (which will be very slow for training).
+- **Seeding**: `torch.manual_seed` and `numpy.random.seed` are used for reproducibility, controlled by `config.seed` from `params.py`.
+
+### Data Handling
+
+- **Dataset Loading**: Typically loads a large dataset like FineWeb-Edu in streaming mode using functions from `data/` (e.g., `get_fineweb_data`).
+- **Tokenizer**: Uses the pre-trained "gpt2" tokenizer from Hugging Face transformers by default (`AutoTokenizer.from_pretrained("gpt2")`). The `pad_token` is set to `eos_token` if not already defined.
+- **create_token_generator Function**: This crucial function takes the raw tokenized stream from the dataset and yields `(x, y)` pairs suitable for training.
+  - `x`: A chunk of `block_size` input token IDs.
+  - `y`: The target token IDs, which are `x` shifted by one position (i.e., `y[i] = x[i+1]`). The last target token is typically a padding token.
+
+### Model Initialization
+
+- An instance of `TransformerModel` (from `transformer_setup.transformer`) is created using the hyperparameters defined in `ModelConfig` (`transformer_setup.params.py`) and the tokenizer's vocabulary size.
+
+### Optimizer
+
+- **AdamW** (`torch.optim.AdamW`): Used for updating model weights. It's a variant of the Adam optimizer with improved weight decay handling.
+- **Configurable parameters** (from `params.py`): `learning_rate`, `weight_decay`, `beta1`, `beta2`.
+
+### Learning Rate Scheduler (CosineWarmupScheduler)
+
+This custom scheduler implements a learning rate schedule that is common for training Transformers:
+- **Warmup Phase**: Linearly increases the learning rate from a small value (or 0) to the target `learning_rate` over `config.warmup_iters`. This helps stabilize training in the initial epochs.
+- **Cosine Decay Phase**: After warmup, the learning rate gradually decays following a cosine curve down to a minimum value (or 0) by `config.max_iters`.
+- The scheduler is stepped after each optimizer update.
+
+### Training Loop
+
+- Iterates for `config.max_iters`.
+- **Gradient Accumulation**: Updates model weights only after processing `config.accumulation_steps` micro-batches. This allows for a larger effective batch size without requiring proportionally more GPU memory. The loss from each micro-batch is normalized by the accumulation steps.
+- **Mixed Precision Training** (`torch.amp`):
+  - Uses `torch.cuda.amp.GradScaler` and `torch.cuda.amp.autocast` (if CUDA is available) to perform computations in lower precision (like FP16 or BF16) where possible, while maintaining high precision for critical parts. This speeds up training and reduces memory usage.
+- **Forward Pass**: For each micro-batch, input `x` and targets `y` are passed to the model to get logits and the loss.
+- **Loss Calculation**: Cross-Entropy loss is computed between the model's logits and the target token IDs.
+- **Backward Pass**: Gradients are computed. The GradScaler scales the loss to prevent underflow of gradients in mixed precision.
+- **Gradient Clipping** (`torch.nn.utils.clip_grad_norm_`): Gradients are clipped to a maximum norm (e.g., 1.0) to prevent exploding gradients, which can destabilize training. This happens after unscaling by the GradScaler.
+- **Optimizer Step**: The GradScaler tells the optimizer to update the model weights.
+- **Scaler Update**: The GradScaler updates its scale factor for the next iteration.
+
+### Evaluation (estimate_loss function)
+
+- Periodically (every `config.eval_interval` iterations), the model's performance is evaluated on a validation set (if available, e.g., a subset of the training data or a dedicated validation split).
+- The model is set to `eval()` mode (disabling dropout).
+- Average validation loss is computed over `config.eval_iters` batches.
+
+### Checkpointing
+
+- The script saves checkpoints containing the model's `state_dict`, optimizer's `state_dict`, GradScaler's `state_dict`, the current iteration number, the best validation loss achieved so far, and the model configuration.
+- Checkpoints are saved to the directory specified by `config.checkpoint_dir` (e.g., `checkpoints_1B/`).
+- The "best" model (based on validation loss) is typically saved as `best_model.pt`. Periodic checkpoints might also be saved (e.g., `checkpoint_{iter_num}.pt`).
+- **Resuming Training**: If a checkpoint exists, training can be resumed from that point, loading the model weights, optimizer state, scaler state, and iteration number. The learning rate scheduler is also advanced to the correct step.
+
+### Logging
+
+- Progress, loss, learning rate, and other metrics are logged to the console and to a file (e.g., `training_single_gpu.log` or `train.log` when using nohup).
+- The `models/train.log` file in the repository shows an example of training output.
+
+## **How to Run Training**
+
+> [! TIP]
+> Typically you would want to run this model on a GPU (we've only tested it on H100, H200, A100, V100, but it should work on a various set of Nvidia GPUs if you adjust the model size). We put together a guide on how to rent high-end GPUs in the `RentingGPUs.pdf` file on the main directory. 
+
+1. Navigate to the models directory:
+    ```bash
+    cd models
+    ```
+
+2. Ensure your environment is activated and dependencies installed.
+3. Start the training script:
+    * For training in the foreground (output directly to console):
+    ```bash
+    python gpt_training.py
+    ```
+    * For training in the background and logging output to a file (recommended for long runs):
+    ```bash
+    nohup python3 -u gpt_training.py > train.log 2>&1 &
+    ```
+    * The `-u` flag ensures unbuffered output, so `train.log` updates in real-time.
+
+4. Monitor Training (if running in background):
+    * You should already have access to your terminal (if not, just press `enter`)
+    * Use `tail` to view the log file:
+        ```bash
+        tail -f train.log
+        ```
+    * Alternatively, you can run the provided shell script:
+        ```bash
+        chmod +x print_res.sh
+        ./print_res.sh
+        # or if you do not have chmod access
+        bash print_res.sh
+        ```
+
+## **Inference: Generating Text (`inference.py`)**
+Once you have a trained model checkpoint, you can use `models/inference.py` to generate text.
+
+### Overview
+Inference is the process of using the trained model to make predictions on new inputs. For an LLM, this typically means providing a "prompt" (an initial sequence of text) and having the model generate a continuation.
+
+
+* **Loading the Trained Model (**`load_trained_model` function):
+   * This function handles loading the specified checkpoint file (`.pt`).
+   * It retrieves the model configuration (`config`) saved within the checkpoint.
+   * It loads the pre-trained "gpt2" tokenizer (`AutoTokenizer.from_pretrained("gpt2")`), ensuring `pad_token` is set.
+   * It instantiates the `TransformerModel` using the loaded configuration and tokenizer's vocabulary size.
+   * It loads the saved model weights (`model_state_dict`) into the instantiated model. It also handles unwrapping state dict keys if the model was saved with DistributedDataParallel (`module.` prefix).
+   * The model is set to evaluation mode (`model.eval()`) and moved to the appropriate device (CUDA or CPU).
+   * Optionally, `torch.compile(model, mode="reduce-overhead")` is attempted for potential inference speedup.
+* **Text Generation Process (`generate_text` function and `model.generate()`)**:
+   * The user-provided prompt is tokenized using the loaded tokenizer.
+   * The tokenized prompt (input IDs) is fed into the `model.generate()` method. This method, defined within the `TransformerModel` class, performs autoregressive decoding:
+      1. It takes the current sequence of tokens.
+      2. It passes this sequence through the model to get logits for the next token.
+      3. The logits for the very last position are processed (e.g., temperature scaling, top-k filtering).
+      4. A new token is sampled from the resulting probability distribution.
+      5. This new token is appended to the sequence.
+      6. Steps 1-5 are repeated until `max_new_tokens` are generated or an End-Of-Sequence token is produced.
+   * The generated sequence of token IDs is then decoded back into human-readable text using `tokenizer.decode()`.
+   * Mixed precision (`torch.amp.autocast`) can be used during generation on CUDA for potential speed benefits.
+* **Key Generation Parameters (Command-line arguments for `inference.py`)**:
+   * `checkpoint_path` (required): Path to the model checkpoint file.
+   * `--prompt` (optional): The initial text to seed the generation. If not provided, the script enters interactive mode.
+   * `--max_new_tokens` (default: 200): Maximum number of new tokens to generate after the prompt.
+   * `--temperature` (default: 0.8): Controls the randomness of the output.
+      * Lower values (e.g., &lt; 0.8) make the output more deterministic and focused, picking more likely words.
+      * Higher values (e.g., > 1.0) make the output more random and creative, potentially less coherent.
+      * A value of 1.0 means sampling according to the model's learned probabilities without modification.
+   * `--top_k` (default: 50): Restricts sampling to the `k` most likely next tokens. If set to 0, top-k filtering is disabled. This can help prevent the model from generating very unlikely or bizarre tokens.
+   * `--device` (optional): Specify 'cuda' or 'cpu'. Auto-detects if None.
+   * `--seed` (optional): Set a random seed for reproducible generation (if other parameters are also fixed).
+   * `--verbose`: Print detailed loading information.
+
+### How to Run Inference
+1. **Navigate to the `models` directory**:
+    ```bash
+    cd models
+    ```
+2. **Run the script with your checkpoint and desired options**:
+    * With a specific prompt:
+        ```bash
+        python inference.py ../checkpoints_1B/best_model.pt --prompt "Once upon a time, in a land far away, " --max_new_tokens 250 --temperature 0.7
+        ```
+    * In interactive mode:
+        ```bash
+        python inference.py ../checkpoints_1B/best_model.pt
+        ```
+        This script will enter a more interactive mode where you will be prompted for multiple queries until you exit. Type `exit` to stop.
