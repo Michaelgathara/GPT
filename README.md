@@ -21,7 +21,7 @@ The main model trained under this repo has the following parameters:
 - Number of attention heads: 12
 - Number of transformer layers: 24
 - Context size: 1024 tokens
-- Total parameters: ~1.1B
+- Total parameters: ~1.1B (1,062,501,457)
 
 ## Documentation
 This project is structured to guide you from the foundational concepts of Large Language Models (LLMs) to training, evaluating, and using your own GPT-style model from scratch. We recommend navigating through the documentation modules in the following order:
