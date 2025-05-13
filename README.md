@@ -2,7 +2,7 @@
 
 A PyTorch implementation of a GPT-style transformer language model trained from scratch, featuring modern training optimizations and both custom BPE tokenization and inference capabilities.
 
-This model/repo is initially developed from [michaelgathara/gpt_f](https://michaelgathara.com/git/gpt_f). This repo hosts a cleaner version that is ready to go. GPT_F holds various different models and experiments. 
+This repo hosts a cleaner version that outputs coherent text of our initial attempts from [michaelgathara/gpt_f](https://michaelgathara.com/git/gpt_f). GPT_F holds various different models and experiments. 
 
 ## Features
 
