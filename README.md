@@ -134,6 +134,7 @@ This implementation draws inspiration from:
 - "Attention Is All You Need" (Vaswani et al., 2017)
 - The Flash Attention implementation
 - Hugging Face's tokenizers and datasets libraries
+- Andrej Karpathy for his invaluable LLM videos
 
 ## License
 
