@@ -136,7 +136,7 @@ This custom scheduler implements a learning rate schedule that is common for tra
 
 ## **How to Run Training**
 
-> [! TIP]
+> [!TIP]
 > Typically you would want to run this model on a GPU (we've only tested it on H100, H200, A100, V100, but it should work on a various set of Nvidia GPUs if you adjust the model size). We put together a guide on how to rent high-end GPUs in the `RentingGPUs.pdf` file on the main directory. 
 
 1. Navigate to the models directory:

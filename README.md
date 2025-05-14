@@ -16,7 +16,7 @@ This repo hosts a cleaner version that outputs coherent text of our initial atte
 - **Dataset**: Supports dataset options like [FineWeb-Edu](https://huggingface.co/datasets/HuggingFaceFW/fineweb-edu)
 
 ## Model Architecture
->[! TIP]
+>[!NOTE]
 > You can change the size of the model simply by changing the config file without having to mess around with the transformer model itself
 
 The main model trained under this repo has the following parameters:
