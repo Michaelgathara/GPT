@@ -13,6 +13,7 @@ dependencies = [
     "tokenizers>=0.21.1",
     "torch>=2.6.0",
     "torchinfo>=1.8.0",
+    "transformers>=4.51.3",
 ]
 
 [dependency-groups]
