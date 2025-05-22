@@ -1,9 +1,9 @@
 class ModelConfig:
     def __init__(self):
         #  Target ~1B Model Architecture 
-        self.n_layer = 32                   # Number of transformer layers
-        self.n_embd = 2048                  # Embedding dimension
-        self.n_head = 16                    # Number of attention heads (1536 / 12 = 128 head dim)
+        self.n_layer = 48                   # Number of transformer layers
+        self.n_embd = 4096                  # Embedding dimension
+        self.n_head = 32                    # Number of attention heads (1536 / 12 = 128 head dim)
         self.block_size = 1024              # Context size (keep as is)
         self.dropout = 0.1                  # Dropout rate (keep as is)
         # Calculated ~1.06 Billion parameters with vocab=50257
