@@ -315,6 +315,20 @@ class TransformerModel(nn.Module):
                 f"Using {n_latent_vec} latent context vectors of dimension {latent_dim}."
             )
             print(f"MLA enabled in blocks: {use_mla_in_blocks}")
+            
+    def _init_weights(self, module):
+        if isinstance(module, nn.Linear):
+            torch.nn.init.normal_(module.weight, mean=0.0, std=0.02)
+            if module.bias is not None:
+                torch.nn.init.zeros_(module.bias)
+        elif isinstance(module, nn.Embedding):
+            torch.nn.init.normal_(module.weight, mean=0.0, std=0.02)
+        elif isinstance(module, nn.LayerNorm):
+            torch.nn.init.zeros_(module.bias)
+            torch.nn.init.ones_(module.weight)
+
+    def get_num_params(self):
+        return sum(p.numel() for p in self.parameters())
 
     def forward(self, idx, targets=None):
         batch_size, seq_len = idx.shape
