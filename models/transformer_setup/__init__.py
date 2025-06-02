@@ -1,4 +1,4 @@
 from .params import ModelConfig
-from .transformer import TransformerModel, FeedForward, Block
-
+# from .transformer import TransformerModel, FeedForward, Block
+from .mla_transformer import TransformerModel, FeedForward, Block
 __all__ = ['ModelConfig', 'TransformerModel', 'FeedForward', 'Block']
