@@ -98,7 +98,12 @@ def load_trained_model(checkpoint_path, device, verbose=True):
         max_seq_len=saved_config_dict['block_size'],
         dropout_prob=saved_config_dict['dropout'], # Dropout is typically disabled by model.eval() anyway
         use_gradient_checkpoint=saved_config_dict.get('gradient_checkpointing', False), # From training config
-        use_flash_attn=use_flash_attn # Use based on availability and config
+        use_flash_attn=use_flash_attn, # Use based on availability and config
+        n_latent_vec=saved_config_dict['n_latent_vec'],
+        latent_dim=saved_config_dict['latent_dim'],
+        use_mla_in_blocks=saved_config_dict['use_mla_in_blocks'],
+        mla_dropout_prob=saved_config_dict['mla_dropout_prob']
+        
     )
 
     #  5. Load Model State Dict 
